@@ -77,16 +77,11 @@ test('3D changes the camera and renders actual building geometry',async({page},i
   await expect.poll(async()=>Number(await page.locator('.map-canvas').getAttribute('data-map-pitch')),{timeout:15000}).toBeLessThan(1);
   expect(errors).toEqual([]);
 });
-test('GPS request reports the browser outcome inline and permits retry',async({page})=>{
-  await page.goto('/');await page.getByRole('button',{name:'Dùng vị trí của tôi',exact:true}).click();
-  await expect(page.locator('.location-status')).not.toContainText('Đang lấy vị trí',{timeout:35000});
-  const state=await page.evaluate(async()=>navigator.permissions?(await navigator.permissions.query({name:'geolocation'})).state:'unknown');
-  if(state==='denied'){
-    await expect(page.locator('.location-status')).toContainText('Quyền vị trí đang bị chặn');
-    await page.getByRole('button',{name:'Thử lại GPS',exact:true}).click();
-    await expect(page.getByRole('button',{name:'Thử lại GPS',exact:true})).toBeEnabled({timeout:35000});
-  }
+test('GPS request from the map control does not raise floating errors',async({page})=>{
+  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('/');await page.getByRole('button',{name:'Về vị trí của tôi',exact:true}).click();
   await expect(page.locator('.notice,.road-alert-banner')).toHaveCount(0);
+  expect(errors).toEqual([]);
 });
 test('searches a real Vietnamese place with the configured geocoder',async({page})=>{
   await page.goto('/');

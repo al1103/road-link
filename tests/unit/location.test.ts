@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {accuracyAllows,canPreviewFrom,canNavigateFrom,locationZoom} from '../../src/domain/location';
+import {accuracyAllows,canPreviewFrom,canNavigateFrom,compassHeading,locationZoom} from '../../src/domain/location';
 describe('location accuracy rules',()=>{
   it('permits an approximate route preview while waiting for navigation accuracy',()=>{
     expect(accuracyAllows(1000,1000,'preview')).toBe(true);
@@ -24,5 +24,15 @@ describe('location accuracy rules',()=>{
   });
   it('does not zoom an approximate fix as if it were precise',()=>{
     expect(locationZoom(1000)).toBeLessThan(locationZoom(5));
+  });
+  it('ignores a relative compass alpha that has no fixed north',()=>{
+    expect(compassHeading({alpha:90})).toBeNull();
+    expect(compassHeading({alpha:90,absolute:false})).toBeNull();
+    expect(compassHeading({webkitCompassHeading:90,alpha:90,absolute:false})).toBe(90);
+  });
+  it('converts an absolute alpha into a compass bearing',()=>{
+    expect(compassHeading({alpha:90,absolute:true})).toBe(270);
+    expect(compassHeading({alpha:0,absolute:true})).toBe(0);
+    expect(compassHeading({alpha:Number.NaN,absolute:true})).toBeNull();
   });
 });

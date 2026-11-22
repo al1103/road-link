@@ -7,14 +7,14 @@ export function PlaceCard({ place, saved, shareStatus, onRoute, onSave, onShare,
     <div className="place-title-row">
       <div>
         <h1>{place.name}</h1>
-        <p className="place-address"><MapPin size={15} />{place.detail || `${place.lat.toFixed(5)}, ${place.lng.toFixed(5)}`}</p>
+        <p className="place-address"><MapPin size={16} />{place.detail || `${place.lat.toFixed(5)}, ${place.lng.toFixed(5)}`}</p>
       </div>
-      <button className="icon-button" aria-label="Đóng địa điểm" onClick={onClose}><ArrowLeft size={20} /></button>
+      <button className="icon-button" aria-label="Đóng địa điểm" onClick={onClose}><X size={20} /></button>
     </div>
     <div className="place-actions">
-      <button className="button primary gmaps-pill-btn" onClick={onRoute}><Navigation2 size={18} fill="currentColor" />Chỉ đường</button>
-      <button className="button outlined gmaps-pill-btn" onClick={onSave} aria-label={saved ? 'Bỏ lưu địa điểm' : 'Lưu địa điểm'}><Heart size={18} fill={saved ? 'currentColor' : 'none'} />{saved ? 'Đã lưu' : 'Lưu'}</button>
-      <button className="button outlined gmaps-pill-btn" onClick={onShare}><Share2 size={18} />Chia sẻ</button>
+      <button className="button primary gmaps-pill-btn" onClick={onRoute}><Navigation2 size={20} fill="currentColor" />Chỉ đường</button>
+      <button className="button outlined gmaps-pill-btn" onClick={onSave} aria-label={saved ? 'Bỏ lưu địa điểm' : 'Lưu địa điểm'}><Heart size={20} fill={saved ? 'currentColor' : 'none'} />{saved ? 'Đã lưu' : 'Lưu'}</button>
+      <button className="button outlined gmaps-pill-btn" onClick={onShare}><Share2 size={20} />Chia sẻ</button>
     </div>
     {shareStatus && <p className="inline-feedback">{shareStatus}</p>}
   </>;
@@ -267,28 +267,31 @@ export function RoutePlannerCard(p: CardProps) {
   return <>
     <div className="planner-transport-modes">
       <button
+        aria-label="Ô tô"
+        aria-pressed={p.transportMode === 'car'}
         className={`transport-mode-tab ${p.transportMode === 'car' ? 'active' : ''}`}
         type="button"
         onClick={() => p.onSelectTransportMode('car')}
       >
-        <CarFront size={19} />
-        <span>{p.route ? formatDuration(p.route.duration) : 'Ô tô'}</span>
+        <CarFront size={24} />
       </button>
       <button
+        aria-label="Xe máy"
+        aria-pressed={p.transportMode === 'bike'}
         className={`transport-mode-tab ${p.transportMode === 'bike' ? 'active' : ''}`}
         type="button"
         onClick={() => p.onSelectTransportMode('bike')}
       >
-        <Bike size={19} />
-        <span>{p.route ? formatDuration(Math.round(p.route.duration * 1.05)) : 'Xe máy'}</span>
+        <Bike size={24} />
       </button>
       <button
+        aria-label="Đi bộ"
+        aria-pressed={p.transportMode === 'walk'}
         className={`transport-mode-tab ${p.transportMode === 'walk' ? 'active' : ''}`}
         type="button"
         onClick={() => p.onSelectTransportMode('walk')}
       >
-        <Footprints size={19} />
-        <span>{p.route ? formatDuration(Math.round(p.route.distance / 1.25)) : 'Đi bộ'}</span>
+        <Footprints size={24} />
       </button>
     </div>
     {!p.route && !p.loading && !p.error && <p className="planner-help">{p.awaitingGPS ? 'Đang chờ vị trí. Bạn có thể chọn điểm đi thủ công ngay phía trên.' : 'Chọn điểm đi để tìm tuyến đường.'}</p>}
@@ -313,6 +316,7 @@ export function RoutePlannerCard(p: CardProps) {
         })}
       </div>
       {p.customOrigin && <p className="origin-warning">Điểm đi tùy chọn. Chọn Vị trí của bạn để dẫn đường bằng GPS thật.</p>}
+      {p.locationError && <p className="inline-feedback" role="alert">{p.locationError}</p>}
       <div className="planner-actions">
         <button className="button primary gmaps-start-btn" onClick={p.start} disabled={p.awaitingGPS && !p.locationError}>
           <Navigation2 size={20} fill="currentColor" />

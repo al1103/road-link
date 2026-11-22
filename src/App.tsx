@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, Bluetooth, BluetoothConnected, CarFront, Check, ChevronRight, Clock3, Compass, Flag, Heart, Layers2, LocateFixed, MapPin, Navigation2, Pause, Play, Route as RouteIcon, Search, ShieldCheck, Signal, SlidersHorizontal, Sparkles, Volume2, VolumeX, X, LoaderCircle, TriangleAlert } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, Banknote, BedDouble, Bluetooth, BluetoothConnected, CarFront, Check, ChevronRight, Clock3, Coffee, Compass, Flag, Fuel, Heart, Layers2, LocateFixed, MapPin, Navigation2, Pause, Play, Route as RouteIcon, Search, ShieldCheck, ShoppingBasket, Signal, SlidersHorizontal, Sparkles, UtensilsCrossed, Volume2, VolumeX, X, LoaderCircle, TriangleAlert } from 'lucide-react';
 import MapView from './components/MapView';
 import ManeuverIcon from './components/ManeuverIcon';
 import BluetoothPanel from './components/BluetoothPanel';
@@ -10,7 +10,6 @@ import { RoadAlertEngine,type RoadAlert } from './domain/roadAlerts';
 import {PlaceCard,RouteInputs,RoutePlannerCard} from './components/PlaceAndRouteCards';
 import SpeedLimitImage from './components/SpeedLimitImage';
 import {roadSymbol} from './domain/roadSymbols';
-import LocationStatus from './components/LocationStatus';
 import {canNavigateFrom,canPreviewFrom} from './domain/location';
 import { bearing, cumulative, distance, formatDistance, formatDuration, pointAt } from './domain/geometry';
 import { Navigator } from './domain/navigation';
@@ -22,6 +21,14 @@ import { navMessage, routeMessages } from './services/protocol';
 import { say, silence } from './services/voice';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 type Mode = 'explore' | 'place' | 'preview' | 'navigating' | 'arrived';
+const EXPLORE_CATEGORIES = [
+  { label: 'Nhà hàng', Icon: UtensilsCrossed, color: '#e37400' },
+  { label: 'Cây xăng', Icon: Fuel, color: '#1a73e8' },
+  { label: 'Cà phê', Icon: Coffee, color: '#a1662f' },
+  { label: 'Khách sạn', Icon: BedDouble, color: '#9334e6' },
+  { label: 'ATM', Icon: Banknote, color: '#188038' },
+  { label: 'Tạp hóa', Icon: ShoppingBasket, color: '#e37400' }
+] as const;
 function stored<T>(key: string, fallback: T): T { try { const value = localStorage.getItem(key); return value ? JSON.parse(value) as T : fallback; } catch { return fallback; } }
 function save(key: string, value: unknown) { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* Storage is optional. */ } }
 const link = new BluetoothLink();
@@ -51,6 +58,7 @@ export default function App() {
   const awaitingGPS=pendingGPS!==null;
   const [follow, setFollow] = useState(true);
   const [recenter, setRecenter] = useState(0);
+  const [sheetCollapsed, setSheetCollapsed] = useState(false);
   const [details, setDetails] = useState(false);
   const [voice, setVoice] = useState(() => stored('roadlink.voice', true) === true);
   const [favorites, setFavorites] = useState<string[]>(() => { const v = stored<unknown>('roadlink.favorites', []); return Array.isArray(v) ? v.filter(x => typeof x === 'string') : []; });
@@ -60,7 +68,7 @@ export default function App() {
   const [roadFilters,setRoadFilters]=useState<RoadFilters>({speed:true,cameras:true,signs:true,signals:true});
   const [rerouting, setRerouting] = useState(false);
   const [tileWarning, setTileWarning] = useState(false);
-  const [mode3D,setMode3D]=useState(false),[northReset,setNorthReset]=useState(0),[mapBearing,setMapBearing]=useState(0);
+  const [mode3D,setMode3D]=useState(false),[northReset,setNorthReset]=useState(0),[headingUp,setHeadingUp]=useState(0),[mapBearing,setMapBearing]=useState(0);
   const [transportMode, setTransportMode] = useState<'car' | 'bike' | 'walk'>('car');
   const [now, setNow] = useState(Date.now());
   const routeAbort = useRef<AbortController | null>(null);
@@ -84,9 +92,12 @@ export default function App() {
   const mapRoadData=useMemo(()=>displayRoadData?{...displayRoadData,sections:roadFilters.speed?displayRoadData.sections:[],features:displayRoadData.features.filter(f=>roadFilters[groupFor(f.kind)])}:null,[displayRoadData,roadFilters]);
   useEffect(()=>{
     const panel=panelElement.current;if(!panel)return;
-    const observer=new ResizeObserver(()=>appElement.current?.style.setProperty('--panel-height',`${panel.getBoundingClientRect().height}px`));observer.observe(panel);
+    const update=()=>appElement.current?.style.setProperty('--panel-height',sheetCollapsed?'calc(58px + var(--safe-bottom))':`${panel.getBoundingClientRect().height}px`);
+    update();
+    const observer=new ResizeObserver(update);observer.observe(panel);
     return()=>observer.disconnect();
-  },[]);
+  },[sheetCollapsed]);
+  useEffect(()=>{setSheetCollapsed(false);},[mode]);
   useEffect(() => link.subscribe(setBle), []);
   useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 2000); return () => clearInterval(timer); }, []);
   useEffect(() => {
@@ -211,7 +222,7 @@ export default function App() {
   const remainingSeconds = transportMode === 'bike' ? Math.round(baseSeconds * 1.05) : transportMode === 'walk' ? (route ? Math.round((progress?.remaining ?? route.distance) / 1.25) : baseSeconds * 4) : baseSeconds;
   const eta = new Date(Date.now() + remainingSeconds * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   return <main ref={appElement} className={`app maps-ui ${searchOpen?'is-searching':''} ${navigating ? 'is-navigating' : ''} ${mode === 'explore' ? 'is-exploring' : ''} ${mode==='preview'?'is-routing':''} ${mode==='place'?'is-selecting':''}`}>
-    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} onBearing={setMapBearing}/>
+    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} onBearing={setMapBearing}/>
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
@@ -219,10 +230,10 @@ export default function App() {
         <form className="search-box" onSubmit={submitSearch} role="search">
           {searchOpen ? (
             <button type="button" className="search-back-btn" aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}>
-              <ArrowLeft size={21} />
+              <ArrowLeft size={20} />
             </button>
           ) : (
-            <Search size={21} className="search-glass-icon" />
+            <Search size={20} className="search-glass-icon" />
           )}
           <input
             aria-label="Tìm địa điểm"
@@ -233,24 +244,17 @@ export default function App() {
           />
           {query.length > 0 && (
             <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { setQuery(''); setSearched(false); }}>
-              <X size={18} />
+              <X size={20} />
             </button>
           )}
           <button type="submit" aria-label="Tìm kiếm" className="search-submit-btn" disabled={searching || query.trim().length < 2}>
-            {searching ? <LoaderCircle className="spin" size={19} /> : <ArrowRight size={20} />}
+            {searching ? <LoaderCircle className="spin" size={20} /> : <ArrowRight size={20} />}
           </button>
         </form>
         {mode === 'explore' && !searchOpen && <div className="gmaps-quick-categories" role="toolbar" aria-label="Danh mục phổ biến">
-          {[
-            { label: 'Nhà hàng', icon: '🍽️' },
-            { label: 'Cây xăng', icon: '⛽' },
-            { label: 'Cà phê', icon: '☕' },
-            { label: 'Khách sạn', icon: '🏨' },
-            { label: 'ATM', icon: '🏧' },
-            { label: 'Tạp hóa', icon: '🛒' }
-          ].map(c => (
+          {EXPLORE_CATEGORIES.map(c => (
             <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => { setQuery(c.label); setSearchOpen(true); void performSearch(c.label); }}>
-              <span>{c.icon}</span>
+              <c.Icon size={18} strokeWidth={2} style={{ color: c.color }} aria-hidden="true" />
               <span>{c.label}</span>
             </button>
           ))}
@@ -258,7 +262,6 @@ export default function App() {
         {searchOpen && <div className="search-results">
           <div className="section-label">
             <span>{searched ? 'KẾT QUẢ TÌM KIẾM' : 'GỢI Ý TÌM KIẾM'}</span>
-            <button aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}><X size={17} /></button>
           </div>
           <button type="button" className="place-quick-action" onClick={useMyOrigin}>
             <span className="place-icon"><LocateFixed size={19} /></span>
@@ -285,7 +288,7 @@ export default function App() {
       </div>}
       {!navigating && mode !== 'arrived' && mode !== 'preview' && (
         <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth">
-          {ble.status === 'connected' ? <BluetoothConnected size={20} /> : <Bluetooth size={20} />}
+          {ble.status === 'connected' ? <BluetoothConnected size={22} /> : <Bluetooth size={22} />}
           <span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span>
           <span className="device-dot" />
         </button>
@@ -323,15 +326,22 @@ export default function App() {
       />
     )}
     {navigating && activeStep && <section className="turn-banner" aria-label="Chỉ dẫn tiếp theo"><div className="turn-symbol"><ManeuverIcon type={activeStep.maneuver} size={39} /></div><div><span>{rerouting ? 'Đang tìm đường mới…' : `Sau ${formatDistance(progress?.nextTurn ?? activeStep.offset)}`}</span><h1>{activeStep.instruction}</h1><small>Theo biển báo và tình hình đường thực tế</small></div></section>}
-    <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={22}/></button><button className="map-control compass-control" aria-label="Hướng Bắc" title="Đưa hướng Bắc về phía trên" onClick={()=>setNorthReset(value=>value+1)}><Compass size={23} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button><button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={22} /> : <LocateFixed size={23} />}</button><button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={22} /> : <VolumeX size={22} />}</button></div>
-    <section ref={panelElement} className={`bottom-panel ${mode === 'explore' ? 'explore-panel' : ''} ${mode === 'preview' ? 'preview-panel' : ''} ${mode==='place'?'place-panel':''}`}>
-      <div className="sheet-handle" />
-      <LocationStatus fix={fix} requesting={location.requesting} error={location.error} now={now} retry={()=>void location.start()} chooseOrigin={mode==='preview'?()=>editEndpoint('origin'):undefined}/>
+    <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={24}/></button><button className="map-control compass-control" aria-label={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay theo hướng đang quay'} title={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay bản đồ theo hướng thiết bị đang quay'} onClick={()=>{ if(Math.abs(mapBearing)>1)setNorthReset(value=>value+1); else setHeadingUp(value=>value+1); }}><Compass size={24} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button>{navigating && <button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={24} /> : <VolumeX size={24} />}</button>}<button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={24} /> : <LocateFixed size={24} />}</button></div>
+    <section ref={panelElement} className={`bottom-panel ${mode === 'explore' ? 'explore-panel' : ''} ${mode === 'preview' ? 'preview-panel' : ''} ${mode==='place'?'place-panel':''} ${sheetCollapsed?'collapsed':''}`}>
+      <button type="button" className="sheet-handle" aria-label={sheetCollapsed?'Mở rộng bảng dưới':'Thu gọn bảng dưới'} aria-expanded={!sheetCollapsed} onClick={()=>setSheetCollapsed(value=>!value)} />
       {tileWarning&&<p className="inline-feedback">Một số ô bản đồ chưa tải được. Kiểm tra kết nối mạng.</p>}
       {mode3D&&<p className="map-3d-hint">Chế độ 3D · Phóng to để xem nhà khối tại nơi có dữ liệu chiều cao. Có thể dùng hai ngón tay để nghiêng và xoay bản đồ.</p>}
       {mode === 'explore' && <>
-        <h2 className="destinations-heading">Điểm đến</h2>
-        {savedPlaces.length?<div className="quick-destinations">{savedPlaces.slice(0,4).map((place,i)=><button key={place.id} onClick={()=>choosePlace(place)}><span className={`quick-icon quick-${i}`}><MapPin size={20}/></span><strong>{place.name}</strong><span>{place.detail}</span><ChevronRight size={17}/></button>)}</div>:<p className="explore-help">Tìm địa chỉ, nhập tọa độ hoặc chạm lên bản đồ để chọn điểm đến.</p>}
+        <h2 className="destinations-heading">Khám phá</h2>
+        <div className="explore-categories">
+          {EXPLORE_CATEGORIES.map(c => (
+            <button key={c.label} type="button" className="explore-category" onClick={() => { setQuery(c.label); setSearchOpen(true); void performSearch(c.label); }}>
+              <span className="explore-category-icon"><c.Icon size={24} strokeWidth={2} style={{ color: c.color }} aria-hidden="true" /></span>
+              <span>{c.label}</span>
+            </button>
+          ))}
+        </div>
+        {savedPlaces.length?<><h2 className="destinations-heading saved-heading">Đã lưu</h2><div className="quick-destinations">{savedPlaces.slice(0,4).map((place,i)=><button key={place.id} onClick={()=>choosePlace(place)}><span className={`quick-icon quick-${i}`}><MapPin size={20}/></span><strong>{place.name}</strong><span>{place.detail}</span><ChevronRight size={17}/></button>)}</div></>:<p className="explore-help">Tìm địa chỉ, nhập tọa độ hoặc chạm lên bản đồ để chọn điểm đến.</p>}
         <div className="independent-note"><ShieldCheck size={15} /><span>Dẫn đường độc lập · Bluetooth là tùy chọn</span></div>
       </>}
       {mode==='place'&&selected&&<PlaceCard place={selected} saved={saved} shareStatus={shareStatus} onRoute={()=>void plan(selected)} onSave={toggleFavorite} onShare={()=>void sharePlace()} onClose={stop}/>}
