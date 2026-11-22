@@ -72,6 +72,9 @@ describe('roadData domain logic', () => {
       const query = buildRoadQuery(route, 100);
       expect(query.query).toContain('[out:json]');
       expect(query.query).toContain('traffic_sign');
+      expect(query.query).not.toContain('railway');
+      expect(query.query).not.toContain('traffic_calming');
+      expect(query.query).not.toContain('crossing');
       expect(query.start).toBeLessThanOrEqual(100);
       expect(query.end).toBeGreaterThan(100);
     });
@@ -120,6 +123,21 @@ describe('roadData domain logic', () => {
       const query = buildRoadQuery(route, 100);
       expect(() => parseRoadData({ remark: 'runtime error' }, route, query)).toThrow();
       expect(() => parseRoadData(null, route, query)).toThrow();
+    });
+
+    it('keeps only enforcement signs and drops railway, pedestrian, calming and hazard nodes', () => {
+      const query = buildRoadQuery(route, 100);
+      const node = (id: number, tags: Record<string, string>) => ({ type: 'node', id, lat: 10.772, lon: 106.690, tags });
+      const parsed = parseRoadData({ elements: [
+        node(601, { traffic_sign: 'VN:P.102' }),
+        node(602, { railway: 'level_crossing' }),
+        node(603, { highway: 'crossing', crossing: 'marked' }),
+        node(604, { traffic_calming: 'hump' }),
+        node(605, { hazard: 'school' }),
+        node(606, { traffic_sign: 'overtaking' }),
+        node(607, { traffic_sign: 'VN:401,127[60]' }),
+      ] }, route, query);
+      expect(parsed.features.map(f => f.kind).sort()).toEqual(['no-entry', 'no-overtaking', 'speed-sign']);
     });
   });
 

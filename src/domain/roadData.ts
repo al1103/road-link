@@ -3,7 +3,7 @@ import type { Coordinate, Fix, OsmRouteEdge, Route } from './types';
 export type Tags = Record<string, string>;
 export type LimitValue = { kmh: number | null; raw: string; reason?: string };
 export type SpeedSection = LimitValue & { id: string; wayId: number; from: Coordinate; to: Coordinate; start: number; end: number; updatedAt?: string };
-export type FeatureKind = 'speed-camera' | 'traffic-camera' | 'camera' | 'stop' | 'give-way' | 'speed-sign' | 'sign' | 'signals' | 'traffic-calming' | 'rail-crossing' | 'pedestrian-crossing' | 'hazard';
+export type FeatureKind = 'speed-camera' | 'traffic-camera' | 'stop' | 'give-way' | 'speed-sign' | 'signals' | 'no-entry' | 'wrong-way' | 'prohibition' | 'no-overtaking';
 export type RoadFeature = Coordinate & { id: string; osmId: number; kind: FeatureKind; label: string; code: string; along: number; onRoute: boolean; distanceFromRoute?:number;updatedAt?: string };
 export type RoadData = { routeId: string; windowStart: number; windowEnd: number; fetchedAt: number; sections: SpeedSection[]; features: RoadFeature[];scope?:'window'|'route';scan?:{completed:number;total:number;complete:boolean};source?:{kind:'offline'|'online';version?:string;attribution:string;license:string;wayCount?:number;nodeCount?:number} };
 export type RoadQuery = { query: string; key: string; start: number; end: number; edges: OsmRouteEdge[] };
@@ -44,7 +44,7 @@ export function buildRoadQuery(route: Route, along: number): RoadQuery {
   }).join(',');
   const roadPart = nodes.length ? `node(id:${nodes.join(',')})->.rn;` : '';
   const ways = nodes.length ? 'way(bn.rn)["highway"][~"^maxspeed"~"."];' : '';
-  const query = `[out:json][timeout:18][maxsize:8388608];${roadPart}(${ways}node(around:30,${corridor})["traffic_sign"];node(around:30,${corridor})["highway"~"^(stop|give_way|speed_camera|traffic_signals|crossing)$"];node(around:30,${corridor})["man_made"="surveillance"];node(around:30,${corridor})["traffic_calming"];node(around:30,${corridor})["railway"="level_crossing"];node(around:30,${corridor})["hazard"];);out meta geom;`;
+  const query = `[out:json][timeout:18][maxsize:8388608];${roadPart}(${ways}node(around:30,${corridor})["traffic_sign"];node(around:30,${corridor})["highway"~"^(stop|give_way|speed_camera|traffic_signals)$"];node(around:30,${corridor})["man_made"="surveillance"];);out meta geom;`;
   return { query, key: query, start, end, edges };
 }
 function object(v: unknown): v is Record<string, unknown> { return !!v && typeof v === 'object'; }
@@ -53,25 +53,22 @@ function classify(tags: Tags): {kind: FeatureKind; label: string} | null {
   if (tags.highway === 'speed_camera') return {kind:'speed-camera',label:'Camera tốc độ'};
   if (tags.man_made === 'surveillance') {
     if(tags['surveillance:type']&&tags['surveillance:type']!=='camera') return null;
-    return tags['surveillance:zone'] === 'traffic' ? {kind:'traffic-camera',label:'Camera/điểm giám sát giao thông'} : {kind:'camera',label:'Camera/điểm giám sát · chưa rõ chức năng'};
+    return tags['surveillance:zone'] === 'traffic' ? {kind:'traffic-camera',label:'Camera/điểm giám sát giao thông'} : null;
   }
   if (tags.highway === 'traffic_signals') return {kind:'signals',label:'Đèn giao thông'};
-  if (tags.highway === 'stop' || tags.traffic_sign === 'stop' || /^VN:R\.?122(?:$|;)/i.test(tags.traffic_sign??'')) return {kind:'stop',label:'Biển STOP'};
-  if (tags.highway === 'give_way' || tags.traffic_sign === 'give_way' || /^VN:W\.?208(?:$|;)/i.test(tags.traffic_sign??'')) return {kind:'give-way',label:'Biển nhường đường'};
-  if(tags.railway==='level_crossing')return {kind:'rail-crossing',label:'Đường ngang qua đường sắt'};
-  if(tags.traffic_calming&&tags.traffic_calming!=='no'){
-    const labels:Record<string,string>={hump:'Gờ giảm tốc',bump:'Gờ giảm tốc',table:'Đoạn đường nâng cao giảm tốc',cushion:'Đệm giảm tốc',rumble_strip:'Dải cảnh báo giảm tốc',chicane:'Đường uốn giảm tốc',choker:'Điểm thu hẹp giảm tốc',island:'Đảo giảm tốc'};
-    return {kind:'traffic-calming',label:labels[tags.traffic_calming]??'Điểm giảm tốc · chưa rõ loại'};
-  }
-  if(tags.highway==='crossing'&&tags.crossing!=='no')return {kind:'pedestrian-crossing',label:'Điểm sang đường cho người đi bộ'};
-  if(tags.hazard&&tags.hazard!=='no'){
-    const labels:Record<string,string>={school:'Khu vực trường học được ghi nhận',children:'Điểm có cảnh báo trẻ em',curve:'Đoạn đường cong được ghi nhận',dangerous_bend:'Khúc cua nguy hiểm được ghi nhận',bends:'Đoạn nhiều khúc cua',slippery:'Điểm có nguy cơ trơn trượt',narrow_road:'Đoạn đường hẹp được ghi nhận',animals:'Điểm có cảnh báo động vật',falling_rocks:'Điểm có nguy cơ đá rơi',rock_slide:'Điểm có nguy cơ sạt đá',flooding:'Điểm có nguy cơ ngập · không phải trạng thái ngập trực tiếp'};
-    return {kind:'hazard',label:labels[tags.hazard]??'Điểm nguy cơ đường bộ · chưa rõ loại'};
-  }
+  const code = tags.traffic_sign ?? '';
+  if (tags.highway === 'stop' || /^(?:VN:)?R\.?122(?:$|;)/i.test(code) || /^stop(?:$|:)/i.test(code)) return {kind:'stop',label:'Biển STOP'};
+  if (tags.highway === 'give_way' || /^(?:VN:)?W\.?208(?:$|;)/i.test(code) || /give way/i.test(code)) return {kind:'give-way',label:'Biển nhường đường'};
   if (tags.traffic_sign && (tags.maxspeed || tags.traffic_sign === 'maxspeed')) return {kind:'speed-sign',label: parseSpeed(tags.maxspeed ?? '') ? `Biển tốc độ ${tags.maxspeed}` : 'Biển giới hạn tốc độ'};
-  const speedCode=/^VN:P\.?127\((\d+)\)(?:$|;)/i.exec(tags.traffic_sign??'');
+  const speedCode=/127[\[(](\d+)[\])]/i.exec(code);
   if(speedCode&&parseSpeed(speedCode[1]))return {kind:'speed-sign',label:`Biển giới hạn tốc độ ${speedCode[1]}`};
-  if (tags.traffic_sign) return {kind:'sign',label:'Biển báo · chưa rõ loại'};
+  const upper = code.toUpperCase();
+  if (/P\.?102|VN:102|WRONG WAY/.test(upper)) return {kind:'no-entry',label:'Cấm đi vào / ngược chiều'};
+  if (/P\.?103/.test(upper)) return {kind:'wrong-way',label:'Cấm đi ngược chiều'};
+  if (/P\.?125|OVERTAKING/.test(upper)) return {kind:'no-overtaking',label:'Cấm vượt'};
+  if (/P\.?12[34]/.test(upper)) return {kind:'prohibition',label:'Cấm rẽ/quay đầu'};
+  if (/P\.?13[01]/.test(upper)) return {kind:'prohibition',label:'Cấm dừng/đỗ'};
+  if (/P\.?10[1-9]|P\.?11[0-3]|MAXHEIGHT|MAXWEIGHT/.test(upper)) return {kind:'prohibition',label:'Biển cấm phương tiện'};
   return null;
 }
 export function parseRoadData(raw: unknown, route: Route, window: RoadQuery): RoadData {
@@ -104,7 +101,7 @@ export function parseRoadData(raw: unknown, route: Route, window: RoadQuery): Ro
       const point={lat:el.lat,lng:Number(el.lon)};
       const hit=projectOnRoute(point,route.coordinates,lengths,window.start,window.end);
       if(hit.distance>32) continue;
-      const rawCode=tags.traffic_sign??(tags.traffic_calming?`traffic_calming=${tags.traffic_calming}`:tags.railway==='level_crossing'?'railway=level_crossing':tags.hazard?`hazard=${tags.hazard}`:tags.highway==='crossing'?`crossing=${tags.crossing??'unspecified'}`:'');
+      const rawCode=tags.traffic_sign??'';
       features.push({id:`node/${osmId}`,osmId,...point,...kind,code:rawCode.slice(0,160),along:hit.along,onRoute:routeNodes.has(osmId),distanceFromRoute:hit.distance,updatedAt});
     }
   }

@@ -5,9 +5,9 @@ import {roadSymbol} from '../../src/domain/roadSymbols';
 const base=new URL('../../public/data/vn-osm-20261120/',import.meta.url);
 const manifest=JSON.parse(readFileSync(new URL('manifest.json',base),'utf8'));
 describe('published Vietnam OSM source',()=>{
-  it('includes additional recorded road features rather than fabricated sign locations',()=>{
+  it('keeps enforcement-relevant road features in the source pack',()=>{
     expect(manifest.featureRevision).toBe('warnings-v2');
-    for(const kind of ['crossing','traffic_calming','level_crossing'])expect(manifest.nodeKinds[kind]).toBeGreaterThan(0);
+    for(const kind of ['traffic_sign','speed_camera','traffic_signals','stop','give_way'])expect(manifest.nodeKinds[kind]).toBeGreaterThan(0);
   });
   it('retains the actual OSM STOP object used near the playback waypoint',()=>{
     const tile=manifest.tiles['209_1058'];
@@ -28,7 +28,7 @@ describe('published Vietnam OSM source',()=>{
     expect(data.elements.some((e:{tags?:Record<string,string>})=>e.tags?.highway==='traffic_signals')).toBe(true);
   });
   it('uses different symbols for signals and cameras',()=>{
-    const signal=roadSymbol({kind:'signals',code:''}),camera=roadSymbol({kind:'camera',code:''});
+    const signal=roadSymbol({kind:'signals',code:''}),camera=roadSymbol({kind:'traffic-camera',code:''});
     expect(signal.src).not.toBe(camera.src);
     for(const symbol of [signal,camera])expect(readFileSync(new URL('../../public'+symbol.src,import.meta.url),'utf8')).toContain('<svg');
   });

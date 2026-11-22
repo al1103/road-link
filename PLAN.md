@@ -15,6 +15,7 @@ Cập nhật ngày 22/11/2026.
 - [x] Bỏ toast nổi; đưa lỗi vào bảng tương ứng. Sửa lớp điểm đi che nút tìm kiếm trên desktop.
 - [x] Bộ test không thay API: 20 unit/dữ liệu nguồn + 2 định tuyến trực tiếp + 14 E2E PASS; thêm xe mô phỏng qua cảnh báo không phải tốc độ, tạm dừng và dừng; build web, production worker/3D/toàn tuyến, ảnh desktop/mobile. Kết quả và giới hạn phần cứng ở docs/TEST_REPORT.md.
 - [x] Nghiên cứu 27 nguồn/tài liệu; audit các bộ camera/tốc độ khác, lưu provenance và giới hạn giấy phép. Không đưa dữ liệu bên thứ ba chưa rõ quyền vào app.
+- [x] Lọc dữ liệu biển theo mức bị xử phạt: chỉ giữ tốc độ, camera, đèn, STOP/nhường đường, cấm/ngược chiều/cấm vượt; bỏ gờ giảm tốc, qua đường, đường sắt và hazard khỏi giao diện/cảnh báo.
 - [ ] Tích hợp dữ liệu thương mại/VIETMAP: chưa có API key/hợp đồng và chưa kiểm chứng quyền sử dụng.
 - [x] Chuyển sang một renderer MapLibre/nền vector OpenFreeMap Positron ít POI; nút 2D/3D, nhà khối theo dữ liệu chiều cao, nhãn tiếng Việt/tên địa phương và la bàn xoay.
 - [x] Xem trước quét cả tuyến có tiến độ, loại trùng, hủy khi đổi tuyến; cảnh báo/GPS giữ cửa sổ riêng. Đã kiểm thử toàn tuyến Tiền Hải → Hà Nội và nhà 3D Hoàn Kiếm trên Chromium mobile/desktop.

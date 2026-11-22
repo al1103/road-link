@@ -8,7 +8,6 @@ describe('roadSymbols module', () => {
       expect(speedSignImage(kmh)).toBe(`/signs/speed-${kmh}.svg`);
     }
 
-    // Unsupported or boundary speeds return null
     expect(speedSignImage(null)).toBeNull();
     expect(speedSignImage(0)).toBeNull();
     expect(speedSignImage(15)).toBeNull();
@@ -17,97 +16,24 @@ describe('roadSymbols module', () => {
     expect(speedSignImage(-10)).toBeNull();
   });
 
-  it('maps road features to correct SVG symbols and standard status', () => {
-    // Camera
-    expect(roadSymbol({ kind: 'camera', code: '' })).toEqual({
-      src: '/signs/camera.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'speed-camera', code: '' })).toEqual({
-      src: '/signs/camera.svg',
-      standard: false,
-    });
+  it('maps enforcement road features to correct SVG symbols', () => {
+    expect(roadSymbol({ kind: 'traffic-camera', code: '' })).toEqual({ src: '/signs/camera.svg', standard: false });
+    expect(roadSymbol({ kind: 'speed-camera', code: '' })).toEqual({ src: '/signs/camera.svg', standard: false });
 
-    // Stop sign
-    expect(roadSymbol({ kind: 'stop', code: '' })).toEqual({
-      src: '/signs/stop.svg',
-      standard: true,
-    });
-    expect(roadSymbol({ kind: 'sign', code: 'VN:R.122' })).toEqual({
-      src: '/signs/stop.svg',
-      standard: true,
-    });
+    expect(roadSymbol({ kind: 'stop', code: '' })).toEqual({ src: '/signs/stop.svg', standard: true });
+    expect(roadSymbol({ kind: 'prohibition', code: 'VN:R.122' })).toEqual({ src: '/signs/stop.svg', standard: true });
+    expect(roadSymbol({ kind: 'give-way', code: '' })).toEqual({ src: '/signs/give-way.svg', standard: true });
+    expect(roadSymbol({ kind: 'prohibition', code: 'VN:W.208' })).toEqual({ src: '/signs/give-way.svg', standard: true });
+    expect(roadSymbol({ kind: 'signals', code: '' })).toEqual({ src: '/signs/traffic-signals.svg', standard: false });
 
-    // Give way sign
-    expect(roadSymbol({ kind: 'give-way', code: '' })).toEqual({
-      src: '/signs/give-way.svg',
-      standard: true,
-    });
-    expect(roadSymbol({ kind: 'sign', code: 'VN:W.208' })).toEqual({
-      src: '/signs/give-way.svg',
-      standard: true,
-    });
+    expect(roadSymbol({ kind: 'no-entry', code: 'VN:P.102' })).toEqual({ src: '/signs/no-entry.svg', standard: true });
+    expect(roadSymbol({ kind: 'wrong-way', code: 'VN:P.103c' })).toEqual({ src: '/signs/wrong-way.svg', standard: true });
+    expect(roadSymbol({ kind: 'no-overtaking', code: 'overtaking' })).toEqual({ src: '/signs/no-overtaking.svg', standard: true });
+    expect(roadSymbol({ kind: 'prohibition', code: 'VN:P.130' })).toEqual({ src: '/signs/prohibition.svg', standard: true });
 
-    // Signals & crossings
-    expect(roadSymbol({ kind: 'signals', code: '' })).toEqual({
-      src: '/signs/traffic-signals.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'rail-crossing', code: '' })).toEqual({
-      src: '/signs/warning-rail.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'pedestrian-crossing', code: '' })).toEqual({
-      src: '/signs/warning-pedestrian.svg',
-      standard: false,
-    });
-
-    // Traffic calming
-    expect(roadSymbol({ kind: 'traffic-calming', code: 'traffic_calming=hump' })).toEqual({
-      src: '/signs/warning-hump.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'traffic-calming', code: 'traffic_calming=island' })).toEqual({
-      src: '/signs/warning-general.svg',
-      standard: false,
-    });
-
-    // Hazards
-    expect(roadSymbol({ kind: 'hazard', code: 'hazard=school' })).toEqual({
-      src: '/signs/warning-school.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'hazard', code: 'hazard=dangerous_bend' })).toEqual({
-      src: '/signs/warning-bend.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'hazard', code: 'hazard=slippery' })).toEqual({
-      src: '/signs/warning-slippery.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'hazard', code: 'hazard=narrow_road' })).toEqual({
-      src: '/signs/warning-narrow.svg',
-      standard: false,
-    });
-    expect(roadSymbol({ kind: 'hazard', code: 'hazard=flooding' })).toEqual({
-      src: '/signs/warning-general.svg',
-      standard: false,
-    });
-
-    // Speed sign standard code VN:P.127(kmh)
-    expect(roadSymbol({ kind: 'speed-sign', code: 'VN:P.127(60)' })).toEqual({
-      src: '/signs/speed-60.svg',
-      standard: true,
-    });
-    expect(roadSymbol({ kind: 'speed-sign', code: 'VN:P.127(15)' })).toEqual({
-      src: '/signs/unknown.svg',
-      standard: false,
-    });
-
-    // Unknown feature
-    expect(roadSymbol({ kind: 'sign', code: 'VN:unknown-code' })).toEqual({
-      src: '/signs/unknown.svg',
-      standard: false,
-    });
+    expect(roadSymbol({ kind: 'speed-sign', code: 'VN:P.127(60)' })).toEqual({ src: '/signs/speed-60.svg', standard: true });
+    expect(roadSymbol({ kind: 'speed-sign', code: 'VN:401,127[60]' })).toEqual({ src: '/signs/speed-60.svg', standard: true });
+    expect(roadSymbol({ kind: 'speed-sign', code: 'VN:P.127(15)' })).toEqual({ src: '/signs/unknown.svg', standard: false });
+    expect(roadSymbol({ kind: 'speed-sign', code: 'VN:unknown-code' })).toEqual({ src: '/signs/unknown.svg', standard: false });
   });
 });

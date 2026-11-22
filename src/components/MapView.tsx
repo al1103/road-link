@@ -149,12 +149,12 @@ export default function MapView({ route, alternatives, destination, onSelectRout
     const speeds: FeatureCollection<LineString> = { type: 'FeatureCollection', features: (roadData?.sections ?? []).filter(s => s.kmh !== null).map(s => ({ type: 'Feature', properties: { kmh: s.kmh }, geometry: { type: 'LineString', coordinates: [[s.from.lng, s.from.lat], [s.to.lng, s.to.lat]] } })) };
     updateSource(instance, 'roadlink-speed', speeds);
     for (const feature of roadData?.features ?? []) {
-      const el = document.createElement('button'); el.type = 'button'; el.className = `road-poi-marker image-marker ${feature.kind.includes('camera') ? 'camera' : feature.kind}`; el.setAttribute('aria-label', feature.label); el.dataset.roadDetail = feature.kind === 'pedestrian-crossing' ? 'true' : 'false';
+      const el = document.createElement('button'); el.type = 'button'; el.className = `road-poi-marker image-marker ${feature.kind.includes('camera') ? 'camera' : feature.kind}`; el.setAttribute('aria-label', feature.label); el.dataset.roadDetail = 'false';
       const image = document.createElement('img'); image.src = roadSymbol(feature).src; image.alt = feature.label; image.className = 'road-marker-image'; image.width = image.height = 32; el.appendChild(image);
       el.addEventListener('click', event => event.stopPropagation());
       const content = document.createElement('div'); content.className = 'road-popup';
       const title = document.createElement('strong'); title.textContent = feature.label; content.appendChild(title);
-      const note = document.createElement('small'); note.textContent = feature.kind === 'signals' ? 'Đèn giao thông ghi nhận trên OSM; không có trạng thái đèn trực tiếp.' : ['traffic-calming', 'rail-crossing', 'pedestrian-crossing', 'hazard'].includes(feature.kind) ? 'Đặc điểm/nguy cơ được ghi trong OSM; không mặc nhiên có biển đã lắp. Quan sát thực tế.' : 'Nguồn OSM · gần tuyến · chưa xác nhận chiều áp dụng/chức năng xử phạt.'; content.appendChild(note);
+      const note = document.createElement('small'); note.textContent = feature.kind === 'signals' ? 'Đèn giao thông ghi nhận trên OSM; không có trạng thái đèn trực tiếp.' : 'Nguồn OSM · gần tuyến · chưa xác nhận chiều áp dụng/chức năng xử phạt.'; content.appendChild(note);
       if (feature.code) { const code = document.createElement('small'); code.textContent = `Mã ghi nhận: ${feature.code}`; content.appendChild(code); }
       const anchor = document.createElement('a'); anchor.href = `https://www.openstreetmap.org/node/${feature.osmId}`; anchor.target = '_blank'; anchor.rel = 'noopener noreferrer'; anchor.textContent = 'Xem đối tượng nguồn OSM'; content.appendChild(anchor);
       roadMarkers.current.push(new Marker({ element: el }).setLngLat([feature.lng, feature.lat]).setPopup(new Popup({ offset: 18, maxWidth: '280px' }).setDOMContent(content)).addTo(instance));
