@@ -61,6 +61,7 @@ export default function App() {
   const [rerouting, setRerouting] = useState(false);
   const [tileWarning, setTileWarning] = useState(false);
   const [mode3D,setMode3D]=useState(false),[northReset,setNorthReset]=useState(0),[mapBearing,setMapBearing]=useState(0);
+  const [transportMode, setTransportMode] = useState<'car' | 'bike' | 'walk'>('car');
   const [now, setNow] = useState(Date.now());
   const routeAbort = useRef<AbortController | null>(null);
   const searchAbort = useRef<AbortController | null>(null);
@@ -190,7 +191,7 @@ export default function App() {
     if(originOverride){setDetails(true);return;}
     if (!goodGPS || !location.fix) { setPendingGPS('navigation'); void location.start(); return; }
     if (!route || distance(location.fix, route.coordinates[0]) > 60) void plan(selected, true, location.fix);
-    else { setMode('navigating'); setFollow(true); }
+    else { setMode('navigating'); setFollow(true); setMode3D(true); }
   }
   function toggleVoice() { setVoiceUnavailable(false); const next = !voice; setVoice(next); save('roadlink.voice', next); if (!next) silence();else spoken.current.clear(); }
   function choosePlace(place:Place){
@@ -206,10 +207,11 @@ export default function App() {
   function toggleFavorite() { if (!selected) return; const next = favorites.includes(selected.id) ? favorites.filter(x => x !== selected.id) : [...favorites, selected.id]; setFavorites(next); save('roadlink.favorites', next); const places=next.includes(selected.id)?[...savedPlaces.filter(p=>p.id!==selected.id),selected]:savedPlaces.filter(p=>p.id!==selected.id);setSavedPlaces(places);save('roadlink.savedPlaces',places); }
   const activeStep = progress?.step ?? route?.steps.find(s => s.maneuver !== 'depart') ?? route?.steps[0];
   const saved = !!selected && favorites.includes(selected.id);
-  const remainingSeconds = progress?.etaSeconds ?? route?.duration ?? 0;
+  const baseSeconds = progress?.etaSeconds ?? route?.duration ?? 0;
+  const remainingSeconds = transportMode === 'bike' ? Math.round(baseSeconds * 1.05) : transportMode === 'walk' ? (route ? Math.round((progress?.remaining ?? route.distance) / 1.25) : baseSeconds * 4) : baseSeconds;
   const eta = new Date(Date.now() + remainingSeconds * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   return <main ref={appElement} className={`app maps-ui ${searchOpen?'is-searching':''} ${navigating ? 'is-navigating' : ''} ${mode === 'explore' ? 'is-exploring' : ''} ${mode==='preview'?'is-routing':''} ${mode==='place'?'is-selecting':''}`}>
-    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} onBearing={setMapBearing}/>
+    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} onBearing={setMapBearing}/>
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
@@ -333,7 +335,7 @@ export default function App() {
       </>}
       {mode==='place'&&selected&&<PlaceCard place={selected} saved={saved} shareStatus={shareStatus} onRoute={()=>void plan(selected)} onSave={toggleFavorite} onShare={()=>void sharePlace()} onClose={stop}/>}
       {mode === 'preview' && <>
-        <RoutePlannerCard route={route} alternatives={alternatives} selected={selected} loading={loading} error={routeError} customOrigin={!!originOverride} awaitingGPS={awaitingGPS} locationError={location.error} details={details} back={stop} retry={()=>selected&&void plan(selected)} start={startReal} select={r=>{setRoute(r);setProgress(null);}} toggleDetails={()=>setDetails(!details)} roadData={()=>setShowRoadData(true)}/>
+        <RoutePlannerCard route={route} alternatives={alternatives} selected={selected} loading={loading} error={routeError} customOrigin={!!originOverride} awaitingGPS={awaitingGPS} locationError={location.error} details={details} transportMode={transportMode} onSelectTransportMode={setTransportMode} back={stop} retry={()=>selected&&void plan(selected)} start={startReal} select={r=>{setRoute(r);setProgress(null);}} toggleDetails={()=>setDetails(!details)} roadData={()=>setShowRoadData(true)}/>
       </>}
       {navigating && route && <>
         {navigating&&roadAlert&&!staleGPS&&!progress?.offRoute&&<aside className="navigation-road-alert" role="status" aria-label="Cảnh báo trên tuyến">{roadAlert.kind==='camera'?<img className="road-feature-image" src="/signs/camera.svg" alt="Biểu tượng camera"/>:roadAlert.kind==='limit'||roadAlert.kind==='overspeed'?<SpeedLimitImage kmh={limit.kmh} small/>:<img className="road-feature-image" src={roadAlert.feature?roadSymbol(roadAlert.feature).src:'/signs/unknown.svg'} alt={roadAlert.feature?.label??'Điểm cảnh báo'}/>}<div><strong>{roadAlert.title}</strong><p>{roadAlert.text}</p><small>OSM · CHƯA XÁC MINH THỰC ĐỊA</small></div></aside>}

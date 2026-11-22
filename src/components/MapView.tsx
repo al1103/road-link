@@ -179,8 +179,13 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
     else positionMarker.current.setLngLat([position.lng,position.lat]);
     const el=positionMarker.current.getElement(),known=!positionStale&&position.headingAvailable!==false&&Number.isFinite(position.heading);course.current=known?position.heading:null;
     el.classList.toggle('direction-unknown',!known);el.setAttribute('role','img');el.setAttribute('aria-label',known?`Hướng di chuyển ${Math.round(position.heading)} độ`:'Chưa xác định hướng di chuyển');rotateArrow();
-    if(follow&&navigating)centerOn(instance,position,Math.min(17,locationZoom(position.accuracy)));
-    else if(follow&&focusPosition&&!initialPositionCentered.current){initialPositionCentered.current=true;centerOn(instance,position,locationZoom(position.accuracy));}
+    if(follow&&navigating){
+      if(callbacks.current.mode3D&&known&&typeof position.heading==='number'&&Number.isFinite(position.heading)){
+        instance.easeTo({center:[position.lng,position.lat],zoom:Math.min(17,locationZoom(position.accuracy)),padding:padding(instance),pitch:50,bearing:position.heading,duration:400});
+      }else{
+        centerOn(instance,position,Math.min(17,locationZoom(position.accuracy)));
+      }
+    }else if(follow&&focusPosition&&!initialPositionCentered.current){initialPositionCentered.current=true;centerOn(instance,position,locationZoom(position.accuracy));}
   },[position,ready,navigating,follow,focusPosition,positionStale]);
   useEffect(()=>{
     if(map.current&&ready&&position&&recenter>lastCentered.current){lastCentered.current=recenter;centerOn(map.current,position,locationZoom(position.accuracy));}
