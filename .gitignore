@@ -8,6 +8,7 @@ playwright-report/
 .env.*.local
 .tools/
 firmware/.pio/
+firmware/mapdata/
 .DS_Store
 ios/App/App/public/
 ios/App/Pods/

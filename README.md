@@ -68,9 +68,42 @@ pio run -d firmware -e esp32dev -t upload
 pio device monitor -d firmware
 ```
 
+### Bản Serial và OLED 128×64
+
 Có env `esp32-s3`, `esp32-c3`, và `esp32-oled` (SSD1306 I2C 128×64, mặc định ESP32 SDA 21 / SCL 22). Phải đối chiếu đúng board/pin trước khi nạp. Không dùng env C3/S3 cho ESP32-S2 vì S2 không có BLE.
 
-Firmware quảng bá tên **RoadLink ESP32**. Mở mục Bluetooth trong app để chọn thiết bị. Khi đang dẫn, app gửi lại tuyến ngay khi kết nối. Không có màn hình vẫn kiểm tra được JSON UTF-8 qua Serial. Với OLED, ví dụ dùng nhãn hướng tiếng Anh và đường tuyến thu nhỏ; chưa có bản đồ nền đường phố.
+Firmware quảng bá tên **RoadLink ESP32**. Mở mục Bluetooth trong app để chọn thiết bị. Khi đang dẫn, app gửi lại tuyến ngay khi kết nối. Không có màn hình vẫn kiểm tra được JSON UTF-8 qua Serial. Bản OLED vẽ tuyến thu nhỏ, vị trí, điểm rẽ và biển cảnh báo, nhưng chỉ có một khung xám 128×64 và không có nền đường phố.
+
+![Bản đồ tuyến trên OLED 128×64](exports/esp32-oled-preview.png)
+
+![Trạng thái đường dài trên OLED](exports/esp32-oled-preview-b.png)
+
+*Ảnh mô phỏng 128×64 từ thuật toán của firmware, không phải ảnh chụp màn hình thật.*
+
+### Bản màn màu 240×240 (ST7789 hoặc GC9A01 tròn + thẻ SD)
+
+Env `esp32-s3-tft` dành cho ESP32-S3 có PSRAM, màn ST7789 240×240 (GMT130-V1.0 hoặc tương đương) và microSD; env `esp32-s3-round` dùng cùng code cho màn tròn GC9A01 240×240. Bản này vẽ bản đồ vector OSM offline từ đúng gói dữ liệu của app, không dùng Wi-Fi và không cần điện thoại render ảnh:
+
+```bash
+node scripts/build-map-pack.mjs          # tạo firmware/mapdata/*.rlm (~5,7 MB)
+# chép thư mục firmware/mapdata vào thẻ SD thành /map/
+pio run -d firmware -e esp32-s3-tft -t upload
+pio run -d firmware -e esp32-s3-round -t upload   # màn tròn GC9A01
+```
+
+- 1.259 shard 0,1°, 48.292 đường, 5,67 MB sau khi chuyển sang nhị phân; thiết bị nạp shard quanh vị trí hiện tại.
+- Nền tối, đường tô theo cấp, tuyến xanh, heading-up, xe cố định gần đáy; banner xanh trên có mũi tên rẽ/khoảng cách/giới hạn tốc độ, thanh dưới có km/h, km còn lại và số phút.
+- Nhận tuyến và nav qua BLE như bản OLED, nội suy vị trí giữa 4 gói nav/giây và vẽ 15 fps vào sprite PSRAM nên không nháy.
+- Bản tròn bo banner trên và thanh dưới theo đường tròn, giữ nội dung trong vùng nhìn của màn; cảnh báo hiện nhãn `CAM/LIGHT/...` trong banner và tam giác chỉ vẽ khi còn trong tầm nhìn.
+- Chân mặc định, cách đổi chân và giới hạn: [docs/TFT_DISPLAY.md](docs/TFT_DISPLAY.md). Chưa có tên đường (font mặc định thiếu dấu tiếng Việt) và chưa kiểm thử trên phần cứng thật.
+
+![Bản đồ màu 240×240](exports/esp32-tft-preview.png)
+
+*Ảnh mô phỏng 240×240 dựng từ shard OSM và tuyến OSRM thật, không phải ảnh chụp phần cứng.*
+
+![Bản đồ màu trên màn tròn 240×240](exports/esp32-round-preview.png)
+
+*Bố cục màn tròn GC9A01: banner và thanh dưới bo theo vòng tròn, cùng dữ liệu và chân SPI với bản vuông.*
 
 Chi tiết UUID, framing, E7, dữ liệu nav và giới hạn buffer: [docs/BLE_PROTOCOL.md](docs/BLE_PROTOCOL.md).
 
@@ -92,7 +125,7 @@ node scripts/smoke-live.mjs
 
 ## Giới hạn và cấu hình trước phát hành
 
-Đây là MVP có đường dẫn chạy thật trong code, **chưa tương đương đầy đủ Google Maps**. Giao diện dùng các mẫu tìm kiếm/chọn tuyến quen thuộc, không tuyên bố sao chép chính xác mọi màn hình của Google Maps. Chưa có giao thông trực tiếp, chế độ xe máy/đi bộ, bản đồ offline hoặc kiểm chứng thực địa. Tuyến thay thế chỉ có khi router trả về. Không dùng tuyến ô tô để suy ra tuyến xe máy. ETA là ước tính của bộ định tuyến, không phản ánh kẹt xe. Luôn tuân thủ biển báo và điều kiện đường thực tế.
+Đây là MVP có đường dẫn chạy thật trong code, **chưa tương đương đầy đủ Google Maps**. Giao diện dùng các mẫu tìm kiếm/chọn tuyến quen thuộc, không tuyên bố sao chép chính xác mọi màn hình của Google Maps. App điện thoại chưa có bản đồ offline; firmware ESP32 có bản đồ vector OSM offline riêng, không có tile/ảnh nền hay tên đường. Chưa có giao thông trực tiếp, chế độ xe máy/đi bộ hoặc kiểm chứng thực địa. Tuyến thay thế chỉ có khi router trả về. Không dùng tuyến ô tô để suy ra tuyến xe máy. ETA là ước tính của bộ định tuyến, không phản ánh kẹt xe. Luôn tuân thủ biển báo và điều kiện đường thực tế.
 
 Mặc định dùng máy chủ OSRM công cộng, Nominatim và nền vector OpenFreeMap/OSM cho phát triển. OSRM trả tuyến đường thật; không phải chế độ chạy thử trong app. Những dịch vụ này không có SLA cho app của bạn. Trước khi phát hành, dùng provider/máy chủ phù hợp rồi cấu hình `.env.local` theo `.env.example`; tuân thủ chính sách và attribution. Không bật autocomplete hoặc tải trước/cache bản đồ nền diện rộng. `VITE_MAP_STYLE_URL` cấu hình style vector; app giữ cùng nguồn khi tìm kiếm, xem tuyến, dẫn đường và chuyển 2D/3D. Style Positron được chọn để giảm icon POI nền rối mắt.
 
