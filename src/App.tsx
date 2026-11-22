@@ -47,6 +47,7 @@ export default function App() {
   const [roadAlert,setRoadAlert]=useState<RoadAlert|null>(null);
   const [loading, setLoading] = useState(false);
   const [searchError,setSearchError]=useState<string|null>(null);
+  const [nearbyNote,setNearbyNote]=useState<string|null>(null);
   const [shareStatus,setShareStatus]=useState<string|null>(null);
   const [navigationError,setNavigationError]=useState<string|null>(null);
   const [voiceUnavailable,setVoiceUnavailable]=useState(false);
@@ -77,6 +78,7 @@ export default function App() {
   const [now, setNow] = useState(Date.now());
   const routeAbort = useRef<AbortController | null>(null);
   const searchAbort = useRef<AbortController | null>(null);
+  const nearbySearch = useRef(false);
   const engine = useRef<Navigator | null>(null);
   const spoken = useRef(new Set<string>());
   const lastReroute = useRef(0);
@@ -180,26 +182,32 @@ export default function App() {
   useEffect(() => {
     if (!searchOpen || query.trim().length < 2) return;
     const timer = setTimeout(() => {
-      void performSearch(query);
+      void performSearch(query, { nearby: nearbySearch.current });
     }, 350);
     return () => clearTimeout(timer);
   }, [query, searchOpen]);
 
-  async function performSearch(text: string) {
+  async function performSearch(text: string, options?: { nearby?: boolean }) {
     if (text.trim().length < 2 || searching) return;
+    const origin = options?.nearby ? (location.fix ?? route?.coordinates[0] ?? null) : null;
+    if (options?.nearby) {
+      setNearbyNote(origin ? null : 'Chưa có vị trí để tìm gần nhất. Bật định vị hoặc chọn điểm đi; đang tìm trên toàn quốc.');
+    } else {
+      setNearbyNote(null);
+    }
     searchAbort.current?.abort(); const controller = new AbortController(); searchAbort.current = controller;
     setSearching(true); setSearched(true); setSearchOpen(true); setSearchError(null); setShareStatus(null); setNavigationError(null);
-    try { const places = await searchPlaces(text, controller.signal); if (!controller.signal.aborted) setResults(places); }
+    try { const places = await searchPlaces(text, controller.signal, origin ? { lat: origin.lat, lng: origin.lng } : undefined); if (!controller.signal.aborted) setResults(places); }
     catch (err) { if (!controller.signal.aborted) { setResults([]); setSearchError(friendlyError(err)); } }
     finally { if (!controller.signal.aborted) setSearching(false); }
   }
   async function submitSearch(e: React.FormEvent) {
     e.preventDefault();
-    void performSearch(query);
+    void performSearch(query, { nearby: nearbySearch.current });
   }
   function stop() {
     routeAbort.current?.abort(); setLoading(false); setRerouting(false); setPendingGPS(null);
-    setMode('explore');setOriginOverride(null);setAlternatives([]);setRoadAlert(null);setQuery('');setSearchTarget('destination'); setRoute(null); setProgress(null); setSelected(null); setSearchError(null);setShareStatus(null);setNavigationError(null); setRouteError(null); setDetails(false); silence();
+    setMode('explore');setOriginOverride(null);setAlternatives([]);setRoadAlert(null);setQuery('');setSearchTarget('destination'); setRoute(null); setProgress(null); setSelected(null); setSearchError(null);setNearbyNote(null);setShareStatus(null);setNavigationError(null); setRouteError(null); setDetails(false); silence();
     link.enqueue([{ v: 1, type: 'stop' }], 'control');
   }
   function startReal() {
@@ -211,12 +219,13 @@ export default function App() {
   }
   function toggleVoice() { setVoiceUnavailable(false); const next = !voice; setVoice(next); save('roadlink.voice', next); if (!next) silence();else spoken.current.clear(); }
   function choosePlace(place:Place){
+    nearbySearch.current=false;setNearbyNote(null);
     setPendingGPS(null);setShareStatus(null);setSearchError(null);setSearchOpen(false);setQuery(place.name);setSearched(false);
     if(searchTarget==='origin'){setOriginOverride(place);setSearchTarget('destination');if(selected)void plan(selected,false,place);return;}
     if(mode==='preview'){void plan(place);return;}
     routeAbort.current?.abort();setLoading(false);setRouteError(null);setSelected(place);setRoute(null);setAlternatives([]);setMode('place');
   }
-  function editEndpoint(target:'origin'|'destination'){setSearchTarget(target);setQuery('');setSearched(false);setSearchOpen(true);}
+  function editEndpoint(target:'origin'|'destination'){nearbySearch.current=false;setNearbyNote(null);setSearchTarget(target);setQuery('');setSearched(false);setSearchOpen(true);}
   function useMyOrigin(){setOriginOverride(null);setSearchTarget('destination');setSearchOpen(false);if(!location.fix)void location.start();if(selected)void plan(selected,false,location.fix??null);}
   function swapEndpoints(){if(!selected)return;const from=originOverride??location.fix;if(!from){editEndpoint('origin');return;}const destination:Place={...from,id:`coord:${from.lat},${from.lng}`,name:originOverride?.name??'Vị trí của bạn',detail:originOverride?.detail??'Điểm đã chọn trên bản đồ'};setOriginOverride(selected);void plan(destination,false,selected);}
   async function sharePlace(){if(!selected)return;const text=`${selected.name}\n${selected.detail}\n${selected.lat}, ${selected.lng}`;try{if(navigator.share)await navigator.share({title:selected.name,text});else{await navigator.clipboard.writeText(text);setShareStatus('Đã sao chép địa điểm.');}}catch(error){if(!(error instanceof DOMException&&error.name==='AbortError'))setShareStatus('Chưa chia sẻ được. Bạn có thể sao chép tọa độ trên thẻ địa điểm.');}}
@@ -244,7 +253,7 @@ export default function App() {
             aria-label="Tìm địa điểm"
             placeholder="Tìm kiếm ở đây"
             value={query}
-            onChange={e => { setQuery(e.target.value); setSearched(false); }}
+            onChange={e => { nearbySearch.current = false; setQuery(e.target.value); setSearched(false); }}
             onFocus={() => setSearchOpen(true)}
           />
           {query.length > 0 && (
@@ -258,7 +267,7 @@ export default function App() {
         </form>
         {mode === 'explore' && !searchOpen && <div className="gmaps-quick-categories" role="toolbar" aria-label="Danh mục phổ biến">
           {EXPLORE_CATEGORIES.map(c => (
-            <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => { setQuery(c.label); setSearchOpen(true); void performSearch(c.label); }}>
+            <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => { nearbySearch.current = true; setQuery(c.label); setSearchOpen(true); void performSearch(c.label, { nearby: true }); }}>
               <c.Icon size={18} strokeWidth={2} style={{ color: c.color }} aria-hidden="true" />
               <span>{c.label}</span>
             </button>
@@ -276,6 +285,7 @@ export default function App() {
             <span className="place-icon"><MapPin size={19} /></span>
             <span><strong>Chọn trên bản đồ</strong><small>Chạm lên một điểm bất kỳ trên bản đồ</small></span>
           </button>
+          {nearbyNote && <p className="search-empty">{nearbyNote}</p>}
           {searchError ? (
             <p className="search-empty" role="alert">{searchError}</p>
           ) : searching ? (
@@ -285,7 +295,7 @@ export default function App() {
           ) : (searched ? results : savedPlaces).map(place => (
             <button className="place-result" key={place.id} onClick={() => choosePlace(place)}>
               <span className="place-icon"><MapPin size={19} /></span>
-              <span><strong>{place.name}</strong><small>{place.detail}</small></span>
+              <span><strong>{place.name}</strong><small>{place.detail}{location.fix?` · ${formatDistance(distance(location.fix, place))}`:''}</small></span>
               <ChevronRight size={17} />
             </button>
           ))}
@@ -305,7 +315,7 @@ export default function App() {
         destination={selected?.name ?? 'Chọn điểm đến'}
         editingTarget={searchTarget}
         query={query}
-        onQueryChange={val => { setQuery(val); setSearched(false); }}
+        onQueryChange={val => { nearbySearch.current=false; setNearbyNote(null); setQuery(val); setSearched(false); }}
         onStartEdit={target => editEndpoint(target)}
         onClearTarget={target => {
           if (target === 'origin') useMyOrigin();
@@ -385,7 +395,7 @@ export default function App() {
         <h2 className="destinations-heading">Khám phá</h2>
         <div className="explore-categories">
           {EXPLORE_CATEGORIES.map(c => (
-            <button key={c.label} type="button" className="explore-category" onClick={() => { setQuery(c.label); setSearchOpen(true); void performSearch(c.label); }}>
+            <button key={c.label} type="button" className="explore-category" onClick={() => { nearbySearch.current = true; setQuery(c.label); setSearchOpen(true); void performSearch(c.label, { nearby: true }); }}>
               <span className="explore-category-icon"><c.Icon size={24} strokeWidth={2} style={{ color: c.color }} aria-hidden="true" /></span>
               <span>{c.label}</span>
             </button>

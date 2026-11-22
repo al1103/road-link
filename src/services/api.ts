@@ -1,4 +1,4 @@
-import { cumulative, projectOnRoute } from '../domain/geometry';
+import { cumulative, distance, projectOnRoute } from '../domain/geometry';
 import type { Coordinate, Maneuver, OsmRouteEdge, Place, Route, RouteStep } from '../domain/types';
 const ROUTER = (import.meta.env.VITE_ROUTER_URL || 'https://router.project-osrm.org').replace(/\/$/, '');
 const GEOCODER = (import.meta.env.VITE_GEOCODER_URL || 'https://nominatim.openstreetmap.org').replace(/\/$/, '');
@@ -28,7 +28,8 @@ function coordinate(value: unknown): Coordinate | null {
   if (!Array.isArray(value) || !finite(value[0]) || !finite(value[1]) || Math.abs(value[0]) > 180 || Math.abs(value[1]) > 90) return null;
   return { lng: value[0], lat: value[1] };
 }
-export async function searchPlaces(query: string, signal?: AbortSignal): Promise<Place[]> {
+export type SearchNear = { lat: number; lng: number; radiusDeg?: number };
+export async function searchPlaces(query: string, signal?: AbortSignal, near?: SearchNear): Promise<Place[]> {
   const q = query.trim();
   if (q.length < 2) return [];
   const entered=/^([+-]?\d+(?:\.\d+)?)\s*[,;]\s*([+-]?\d+(?:\.\d+)?)$/.exec(q);
@@ -37,7 +38,7 @@ export async function searchPlaces(query: string, signal?: AbortSignal): Promise
     if(Math.abs(lat)>90||Math.abs(lng)>180)throw new Error('Tọa độ không hợp lệ. Nhập vĩ độ, kinh độ; ví dụ theo định dạng số thập phân.');
     return [{id:`coord:${lat},${lng}`,name:`${lat.toFixed(5)}, ${lng.toFixed(5)}`,detail:'Tọa độ đã nhập',lat,lng}];
   }
-  const key = q.toLocaleLowerCase('vi');
+  const key = q.toLocaleLowerCase('vi') + (near ? `@${near.lat.toFixed(2)},${near.lng.toFixed(2)}` : '');
   const cached = searchCache.get(key);
   if (cached) return cached;
   // Explicit submission only; no search-as-you-type against public Nominatim.
@@ -47,15 +48,21 @@ export async function searchPlaces(query: string, signal?: AbortSignal): Promise
     if (signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
     lastSearch = Date.now();
     const params = new URLSearchParams({ q, format: 'jsonv2', limit: '6', 'accept-language': 'vi', addressdetails: '1',countrycodes:'vn' });
+    if (near) {
+      const d = near.radiusDeg ?? 0.12;
+      params.set('viewbox', [near.lng - d, near.lat + d, near.lng + d, near.lat - d].join(','));
+      params.set('bounded', '1');
+    }
     const data = await getJson(`${GEOCODER}/search?${params}`, signal);
     if (!Array.isArray(data)) throw new Error('Kết quả tìm kiếm không hợp lệ. Hãy thử lại.');
-    const places: Place[] = data.flatMap((item: unknown) => {
+    let places: Place[] = data.flatMap((item: unknown) => {
       if (!record(item) || typeof item.display_name !== 'string') return [];
       const lat = Number(item.lat), lng = Number(item.lon);
       if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return [];
       const parts = item.display_name.split(',');
       return [{ id: String(item.place_id ?? `${lat},${lng}`), lat, lng, name: typeof item.name === 'string' && item.name ? item.name : parts[0], detail: parts.slice(1).join(',').trim() }];
     });
+    if (near) places = places.slice().sort((a, b) => distance(a, near) - distance(b, near));
     searchCache.set(key, places);
     return places;
   });

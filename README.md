@@ -24,6 +24,7 @@ Theo yêu cầu ngày 22/11/2026, có chế độ **chỉ mô phỏng xe di chuy
 - Ghim điểm bằng cách chạm bản đồ; thẻ địa điểm có Chỉ đường, Lưu và Chia sẻ.
 - Sửa điểm đi/điểm đến, lấy vị trí của bạn, đảo hai điểm và chọn tuyến thay thế nếu OSRM trả về; không tự tạo tuyến giả.
 - Tìm địa điểm Việt Nam hoặc nhập trực tiếp vĩ độ, kinh độ; chỉ hiện địa điểm do người dùng thực sự lưu, không tạo sẵn gợi ý tại TP.HCM.
+- **Khám phá** (chip và lưới danh mục) tìm trong hộp bao quanh vị trí hiện tại, sắp kết quả theo khoảng cách và hiện số km trên từng địa điểm; chưa có GPS thì báo rõ và tìm toàn quốc.
 - Tính tuyến **ô tô**, xem chiều dài, thời gian ước tính và từng hướng rẽ.
 - Dẫn đường từ GPS thật: lọc fix kém chính xác, giảm rung tiến độ, không nhảy qua nhánh đường ở giao cắt, báo khi GPS cũ.
 - Chọn **đích danh giọng Việt** cho cả trình duyệt và native. Nếu không có giọng Việt, hiện hướng dẫn cài giọng và giữ chỉ dẫn trên màn hình; không dùng giọng Anh thay thế. Trên trình duyệt cần một giọng `vi`/`vi-VN` thực sự có sẵn trong hệ thống/trình duyệt.
