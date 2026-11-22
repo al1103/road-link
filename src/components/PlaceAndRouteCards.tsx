@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpDown, Bike, CarFront, ChevronRight, Footprints, Heart, Layers2, LoaderCircle, MapPin, Navigation2, Route as RouteIcon, Share2, TriangleAlert } from 'lucide-react';
+import { ArrowLeft, ArrowUpDown, Bike, CarFront, ChevronRight, Footprints, Heart, Layers2, LoaderCircle, LocateFixed, MapPin, Navigation2, Route as RouteIcon, Share2, TriangleAlert, X } from 'lucide-react';
 import { formatDistance, formatDuration } from '../domain/geometry';
 import type { Place, Route } from '../domain/types';
 
@@ -20,28 +20,195 @@ export function PlaceCard({ place, saved, shareStatus, onRoute, onSave, onShare,
   </>;
 }
 
-export function RouteInputs({ origin, destination, back, editOrigin, editDestination, swap }: { origin: string; destination: string; back: () => void; editOrigin: () => void; editDestination: () => void; swap: () => void }) {
-  return <section className="route-editor" aria-label="Điểm đi và điểm đến">
-    <button className="route-editor-back" aria-label="Quay lại địa điểm" onClick={back}><ArrowLeft size={22} /></button>
-    <div className="route-inputs-column">
-      <div className="route-input-row">
-        <span className="route-origin-circle" />
-        <button className="route-input-field" onClick={editOrigin} aria-label="Đổi điểm đi">
-          <span className="route-text-truncate">{origin}</span>
+export function RouteInputs({
+  origin,
+  destination,
+  editingTarget,
+  query,
+  onQueryChange,
+  onStartEdit,
+  onClearTarget,
+  back,
+  swap,
+  searchOpen,
+  onCloseSearch,
+  results,
+  searching,
+  savedPlaces,
+  onSelectPlace,
+  onUseMyLocation,
+  onPickOnMap,
+}: {
+  origin: string;
+  destination: string;
+  editingTarget: 'origin' | 'destination' | null;
+  query: string;
+  onQueryChange: (val: string) => void;
+  onStartEdit: (target: 'origin' | 'destination') => void;
+  onClearTarget: (target: 'origin' | 'destination') => void;
+  back: () => void;
+  swap: () => void;
+  searchOpen: boolean;
+  onCloseSearch: () => void;
+  results: Place[];
+  searching: boolean;
+  savedPlaces: Place[];
+  onSelectPlace: (place: Place) => void;
+  onUseMyLocation: () => void;
+  onPickOnMap: () => void;
+}) {
+  const isEditingOrigin = searchOpen && editingTarget === 'origin';
+  const isEditingDest = searchOpen && editingTarget === 'destination';
+
+  return (
+    <section className="route-editor-wrap" aria-label="Khung tìm tuyến đường">
+      <div className="route-editor">
+        <button
+          className="route-editor-back"
+          aria-label={searchOpen ? 'Đóng tìm kiếm' : 'Quay lại'}
+          onClick={searchOpen ? onCloseSearch : back}
+        >
+          <ArrowLeft size={22} />
+        </button>
+
+        <div className="route-inputs-column">
+          {/* Hàng Điểm đi (Origin Row) */}
+          <div className={`route-input-row ${isEditingOrigin ? 'focused' : ''}`}>
+            <span className="route-origin-circle" />
+            {isEditingOrigin ? (
+              <input
+                autoFocus
+                className="route-input-field editable"
+                placeholder="Chọn điểm đi hoặc nhập địa chỉ..."
+                value={query}
+                onChange={e => onQueryChange(e.target.value)}
+              />
+            ) : (
+              <button
+                type="button"
+                className="route-input-field"
+                onClick={() => onStartEdit('origin')}
+                aria-label="Đổi điểm đi"
+              >
+                <span className="route-text-truncate">{origin}</span>
+              </button>
+            )}
+            {isEditingOrigin && query.length > 0 ? (
+              <button
+                type="button"
+                className="route-row-clear"
+                onClick={() => onQueryChange('')}
+                aria-label="Xóa văn bản"
+              >
+                <X size={16} />
+              </button>
+            ) : origin !== 'Vị trí của bạn' && !isEditingOrigin ? (
+              <button
+                type="button"
+                className="route-row-clear"
+                onClick={() => onClearTarget('origin')}
+                aria-label="Đặt lại về vị trí của tôi"
+              >
+                <X size={16} />
+              </button>
+            ) : null}
+          </div>
+
+          {/* Dấu 3 chấm dọc nối (3 dots connector) */}
+          <div className="route-dots-line">
+            <span className="dot" /><span className="dot" /><span className="dot" />
+          </div>
+
+          {/* Hàng Điểm đến (Destination Row) */}
+          <div className={`route-input-row ${isEditingDest ? 'focused' : ''}`}>
+            <span className="route-dest-pin"><MapPin size={17} /></span>
+            {isEditingDest ? (
+              <input
+                autoFocus
+                className="route-input-field editable"
+                placeholder="Chọn điểm đến hoặc nhập địa chỉ..."
+                value={query}
+                onChange={e => onQueryChange(e.target.value)}
+              />
+            ) : (
+              <button
+                type="button"
+                className="route-input-field"
+                onClick={() => onStartEdit('destination')}
+                aria-label="Đổi điểm đến"
+              >
+                <span className="route-text-truncate">{destination}</span>
+              </button>
+            )}
+            {isEditingDest && query.length > 0 ? (
+              <button
+                type="button"
+                className="route-row-clear"
+                onClick={() => onQueryChange('')}
+                aria-label="Xóa văn bản"
+              >
+                <X size={16} />
+              </button>
+            ) : !isEditingDest ? (
+              <button
+                type="button"
+                className="route-row-clear"
+                onClick={() => onStartEdit('destination')}
+                aria-label="Đổi điểm đến"
+              >
+                <X size={16} />
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Nút Đảo chiều (Swap) */}
+        <button
+          className="swap-endpoints"
+          aria-label="Đảo điểm đi và điểm đến"
+          onClick={swap}
+        >
+          <ArrowUpDown size={20} />
         </button>
       </div>
-      <div className="route-dots-line">
-        <span className="dot" /><span className="dot" /><span className="dot" />
-      </div>
-      <div className="route-input-row">
-        <span className="route-dest-pin"><MapPin size={17} /></span>
-        <button className="route-input-field" onClick={editDestination} aria-label="Đổi điểm đến">
-          <span className="route-text-truncate">{destination}</span>
-        </button>
-      </div>
-    </div>
-    <button className="swap-endpoints" aria-label="Đảo điểm đi và điểm đến" onClick={swap}><ArrowUpDown size={20} /></button>
-  </section>;
+
+      {/* Menu gợi ý / kết quả tìm kiếm ngay dưới khung Route Editor */}
+      {searchOpen && (
+        <div className="route-search-dropdown">
+          <button type="button" className="place-result-item" onClick={onUseMyLocation}>
+            <div className="place-icon my-location-icon"><LocateFixed size={18} /></div>
+            <div className="place-info">
+              <strong>Vị trí của bạn</strong>
+              <small>Sử dụng định vị GPS hiện tại</small>
+            </div>
+          </button>
+          <button type="button" className="place-result-item" onClick={onPickOnMap}>
+            <div className="place-icon pick-map-icon"><MapPin size={18} /></div>
+            <div className="place-info">
+              <strong>Chọn trên bản đồ</strong>
+              <small>Chạm vào một điểm bất kỳ trên bản đồ</small>
+            </div>
+          </button>
+          {searching && <p className="search-dropdown-status">Đang tìm địa điểm…</p>}
+          {(results.length > 0 ? results : savedPlaces).map(place => (
+            <button
+              key={place.id}
+              type="button"
+              className="place-result-item"
+              onClick={() => onSelectPlace(place)}
+            >
+              <div className="place-icon"><MapPin size={18} /></div>
+              <div className="place-info">
+                <strong>{place.name}</strong>
+                <small>{place.detail}</small>
+              </div>
+              <ChevronRight size={17} className="result-arrow" />
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
 
 type CardProps = { route: Route | null; alternatives: Route[]; selected: Place | null; loading: boolean; error: string | null; customOrigin: boolean; awaitingGPS: boolean; locationError: string | null; details: boolean; back: () => void; retry: () => void; start: () => void; select: (route: Route) => void; toggleDetails: () => void; roadData: () => void };

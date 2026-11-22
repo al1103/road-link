@@ -160,6 +160,14 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setShowBLE(false); setShowRoadData(false); setSearchOpen(false); setDetails(false); } };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
   }, []);
+  useEffect(() => {
+    if (!searchOpen || query.trim().length < 2) return;
+    const timer = setTimeout(() => {
+      void performSearch(query);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [query, searchOpen]);
+
   async function performSearch(text: string) {
     if (text.trim().length < 2 || searching) return;
     searchAbort.current?.abort(); const controller = new AbortController(); searchAbort.current = controller;
@@ -205,12 +213,30 @@ export default function App() {
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
-      {!navigating && mode !== 'arrived' && (mode !== 'preview' || searchOpen) && <div className="search-wrap">
+      {!navigating && mode !== 'arrived' && mode !== 'preview' && <div className="search-wrap">
         <form className="search-box" onSubmit={submitSearch} role="search">
-          <Search size={21} className="search-glass-icon" />
-          <input aria-label={searchTarget === 'origin' ? 'Tìm điểm đi' : 'Tìm địa điểm'} placeholder={searchTarget === 'origin' ? 'Chọn điểm đi' : 'Tìm kiếm ở đây'} value={query} onChange={e => { setQuery(e.target.value); setSearched(false); }} onFocus={() => setSearchOpen(true)} />
-          {query.length > 0 && <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { setQuery(''); setSearched(false); }}><X size={18} /></button>}
-          <button type="submit" aria-label="Tìm kiếm" className="search-submit-btn" disabled={searching || query.trim().length < 2}>{searching ? <LoaderCircle className="spin" size={19} /> : <ArrowRight size={20} />}</button>
+          {searchOpen ? (
+            <button type="button" className="search-back-btn" aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}>
+              <ArrowLeft size={21} />
+            </button>
+          ) : (
+            <Search size={21} className="search-glass-icon" />
+          )}
+          <input
+            aria-label="Tìm địa điểm"
+            placeholder="Tìm kiếm ở đây"
+            value={query}
+            onChange={e => { setQuery(e.target.value); setSearched(false); }}
+            onFocus={() => setSearchOpen(true)}
+          />
+          {query.length > 0 && (
+            <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { setQuery(''); setSearched(false); }}>
+              <X size={18} />
+            </button>
+          )}
+          <button type="submit" aria-label="Tìm kiếm" className="search-submit-btn" disabled={searching || query.trim().length < 2}>
+            {searching ? <LoaderCircle className="spin" size={19} /> : <ArrowRight size={20} />}
+          </button>
         </form>
         {mode === 'explore' && !searchOpen && <div className="gmaps-quick-categories" role="toolbar" aria-label="Danh mục phổ biến">
           {[
@@ -220,13 +246,79 @@ export default function App() {
             { label: 'Khách sạn', icon: '🏨' },
             { label: 'ATM', icon: '🏧' },
             { label: 'Tạp hóa', icon: '🛒' }
-          ].map(c => <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => { setQuery(c.label); setSearchOpen(true); void performSearch(c.label); }}><span>{c.icon}</span><span>{c.label}</span></button>)}
+          ].map(c => (
+            <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => { setQuery(c.label); setSearchOpen(true); void performSearch(c.label); }}>
+              <span>{c.icon}</span>
+              <span>{c.label}</span>
+            </button>
+          ))}
         </div>}
-        {searchOpen && <div className="search-results"><div className="section-label">{searched ? 'KẾT QUẢ TÌM KIẾM' : 'ĐỊA ĐIỂM ĐÃ LƯU'}<button aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}><X size={17} /></button></div>{searchTarget === 'origin' && <><button className="place-result" onClick={useMyOrigin}><LocateFixed size={20} /><strong>Vị trí của bạn</strong></button><button className="place-result" onClick={() => setSearchOpen(false)}><MapPin size={20} /><strong>Chọn điểm đi trên bản đồ</strong></button></>}{searchError ? <p className="search-empty" role="alert">{searchError}</p> : searching ? <p className="search-empty">Đang tìm địa điểm…</p> : searched && !results.length ? <p className="search-empty">Chưa tìm thấy địa điểm. Thử thêm tên thành phố hoặc địa chỉ.</p> : (searched ? results : savedPlaces).map(place => <button className="place-result" key={place.id} onClick={() => choosePlace(place)}><span className="place-icon"><MapPin size={19} /></span><span><strong>{place.name}</strong><small>{place.detail}</small></span><ChevronRight size={17} /></button>)}</div>}
+        {searchOpen && <div className="search-results">
+          <div className="section-label">
+            <span>{searched ? 'KẾT QUẢ TÌM KIẾM' : 'GỢI Ý TÌM KIẾM'}</span>
+            <button aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}><X size={17} /></button>
+          </div>
+          <button type="button" className="place-result" onClick={useMyOrigin}>
+            <span className="place-icon"><LocateFixed size={19} /></span>
+            <span><strong>Vị trí của bạn</strong><small>Xem vị trí hiện tại</small></span>
+          </button>
+          <button type="button" className="place-result" onClick={() => setSearchOpen(false)}>
+            <span className="place-icon"><MapPin size={19} /></span>
+            <span><strong>Chọn trên bản đồ</strong><small>Chạm lên một điểm bất kỳ trên bản đồ</small></span>
+          </button>
+          {searchError ? (
+            <p className="search-empty" role="alert">{searchError}</p>
+          ) : searching ? (
+            <p className="search-empty">Đang tìm địa điểm…</p>
+          ) : searched && !results.length ? (
+            <p className="search-empty">Chưa tìm thấy địa điểm. Thử thêm tên thành phố hoặc địa chỉ.</p>
+          ) : (searched ? results : savedPlaces).map(place => (
+            <button className="place-result" key={place.id} onClick={() => choosePlace(place)}>
+              <span className="place-icon"><MapPin size={19} /></span>
+              <span><strong>{place.name}</strong><small>{place.detail}</small></span>
+              <ChevronRight size={17} />
+            </button>
+          ))}
+        </div>}
       </div>}
-      <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth">{ble.status === 'connected' ? <BluetoothConnected size={20} /> : <Bluetooth size={20} />}<span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span><span className="device-dot" /></button>
+      {!navigating && mode !== 'arrived' && mode !== 'preview' && (
+        <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth">
+          {ble.status === 'connected' ? <BluetoothConnected size={20} /> : <Bluetooth size={20} />}
+          <span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span>
+          <span className="device-dot" />
+        </button>
+      )}
     </header>
-    {mode==='preview'&&<RouteInputs origin={originOverride?.name??(location.fix?'Vị trí của bạn':'Chọn điểm đi')} destination={selected?.name??'Chọn điểm đến'} back={()=>{routeAbort.current?.abort();setLoading(false);setRoute(null);setAlternatives([]);setMode('place');}} editOrigin={()=>editEndpoint('origin')} editDestination={()=>editEndpoint('destination')} swap={swapEndpoints}/>}
+    {mode === 'preview' && (
+      <RouteInputs
+        origin={originOverride?.name ?? (location.fix ? 'Vị trí của bạn' : 'Chọn điểm đi')}
+        destination={selected?.name ?? 'Chọn điểm đến'}
+        editingTarget={searchTarget}
+        query={query}
+        onQueryChange={val => { setQuery(val); setSearched(false); }}
+        onStartEdit={target => editEndpoint(target)}
+        onClearTarget={target => {
+          if (target === 'origin') useMyOrigin();
+          else editEndpoint('destination');
+        }}
+        back={() => {
+          routeAbort.current?.abort();
+          setLoading(false);
+          setRoute(null);
+          setAlternatives([]);
+          setMode('place');
+        }}
+        swap={swapEndpoints}
+        searchOpen={searchOpen}
+        onCloseSearch={() => setSearchOpen(false)}
+        results={results}
+        searching={searching}
+        savedPlaces={savedPlaces}
+        onSelectPlace={choosePlace}
+        onUseMyLocation={useMyOrigin}
+        onPickOnMap={() => setSearchOpen(false)}
+      />
+    )}
     {navigating && activeStep && <section className="turn-banner" aria-label="Chỉ dẫn tiếp theo"><div className="turn-symbol"><ManeuverIcon type={activeStep.maneuver} size={39} /></div><div><span>{rerouting ? 'Đang tìm đường mới…' : `Sau ${formatDistance(progress?.nextTurn ?? activeStep.offset)}`}</span><h1>{activeStep.instruction}</h1><small>Theo biển báo và tình hình đường thực tế</small></div></section>}
     <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={22}/></button><button className="map-control compass-control" aria-label="Hướng Bắc" title="Đưa hướng Bắc về phía trên" onClick={()=>setNorthReset(value=>value+1)}><Compass size={23} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button><button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={22} /> : <LocateFixed size={23} />}</button><button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={22} /> : <VolumeX size={22} />}</button></div>
     <section ref={panelElement} className={`bottom-panel ${mode === 'explore' ? 'explore-panel' : ''} ${mode === 'preview' ? 'preview-panel' : ''} ${mode==='place'?'place-panel':''}`}>
