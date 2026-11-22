@@ -176,6 +176,8 @@ class ServerCallbacks : public NimBLEServerCallbacks {
   }
 };
 #if ROADLINK_OLED
+float smoothHeading = 0;
+bool smoothHeadingInit = false;
 uint16_t pointAhead(const State& s, float ahead, int32_t& outLat, int32_t& outLng) {
   if (s.count < 2 || s.total <= 0) return 0;
   float fromStart = s.total - float(s.remaining);
@@ -212,11 +214,18 @@ void drawMap(const State& s) {
   const bool live = s.lastNav != 0;
   float fromStart = live ? s.total - float(s.remaining) : 0;
   if (fromStart < 0) fromStart = 0;
-  float startD = fromStart - 150.0f;
+  float extra = 0;
+  if (live) {
+    extra = (float(s.speed) / 3.6f) * float(millis() - s.lastNav) / 1000.0f;
+    if (extra > 2000.0f) extra = 2000.0f;
+    if (extra > float(s.remaining)) extra = float(s.remaining);
+  }
+  float center = fromStart + extra;
+  float startD = center - 150.0f;
   if (startD < 0) startD = 0;
   float aheadM = 400.0f;
   if (float(s.speed) * 8.0f > aheadM) aheadM = float(s.speed) * 8.0f;
-  float endD = fromStart + aheadM;
+  float endD = center + aheadM;
   if (endD > s.total) endD = s.total;
   if (endD <= startD) { startD = 0; endD = s.total; }
   uint16_t i0 = 0, i1 = s.count - 1;
@@ -230,13 +239,16 @@ void drawMap(const State& s) {
     if (s.points[i].lng < minLng) minLng = s.points[i].lng;
     if (s.points[i].lng > maxLng) maxLng = s.points[i].lng;
   }
+  int32_t curLat = s.lat, curLng = s.lng;
+  uint16_t curIdx = i0;
   if (live) {
-    if (s.lat < minLat) minLat = s.lat;
-    if (s.lat > maxLat) maxLat = s.lat;
-    if (s.lng < minLng) minLng = s.lng;
-    if (s.lng > maxLng) maxLng = s.lng;
+    curIdx = pointAhead(s, extra, curLat, curLng);
+    if (curLat < minLat) minLat = curLat;
+    if (curLat > maxLat) maxLat = curLat;
+    if (curLng < minLng) minLng = curLng;
+    if (curLng > maxLng) maxLng = curLng;
   }
-  const double cosLat = cos(double(s.lat) / 1e7 * PI / 180.0);
+  const double cosLat = cos(double(curLat) / 1e7 * PI / 180.0);
   double spanX = double(maxLng - minLng) / 1e7 * cosLat;
   double spanY = double(maxLat - minLat) / 1e7;
   if (spanX < 1e-9) spanX = 1e-9;
@@ -247,16 +259,7 @@ void drawMap(const State& s) {
   const double offsetY = top + ((bottom - top) - spanY * scale) / 2.0;
   auto mx = [&](int32_t lng) { return int16_t(offsetX + double(lng - minLng) / 1e7 * cosLat * scale); };
   auto my = [&](int32_t lat) { return int16_t(offsetY + double(maxLat - lat) / 1e7 * scale); };
-  uint16_t nearest = i0;
-  if (live) {
-    double best = 1e18;
-    for (uint16_t i = i0; i <= i1; i++) {
-      const double dx = double(s.points[i].lng - s.lng) / 1e7 * cosLat;
-      const double dy = double(s.points[i].lat - s.lat) / 1e7;
-      const double d = dx * dx + dy * dy;
-      if (d < best) { best = d; nearest = i; }
-    }
-  }
+  const uint16_t nearest = curIdx;
   for (uint16_t i = i0 + 1; i <= i1; i++) {
     if (live && i <= nearest && ((i - 1) % 2)) continue;
     display.drawLine(mx(s.points[i - 1].lng), my(s.points[i - 1].lat), mx(s.points[i].lng), my(s.points[i].lat));
@@ -264,12 +267,14 @@ void drawMap(const State& s) {
   if (live && !s.arrived) {
     if (s.turn > 0) {
       int32_t la = 0, ln = 0;
-      const uint16_t idx = pointAhead(s, float(s.turn), la, ln);
+      const float ahead = float(s.turn) - extra > 0 ? float(s.turn) - extra : 0;
+      const uint16_t idx = pointAhead(s, ahead, la, ln);
       if (idx >= i0 && idx <= i1) display.drawDisc(mx(ln), my(la), 2);
     }
     if (s.featureM >= 0 && s.featureM <= 900 && (millis() / 500) % 2 == 0) {
       int32_t la = 0, ln = 0;
-      const uint16_t idx = pointAhead(s, float(s.featureM), la, ln);
+      const float ahead = float(s.featureM) - extra > 0 ? float(s.featureM) - extra : 0;
+      const uint16_t idx = pointAhead(s, ahead, la, ln);
       if (idx >= i0 && idx <= i1) {
         const int fx = mx(ln), fy = my(la);
         const bool above = fy - 9 >= 12;
@@ -278,9 +283,14 @@ void drawMap(const State& s) {
         else display.drawTriangle(fx, fy + 8, fx - 4, fy + 3, fx + 4, fy + 3);
       }
     }
-    const int px = mx(s.lng), py = my(s.lat);
+    const int px = mx(curLng), py = my(curLat);
     if (s.headingValid) {
-      const double rad = double(s.heading) * PI / 180.0;
+      if (!smoothHeadingInit) { smoothHeading = s.heading; smoothHeadingInit = true; }
+      else {
+        const float delta = fmodf(float(s.heading) - smoothHeading + 540.0f, 360.0f) - 180.0f;
+        smoothHeading = fmodf(smoothHeading + delta * 0.25f + 360.0f, 360.0f);
+      }
+      const double rad = double(smoothHeading) * PI / 180.0;
       display.drawLine(px, py, px + int(sin(rad) * 7), py - int(cos(rad) * 7));
     }
     display.drawDisc(px, py, 2);
@@ -363,5 +373,5 @@ void loop() {
   // Snapshot under a short mutex; slow display I/O never blocks BLE state updates.
   static State snapshot;
   xSemaphoreTake(stateMutex,portMAX_DELAY); snapshot=state; xSemaphoreGive(stateMutex);
-  render(snapshot); delay(200);
+  render(snapshot); delay(50);
 }

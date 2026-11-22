@@ -34,7 +34,7 @@ Firmware giữ tuyến đang nhận trong staging riêng, kiểm tra route ID, c
 {"v":1,"type":"stop"}
 ```
 
-App gửi tối đa khoảng 1 nav/giây khi có dữ liệu mới, coalesce nav chậm. Khi đến nơi, gửi `arrived:true` ngay. `seq` tăng trong phiên app; firmware bỏ nav cũ hoặc sai route. Kết nối lại sẽ gửi lại tuyến đang dẫn trước khi gửi nav.
+App gửi tối đa khoảng 4 nav/giây khi đang dẫn đường (250 ms), coalesce nav cũ nếu BLE chậm. Khi đến nơi, gửi `arrived:true` ngay. `seq` tăng trong phiên app; firmware bỏ nav cũ hoặc sai route. Kết nối lại sẽ gửi lại tuyến đang dẫn trước khi gửi nav.
 
 `maneuver`: `depart`, `straight`, `left`, `right`, `slight-left`, `slight-right`, `uturn`, `roundabout`, `arrive`.
 
@@ -49,6 +49,7 @@ Status notify là chuỗi ASCII ngắn: `ready-v1`, `route-begin`, `route-ready`
 Firmware `esp32-oled` vẽ lại tuyến từ dữ liệu đã nhận, không nhận tile hay ảnh nền:
 
 - Khung bản đồ 128×53 px chiếm toàn bộ màn hình SSD1306 128×64; tuyến được co giãn vừa khung theo cửa sổ cục bộ quanh xe: 150 m phía sau và phía trước là `max(400 m, 8 × tốc độ km/h)`.
+- Firmware vẽ lại 20 lần/giây (50 ms) và tự ngoại suy vị trí giữa hai gói `nav`: quãng thêm = tốc độ × thời gian từ gói cuối, chiếu lên polyline và giới hạn 2 giây; hướng được làm mượt theo góc ngắn nhất. Nhờ vậy chấm vị trí chạy liên tục dù nav chỉ về 4 lần/giây.
 - Đoạn đã đi vẽ nét đứt, đoạn còn lại nét liền; vị trí hiện tại là chấm tròn, kèm mũi tên 7 px theo `heading` khi có hướng.
 - Điểm rẽ kế tiếp là chấm tròn nhỏ tại khoảng `turn_m` phía trước.
 - Khi `road_feature.distance_m ≤ 900`, một mũi tên tam giác nhấp nháy đánh dấu đúng vị trí trên tuyến; thanh trên hiện nhãn `CAM`, `LIGHT`, `STOP`, `GIVE`, `RAIL`, `CROSS`, `BUMP`, `LIMIT`, `SIGN` hoặc `HAZARD` kèm khoảng cách. Giới hạn tốc độ OSM nằm ở góc phải thanh trên.

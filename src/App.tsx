@@ -137,7 +137,7 @@ export default function App() {
   useEffect(() => { if (ble.status === 'connected' && route && navigating) link.enqueue(routeMessages(route), 'route'); }, [ble.status, route, navigating]);
   useEffect(() => {
     if (ble.status !== 'connected' || !route || !fix || !progress || Date.now()-fix.timestamp>15000 || (!navigating && mode !== 'arrived')) return;
-    if (Date.now() - lastSent.current < 1000 && !progress.arrived) return;
+    if (Date.now() - lastSent.current < 250 && !progress.arrived) return;
     lastSent.current = Date.now();
     const feature=road.data?.features.find(f=>f.along>=progress.along);
     link.enqueue([navMessage(route, progress, fix, ++sequence.current,{enabled:road.enabled,limit,feature})], 'nav');
