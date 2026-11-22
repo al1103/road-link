@@ -78,42 +78,81 @@ const NEARBY_LABELS: Record<string, string> = {
   restaurant: 'Nhà hàng', cafe: 'Cà phê', fast_food: 'Đồ ăn nhanh', fuel: 'Cây xăng',
   hotel: 'Khách sạn', atm: 'ATM', bank: 'Ngân hàng', pharmacy: 'Nhà thuốc',
   hospital: 'Bệnh viện', marketplace: 'Chợ', supermarket: 'Siêu thị',
-  convenience: 'Tạp hóa', bakery: 'Tiệm bánh', mall: 'Trung tâm thương mại'
+  convenience: 'Tạp hóa', bakery: 'Tiệm bánh', mall: 'Trung tâm thương mại',
+  guest_house: 'Khách sạn', motel: 'Khách sạn', hostel: 'Khách sạn'
 };
-export async function nearbyPlaces(lat: number, lng: number, signal?: AbortSignal): Promise<Place[]> {
-  const key = `${lat.toFixed(2)},${lng.toFixed(2)}`;
-  const cached = nearbyCache.get(key);
-  if (cached) return cached;
+const ALL_NEARBY_TAGS = ['["amenity"~"^(restaurant|cafe|fast_food|fuel|hotel|atm|bank|pharmacy|hospital|marketplace)$"]', '["shop"~"^(supermarket|convenience|bakery|mall)$"]', '["tourism"~"^(hotel|guest_house|motel|hostel)$"]'];
+function nearbyQuery(lat: number, lng: number, tags: string[]): string {
+  return `[out:json][timeout:15];(${tags.flatMap(tag => [`node(around:20000,${lat},${lng})${tag};`, `way(around:20000,${lat},${lng})${tag};`]).join('')});out center 60;`;
+}
+function mapNearby(data: unknown): Place[] {
+  if (!record(data) || !Array.isArray(data.elements)) throw new Error('Không tải được địa điểm gần đây.');
+  return data.elements.flatMap((item: unknown) => {
+    if (!record(item) || !record(item.tags)) return [];
+    const lat = typeof item.lat === 'number' ? item.lat : record(item.center) && typeof item.center.lat === 'number' ? item.center.lat : null;
+    const lng = typeof item.lon === 'number' ? item.lon : record(item.center) && typeof item.center.lon === 'number' ? item.center.lon : null;
+    if (lat === null || lng === null) return [];
+    const tags = item.tags as Record<string, string>;
+    const name = tags.name || tags['name:vi'] || tags.brand;
+    if (!name) return [];
+    const street = tags['addr:street'] && !tags['addr:street'].includes(name) ? ` · ${tags['addr:street']}` : '';
+    return [{ id: `poi:${String(item.id)}`, name, detail: `${NEARBY_LABELS[tags.amenity] ?? NEARBY_LABELS[tags.shop] ?? NEARBY_LABELS[tags.tourism] ?? 'Địa điểm'}${street}`, lat, lng }];
+  });
+}
+async function fetchNearbyQuery(query: string, signal?: AbortSignal): Promise<Place[]> {
   const hosts = [{ url: OVERPASS, timeout: 3500 }, { url: OVERPASS_FR, timeout: 14000 }];
-  const searchRadius = 20000;
   let lastError: unknown = null;
-  let places: Place[] | null = null;
   for (const host of hosts) {
-    const query = `[out:json][timeout:15];(node(around:${searchRadius},${lat},${lng})["amenity"~"^(restaurant|cafe|fast_food|fuel|hotel|atm|bank|pharmacy|hospital|marketplace)$"];node(around:${searchRadius},${lat},${lng})["shop"~"^(supermarket|convenience|bakery|mall)$"];);out body 60;`;
     try {
-      const data = await getJson(`${host.url}?data=${encodeURIComponent(query)}`, signal, host.timeout);
-      if (!record(data) || !Array.isArray(data.elements)) throw new Error('Không tải được địa điểm gần đây.');
-      places = data.elements.flatMap((item: unknown) => {
-        if (!record(item) || typeof item.lat !== 'number' || typeof item.lon !== 'number' || !record(item.tags)) return [];
-        const tags = item.tags as Record<string, string>;
-        const name = tags.name || tags['name:vi'] || tags.brand;
-        if (!name) return [];
-        const street = tags['addr:street'] && !tags['addr:street'].includes(name) ? ` · ${tags['addr:street']}` : '';
-        return [{ id: `poi:${String(item.id)}`, name, detail: `${NEARBY_LABELS[tags.amenity] ?? NEARBY_LABELS[tags.shop] ?? 'Địa điểm'}${street}`, lat: item.lat, lng: item.lon }];
-      });
-      break;
+      return mapNearby(await getJson(`${host.url}?data=${encodeURIComponent(query)}`, signal, host.timeout));
     } catch (error) {
       if (signal?.aborted) throw error;
       lastError = error;
     }
   }
-  if (signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
-  if (places === null) throw lastError ?? new Error('Không tải được địa điểm gần đây.');
-  if (!places.length) return [];
-  const unique = [...new Map(places.map(place => [place.id, place])).values()]
+  throw lastError ?? new Error('Không tải được địa điểm gần đây.');
+}
+function nearbyPlacesFrom(places: Place[], lat: number, lng: number, limit: number): Place[] {
+  return [...new Map(places.map(place => [place.id, place])).values()]
     .sort((a, b) => distance(a, { lat, lng }) - distance(b, { lat, lng }))
-    .slice(0, 8);
+    .slice(0, limit);
+}
+export async function nearbyPlaces(lat: number, lng: number, signal?: AbortSignal): Promise<Place[]> {
+  const key = `${lat.toFixed(2)},${lng.toFixed(2)}`;
+  const cached = nearbyCache.get(key);
+  if (cached) return cached;
+  const unique = nearbyPlacesFrom(await fetchNearbyQuery(nearbyQuery(lat, lng, ALL_NEARBY_TAGS), signal), lat, lng, 8);
   nearbyCache.set(key, unique);
+  return unique;
+}
+const CATEGORY_TAGS: Record<string, string[]> = {
+  restaurant: ['["amenity"~"^(restaurant|fast_food)$"]'],
+  fuel: ['["amenity"="fuel"]'],
+  cafe: ['["amenity"="cafe"]'],
+  hotel: ['["tourism"~"^(hotel|guest_house|motel|hostel)$"]', '["amenity"="hotel"]'],
+  atm: ['["amenity"="atm"]', '["amenity"="bank"]'],
+  shop: ['["shop"~"^(convenience|supermarket|grocery|greengrocer|mall)$"]']
+};
+const CATEGORY_ALIASES: Record<string, string> = {
+  'cây xăng': 'fuel', 'cay xang': 'fuel', 'xăng': 'fuel', 'trạm xăng': 'fuel',
+  'nhà hàng': 'restaurant', 'nha hang': 'restaurant', 'quán ăn': 'restaurant', 'quan an': 'restaurant',
+  'cà phê': 'cafe', 'ca phe': 'cafe', 'cafe': 'cafe', 'quán cà phê': 'cafe',
+  'khách sạn': 'hotel', 'khach san': 'hotel', 'hotel': 'hotel',
+  'atm': 'atm', 'ngân hàng': 'atm', 'ngan hang': 'atm',
+  'tạp hóa': 'shop', 'tap hoa': 'shop', 'siêu thị': 'shop', 'sieu thi': 'shop'
+};
+export function categoryForQuery(text: string): string | null {
+  return CATEGORY_ALIASES[text.trim().toLocaleLowerCase('vi')] ?? null;
+}
+export async function nearbyCategory(lat: number, lng: number, categoryOrLabel: string, signal?: AbortSignal): Promise<Place[]> {
+  const catKey = categoryForQuery(categoryOrLabel) ?? categoryOrLabel;
+  const tags = CATEGORY_TAGS[catKey];
+  if (!tags) return [];
+  const key = `${catKey}:${lat.toFixed(2)},${lng.toFixed(2)}`;
+  const cached = nearbyCache.get(key);
+  if (cached) return cached;
+  const unique = nearbyPlacesFrom(await fetchNearbyQuery(nearbyQuery(lat, lng, tags), signal), lat, lng, 15);
+  if (unique.length) nearbyCache.set(key, unique);
   return unique;
 }
 function maneuverFor(type: string, modifier: string): Maneuver {

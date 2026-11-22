@@ -15,7 +15,7 @@ import { bearing, cumulative, distance, formatDistance, formatDuration, pointAt 
 import { Navigator } from './domain/navigation';
 import type { Coordinate, Fix, Place, Progress, Route } from './domain/types';
 import { useLocation } from './hooks/useLocation';
-import { fetchRoute,fetchRoutes, friendlyError, nearbyPlaces, searchPlaces, type TransportProfile } from './services/api';
+import { categoryForQuery,fetchRoute,fetchRoutes, friendlyError, nearbyCategory, nearbyPlaces, searchPlaces, type TransportProfile } from './services/api';
 import { BluetoothLink, type BluetoothState } from './services/bluetooth';
 import { navMessage, routeMessages } from './services/protocol';
 import { say, silence } from './services/voice';
@@ -116,6 +116,7 @@ export default function App() {
   const searchAbort = useRef<AbortController | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const nearbySearch = useRef(false);
+  const categorySearch = useRef(false);
   const nearbyCell = useRef('');
   const nearbyAbort = useRef<AbortController | null>(null);
   const nearbyToken = useRef(0);
@@ -229,6 +230,7 @@ export default function App() {
   useEffect(() => {
     if (!searchOpen || query.trim().length < 2) return;
     const timer = setTimeout(() => {
+      if (categorySearch.current) { categorySearch.current = false; return; }
       void performSearch(query, { nearby: nearbySearch.current });
     }, 350);
     return () => clearTimeout(timer);
@@ -279,8 +281,31 @@ export default function App() {
     catch (err) { if (!controller.signal.aborted) { setResults([]); setSearchError(friendlyError(err)); } }
     finally { if (!controller.signal.aborted) setSearching(false); }
   }
+  async function searchCategory(label: string) {
+    const category = categoryForQuery(label);
+    if (!category) { void performSearch(label, { nearby: true }); return; }
+    categorySearch.current = true; nearbySearch.current = true;
+    searchAbort.current?.abort();
+    const origin = location.fix ?? route?.coordinates[0] ?? null;
+    setQuery(label); setSearchOpen(true); setSearched(true); setSearchError(null); setResults([]); setShareStatus(null); setNavigationError(null);
+    setNearbyNote(origin ? null : 'Bật định vị để tìm địa điểm gần nhất quanh bạn.');
+    if (!origin) { setSearching(false); return; }
+    const controller = new AbortController(); searchAbort.current = controller;
+    setSearching(true);
+    try {
+      const list = await nearbyCategory(origin.lat, origin.lng, category, controller.signal);
+      if (controller.signal.aborted) return;
+      setResults(list);
+      if (!list.length) setNearbyNote(`Không có ${label.toLowerCase()} trong 20 km quanh vị trí này.`);
+    } catch (error) {
+      if (!controller.signal.aborted) setSearchError(friendlyError(error));
+    } finally {
+      if (!controller.signal.aborted) setSearching(false);
+    }
+  }
   async function submitSearch(e: React.FormEvent) {
     e.preventDefault();
+    if (categorySearch.current) { categorySearch.current = false; void searchCategory(query); return; }
     void performSearch(query, { nearby: nearbySearch.current });
   }
   function stop() {
@@ -300,7 +325,7 @@ export default function App() {
   function choosePlace(place:Place){
     const recent=[place,...recentPlaces.filter(item=>item.id!==place.id)].slice(0,10);
     setRecentPlaces(recent);save('roadlink.recentSearches',recent);
-    nearbySearch.current=false;setNearbyNote(null);
+    nearbySearch.current=false;categorySearch.current=false;setNearbyNote(null);
     setPendingGPS(null);setShareStatus(null);setSearchError(null);setSearchOpen(false);setQuery(place.name);setSearched(false);
     if(searchTarget==='origin'){setOriginOverride(place);setSearchTarget('destination');if(selected)void plan(selected,false,place);return;}
     if(mode==='preview'){void plan(place);return;}
@@ -337,11 +362,11 @@ export default function App() {
             aria-label="Tìm địa điểm"
             placeholder="Tìm kiếm ở đây"
             value={query}
-            onChange={e => { nearbySearch.current = false; setQuery(e.target.value); setSearched(false); }}
+            onChange={e => { nearbySearch.current = false; categorySearch.current = false; setQuery(e.target.value); setSearched(false); }}
             onFocus={() => setSearchOpen(true)}
           />
           {query.length > 0 && (
-            <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { nearbySearch.current=false; searchAbort.current?.abort(); setSearching(false); setResults([]); setQuery(''); setSearched(false); setNearbyNote(null); searchInputRef.current?.focus(); }}>
+            <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { nearbySearch.current=false; categorySearch.current=false; searchAbort.current?.abort(); setSearching(false); setResults([]); setQuery(''); setSearched(false); setNearbyNote(null); searchInputRef.current?.focus(); }}>
               <X size={20} />
             </button>
           )}
@@ -351,7 +376,7 @@ export default function App() {
         </form>
         {mode === 'explore' && !searchOpen && <div className="gmaps-quick-categories" role="toolbar" aria-label="Danh mục phổ biến">
           {EXPLORE_CATEGORIES.map(c => (
-            <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => { nearbySearch.current = true; setQuery(c.label); setSearchOpen(true); void performSearch(c.label, { nearby: true }); }}>
+            <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => void searchCategory(c.label)}>
               <c.Icon size={18} strokeWidth={2} style={{ color: c.color }} aria-hidden="true" />
               <span>{c.label}</span>
             </button>
@@ -473,7 +498,7 @@ export default function App() {
         <h2 className="destinations-heading">Khám phá</h2>
         <div className="explore-categories">
           {EXPLORE_CATEGORIES.map(c => (
-            <button key={c.label} type="button" className="explore-category" onClick={() => { nearbySearch.current = true; setQuery(c.label); setSearchOpen(true); void performSearch(c.label, { nearby: true }); }}>
+            <button key={c.label} type="button" className="explore-category" onClick={() => void searchCategory(c.label)}>
               <span className="explore-category-icon"><c.Icon size={24} strokeWidth={2} style={{ color: c.color }} aria-hidden="true" /></span>
               <span>{c.label}</span>
             </button>
