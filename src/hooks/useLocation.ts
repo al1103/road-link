@@ -5,6 +5,31 @@ import {bearing,distance} from '../domain/geometry';
 import {canNavigateFrom,locationIssue,validLocation,type LocationIssue} from '../domain/location';
 import type {Fix} from '../domain/types';
 
+function extractHeading(event: DeviceOrientationEvent): number | null {
+  const e = event as unknown as { webkitCompassHeading?: unknown; alpha?: unknown };
+  if (typeof e.webkitCompassHeading === 'number' && Number.isFinite(e.webkitCompassHeading)) {
+    const val = e.webkitCompassHeading;
+    if (val >= 0 && val <= 360) return val;
+  }
+  if (typeof e.alpha === 'number' && Number.isFinite(e.alpha)) {
+    return (360 - e.alpha + 360) % 360;
+  }
+  return null;
+}
+
+async function requestOrientationPermission() {
+  const DOE = typeof window !== 'undefined' ? (window.DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<'granted' | 'denied'> } | undefined) : undefined;
+  if (typeof DOE?.requestPermission === 'function') {
+    try {
+      const res = await DOE.requestPermission();
+      return res === 'granted';
+    } catch {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function useLocation() {
   const [fix,setFix]=useState<Fix|null>(null);
   const [issue,setIssue]=useState<LocationIssue|null>(null);
@@ -13,6 +38,8 @@ export function useLocation() {
   const generation=useRef(0),enabled=useRef(false);
   const latest=useRef<Fix|null>(null),anchor=useRef<Fix|null>(null);
   const lastCourse=useRef<{value:number;timestamp:number}|null>(null);
+  const compass=useRef<{value:number;timestamp:number}|null>(null);
+  const lastOrientationUpdate=useRef(0);
 
   const clearWatch=useCallback(()=>{
     const id=watch.current;watch.current=null;
@@ -23,6 +50,7 @@ export function useLocation() {
   },[clearWatch]);
 
   const start=useCallback(async()=>{
+    void requestOrientationPermission();
     // Every explicit retry starts a new watch, including after timeout/provider failure.
     const current=++generation.current;enabled.current=true;clearWatch();
     setRequesting(true);setIssue(null);
@@ -43,8 +71,24 @@ export function useLocation() {
       const previous=anchor.current;
       if(course===null&&previous&&next.accuracy<=25&&previous.accuracy<=25&&next.timestamp>previous.timestamp&&next.timestamp-previous.timestamp<12000&&distance(previous,next)>=Math.max(4,(previous.accuracy+next.accuracy)/2))course=bearing(previous,next);
       if(course!==null)lastCourse.current={value:(course%360+360)%360,timestamp:next.timestamp};
-      next.heading=lastCourse.current?.value??0;
-      next.headingAvailable=next.accuracy<=25&&!!lastCourse.current&&next.timestamp-lastCourse.current.timestamp<12000;
+
+      const hasRecentCourse=!!lastCourse.current&&next.timestamp-lastCourse.current.timestamp<12000;
+      const hasRecentCompass=!!compass.current&&now-compass.current.timestamp<15000;
+
+      if(next.speed>2.5&&hasRecentCourse){
+        next.heading=lastCourse.current!.value;
+        next.headingAvailable=next.accuracy<=25;
+      }else if(hasRecentCompass){
+        next.heading=compass.current!.value;
+        next.headingAvailable=true;
+      }else if(hasRecentCourse){
+        next.heading=lastCourse.current!.value;
+        next.headingAvailable=next.accuracy<=25;
+      }else{
+        next.heading=0;
+        next.headingAvailable=false;
+      }
+
       if(!previous||distance(previous,next)>=4||next.timestamp-previous.timestamp>8000)anchor.current=next;
       latest.current=next;setFix(next);setIssue(null);setRequesting(false);
     };
@@ -70,6 +114,31 @@ export function useLocation() {
       watch.current=id;
     }catch(error){failed(error);}
   },[clearWatch]);
+
+  useEffect(()=>{
+    const handleOrientation=(event:DeviceOrientationEvent)=>{
+      const heading=extractHeading(event);
+      if(heading===null)return;
+      const now=Date.now();
+      compass.current={value:heading,timestamp:now};
+      if(now-lastOrientationUpdate.current<90)return;
+      lastOrientationUpdate.current=now;
+      setFix(prev=>{
+        if(!prev)return null;
+        if(prev.speed>2.5&&lastCourse.current&&now-lastCourse.current.timestamp<6000)return prev;
+        if(prev.headingAvailable&&Math.abs(prev.heading-heading)<1.5)return prev;
+        return {...prev,heading,headingAvailable:true};
+      });
+    };
+
+    window.addEventListener('deviceorientation',handleOrientation,{passive:true});
+    window.addEventListener('deviceorientationabsolute',handleOrientation,{passive:true});
+
+    return()=>{
+      window.removeEventListener('deviceorientation',handleOrientation);
+      window.removeEventListener('deviceorientationabsolute',handleOrientation);
+    };
+  },[]);
 
   useEffect(()=>{
     let disposed=false;
