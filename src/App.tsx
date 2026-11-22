@@ -301,13 +301,6 @@ export default function App() {
           ))}
         </div>}
       </div>}
-      {!navigating && mode !== 'arrived' && mode !== 'preview' && (
-        <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth">
-          {ble.status === 'connected' ? <BluetoothConnected size={22} /> : <Bluetooth size={22} />}
-          <span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span>
-          <span className="device-dot" />
-        </button>
-      )}
     </header>
     {mode === 'preview' && (
       <RouteInputs
@@ -341,7 +334,7 @@ export default function App() {
       />
     )}
     {navigating && activeStep && <section className="turn-banner" aria-label="Chỉ dẫn tiếp theo"><div className="turn-symbol"><ManeuverIcon type={activeStep.maneuver} size={39} /></div><div><span>{rerouting ? 'Đang tìm đường mới…' : `Sau ${formatDistance(progress?.nextTurn ?? activeStep.offset)}`}</span><h1>{activeStep.instruction}</h1><small>Theo biển báo và tình hình đường thực tế</small></div></section>}
-    <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={24}/></button><button className="map-control compass-control" aria-label={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay theo hướng đang quay'} title={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay bản đồ theo hướng thiết bị đang quay'} onClick={()=>{ if(Math.abs(mapBearing)>1)setNorthReset(value=>value+1); else setHeadingUp(value=>value+1); }}><Compass size={24} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button>{navigating && <button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={24} /> : <VolumeX size={24} />}</button>}<button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={24} /> : <LocateFixed size={24} />}</button></div>
+    <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={24}/></button><button className="map-control compass-control" aria-label={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay theo hướng đang quay'} title={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay bản đồ theo hướng thiết bị đang quay'} onClick={()=>{ if(Math.abs(mapBearing)>1)setNorthReset(value=>value+1); else setHeadingUp(value=>value+1); }}><Compass size={24} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button>{navigating && <button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={24} /> : <VolumeX size={24} />}</button>}<button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={24} /> : <LocateFixed size={24} />}</button>{!navigating && mode !== 'arrived' && mode !== 'preview' && <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth"><span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span>{ble.status === 'connected' ? <BluetoothConnected size={22} /> : <Bluetooth size={22} />}<span className="device-dot" /></button>}</div>
     <section
       ref={panelElement}
       className={`bottom-panel ${mode === 'explore' ? 'explore-panel' : ''} ${mode === 'preview' ? 'preview-panel' : ''} ${mode==='place'?'place-panel':''} ${sheetCollapsed?'collapsed':''}`}

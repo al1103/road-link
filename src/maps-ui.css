@@ -1025,16 +1025,6 @@
    GOOGLE MAPS ALIGNMENT PASS (search, sheet, buttons, icons)
    ======================================================== */
 .maps-ui .topbar .search-wrap { order: 0; }
-.maps-ui .topbar .device-button {
-  order: 1;
-  width: 40px;
-  height: 40px;
-  margin-top: 4px;
-}
-
-@media (max-width: 759px) {
-  .maps-ui .topbar .device-button { margin-top: 23px; }
-}
 
 .maps-ui .search-box {
   position: relative;
