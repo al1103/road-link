@@ -24,10 +24,11 @@ export async function say(text: string): Promise<boolean> {
       const {voices}=await TextToSpeech.getSupportedVoices();
       const voice=vietnameseVoice(voices);
       if(current!==generation)return true;
-      if(!voice)return false;
-      await TextToSpeech.stop();
-      if(current!==generation)return true;
-      await TextToSpeech.speak({ text, lang: 'vi-VN',voice:voices.indexOf(voice), rate: 0.95, pitch: 1, volume: 1, category: 'playback' });
+      if (voice) {
+        await TextToSpeech.speak({ text, lang: 'vi-VN', voice: voices.indexOf(voice), rate: 0.95, pitch: 1, volume: 1, category: 'playback' });
+      } else {
+        await TextToSpeech.speak({ text, lang: 'vi-VN', rate: 0.95, pitch: 1, volume: 1, category: 'playback' });
+      }
     } else {
       if (!('speechSynthesis' in window)) return false;
       const voice=vietnameseVoice(await webVoices());

@@ -59,6 +59,14 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
   };
 
   useEffect(()=>{
+    const requestPerm=async()=>{
+      const doe=window.DeviceOrientationEvent as unknown as {requestPermission?:()=>Promise<'granted'|'denied'>};
+      if(typeof doe?.requestPermission==='function'){
+        try{await doe.requestPermission();}catch{/* ignore */}
+      }
+    };
+    window.addEventListener('click',requestPerm,{once:true,passive:true});
+    window.addEventListener('touchstart',requestPerm,{once:true,passive:true});
     const handleOrientation=(event:DeviceOrientationEvent)=>{
       const heading=extractHeading(event);
       if(heading===null||!positionMarker.current)return;
@@ -70,6 +78,8 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
     window.addEventListener('deviceorientation',handleOrientation,{passive:true});
     window.addEventListener('deviceorientationabsolute',handleOrientation,{passive:true});
     return()=>{
+      window.removeEventListener('click',requestPerm);
+      window.removeEventListener('touchstart',requestPerm);
       window.removeEventListener('deviceorientation',handleOrientation);
       window.removeEventListener('deviceorientationabsolute',handleOrientation);
     };
