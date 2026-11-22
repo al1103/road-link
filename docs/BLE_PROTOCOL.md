@@ -44,6 +44,18 @@ App không còn trường hoặc luồng dữ liệu mô phỏng trong protocol 
 
 Status notify là chuỗi ASCII ngắn: `ready-v1`, `route-begin`, `route-ready`, `stopped`, hoặc lỗi như `bad-frame`, `bad-points`, `incomplete-route`. Write response xác nhận GATT đã nhận; không có cam kết hiển thị vật lý. Firmware ví dụ cảnh báo stale sau 10 giây không có nav.
 
+## Hiển thị bản đồ trên màn hình ESP32
+
+Firmware `esp32-oled` vẽ lại tuyến từ dữ liệu đã nhận, không nhận tile hay ảnh nền:
+
+- Khung bản đồ 128×53 px chiếm toàn bộ màn hình SSD1306 128×64; tuyến được co giãn vừa khung theo cửa sổ cục bộ quanh xe: 150 m phía sau và phía trước là `max(400 m, 8 × tốc độ km/h)`.
+- Đoạn đã đi vẽ nét đứt, đoạn còn lại nét liền; vị trí hiện tại là chấm tròn, kèm mũi tên 7 px theo `heading` khi có hướng.
+- Điểm rẽ kế tiếp là chấm tròn nhỏ tại khoảng `turn_m` phía trước.
+- Khi `road_feature.distance_m ≤ 900`, một mũi tên tam giác nhấp nháy đánh dấu đúng vị trí trên tuyến; thanh trên hiện nhãn `CAM`, `LIGHT`, `STOP`, `GIVE`, `RAIL`, `CROSS`, `BUMP`, `LIMIT`, `SIGN` hoặc `HAZARD` kèm khoảng cách. Giới hạn tốc độ OSM nằm ở góc phải thanh trên.
+- Khi tới đích, hộp `ARRIVED` hiện đè lên bản đồ; mất nav quá 10 giây thì hiện `GPS / BLE stale`.
+
+Các cảnh báo chỉ xuất hiện khi app bật lớp “Giới hạn tốc độ, biển báo & camera” và có feature phía trước; dữ liệu là OSM, chưa xác minh thực địa. Với màn hình lớn hơn (TFT 240×320…), thay constructor `U8G2_SSD1306_128X64_NONAME_F_HW_I2C` bằng driver tương ứng và giữ nguyên toạ độ trong `drawMap`; không cần đổi app hay protocol.
+
 ## Những gì không truyền
 
 Không truyền ảnh nền bản đồ đường phố, tile OSM hoặc ảnh màn hình iPhone ở bản đầu. ESP32 có thể vẽ đường tuyến và điểm hiện tại từ dữ liệu tọa độ. Bổ sung renderer/chế độ ảnh là một tính năng riêng, cần biết màn hình và băng thông thực tế.

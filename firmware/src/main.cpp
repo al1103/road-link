@@ -19,12 +19,19 @@ constexpr uint16_t MAX_POINTS = 192;
 struct Point { int32_t lat; int32_t lng; };
 struct State {
   Point points[MAX_POINTS];
+  float cum[MAX_POINTS] = { 0 };
+  float total = 0;
   uint16_t count = 0;
   String route;
   String maneuver = "ready";
   int turn = 0, remaining = 0, speed = 0;
   int speedLimit = -1;
   int32_t lat = 0, lng = 0;
+  uint8_t heading = 0;
+  bool headingValid = false;
+  bool roadEnabled = false;
+  String featureKind;
+  int featureM = -1;
   bool arrived = false, connected = false;
   uint32_t lastNav = 0, lastSeq = 0;
 };
@@ -48,6 +55,12 @@ bool validPoint(JsonVariantConst value, Point& out) {
   if (p.size() != 2 || !p[0].is<int32_t>() || !p[1].is<int32_t>()) return false;
   out = { p[0].as<int32_t>(), p[1].as<int32_t>() };
   return out.lat >= -900000000 && out.lat <= 900000000 && out.lng >= -1800000000 && out.lng <= 1800000000;
+}
+double metersBetween(const Point& a, const Point& b) {
+  const double cosLat = cos((double(a.lat) + b.lat) / 2.0 / 1e7 * PI / 180.0);
+  const double dx = double(b.lng - a.lng) / 1e7 * cosLat;
+  const double dy = double(b.lat - a.lat) / 1e7;
+  return sqrt(dx * dx + dy * dy) * 111320.0;
 }
 void handleLine() {
   JsonDocument doc;
@@ -80,6 +93,13 @@ void handleLine() {
     if (!expected || staged != expected || (doc["count"] | 0) != expected || id != stagingRoute) { status("incomplete-route"); return; }
     xSemaphoreTake(stateMutex, portMAX_DELAY);
     memcpy(state.points, staging, staged * sizeof(Point));
+    float total = 0;
+    state.cum[0] = 0;
+    for (uint16_t i = 1; i < staged; i++) {
+      total += metersBetween(state.points[i - 1], state.points[i]);
+      state.cum[i] = total;
+    }
+    state.total = total;
     state.count = staged; state.route = id; state.lastSeq = 0;
     state.arrived = false; state.maneuver = "ready"; state.lastNav = 0;
     xSemaphoreGive(stateMutex);
@@ -102,6 +122,16 @@ void handleLine() {
     state.speed = speed; state.lat = lat; state.lng = lng;
     state.speedLimit = doc["speed_limit_kmh"].is<int>() ? doc["speed_limit_kmh"].as<int>() : -1;
     if(state.speedLimit<1||state.speedLimit>300)state.speedLimit=-1;
+    state.headingValid = !doc["heading"].isNull() && (doc["heading_available"] | true) && doc["heading"].is<int>();
+    state.heading = state.headingValid ? uint8_t((((doc["heading"].as<int>()) % 360) + 360) % 360) : 0;
+    state.roadEnabled = doc["road_data_enabled"] | false;
+    JsonVariantConst feature = doc["road_feature"];
+    if (feature.isNull()) { state.featureKind = ""; state.featureM = -1; }
+    else {
+      state.featureKind = feature["kind"] | "";
+      state.featureM = feature["distance_m"] | -1;
+      if (state.featureM < 0) state.featureM = -1;
+    }
     state.arrived = doc["arrived"] | false; state.lastNav = millis();
     xSemaphoreGive(stateMutex);
     // Full instruction remains UTF-8 in serial, even if your display font lacks Vietnamese.
@@ -145,31 +175,164 @@ class ServerCallbacks : public NimBLEServerCallbacks {
     Serial.println("BLE disconnected; waiting for reconnect");
   }
 };
+#if ROADLINK_OLED
+uint16_t pointAhead(const State& s, float ahead, int32_t& outLat, int32_t& outLng) {
+  if (s.count < 2 || s.total <= 0) return 0;
+  float fromStart = s.total - float(s.remaining);
+  if (fromStart < 0) fromStart = 0;
+  float target = fromStart + ahead;
+  if (target < 0) target = 0;
+  if (target >= s.total) { outLat = s.points[s.count - 1].lat; outLng = s.points[s.count - 1].lng; return s.count - 1; }
+  uint16_t i = 1;
+  while (i < s.count && s.cum[i] < target) i++;
+  if (i >= s.count) { outLat = s.points[s.count - 1].lat; outLng = s.points[s.count - 1].lng; return s.count - 1; }
+  const float span = s.cum[i] - s.cum[i - 1];
+  const float t = span > 0 ? (target - s.cum[i - 1]) / span : 0;
+  outLat = (int32_t)lround(s.points[i - 1].lat + (double(s.points[i].lat) - s.points[i - 1].lat) * t);
+  outLng = (int32_t)lround(s.points[i - 1].lng + (double(s.points[i].lng) - s.points[i - 1].lng) * t);
+  return i;
+}
+const char* featureLabel(const String& kind) {
+  if (kind == "speed-camera" || kind == "traffic-camera" || kind == "camera") return "CAM";
+  if (kind == "signals") return "LIGHT";
+  if (kind == "stop") return "STOP";
+  if (kind == "give-way") return "GIVE";
+  if (kind == "rail-crossing") return "RAIL";
+  if (kind == "pedestrian-crossing") return "CROSS";
+  if (kind == "traffic-calming") return "BUMP";
+  if (kind == "speed-sign") return "LIMIT";
+  if (kind == "sign") return "SIGN";
+  if (kind == "hazard") return "HAZARD";
+  return "WARN";
+}
+void drawMap(const State& s) {
+  display.drawFrame(0, 11, 128, 53);
+  if (s.count < 2) return;
+  const int left = 3, right = 124, top = 14, bottom = 61;
+  const bool live = s.lastNav != 0;
+  float fromStart = live ? s.total - float(s.remaining) : 0;
+  if (fromStart < 0) fromStart = 0;
+  float startD = fromStart - 150.0f;
+  if (startD < 0) startD = 0;
+  float aheadM = 400.0f;
+  if (float(s.speed) * 8.0f > aheadM) aheadM = float(s.speed) * 8.0f;
+  float endD = fromStart + aheadM;
+  if (endD > s.total) endD = s.total;
+  if (endD <= startD) { startD = 0; endD = s.total; }
+  uint16_t i0 = 0, i1 = s.count - 1;
+  for (uint16_t i = 0; i < s.count; i++) { if (s.cum[i] >= startD) { i0 = i; break; } }
+  for (uint16_t i = s.count; i-- > 0;) { if (s.cum[i] <= endD) { i1 = i; break; } }
+  if (i1 < i0 + 1) { i0 = 0; i1 = s.count - 1; }
+  int32_t minLat = s.points[i0].lat, maxLat = minLat, minLng = s.points[i0].lng, maxLng = minLng;
+  for (uint16_t i = i0 + 1; i <= i1; i++) {
+    if (s.points[i].lat < minLat) minLat = s.points[i].lat;
+    if (s.points[i].lat > maxLat) maxLat = s.points[i].lat;
+    if (s.points[i].lng < minLng) minLng = s.points[i].lng;
+    if (s.points[i].lng > maxLng) maxLng = s.points[i].lng;
+  }
+  if (live) {
+    if (s.lat < minLat) minLat = s.lat;
+    if (s.lat > maxLat) maxLat = s.lat;
+    if (s.lng < minLng) minLng = s.lng;
+    if (s.lng > maxLng) maxLng = s.lng;
+  }
+  const double cosLat = cos(double(s.lat) / 1e7 * PI / 180.0);
+  double spanX = double(maxLng - minLng) / 1e7 * cosLat;
+  double spanY = double(maxLat - minLat) / 1e7;
+  if (spanX < 1e-9) spanX = 1e-9;
+  if (spanY < 1e-9) spanY = 1e-9;
+  const double fitX = (right - left) / spanX, fitY = (bottom - top) / spanY;
+  const double scale = (fitX < fitY ? fitX : fitY) * 0.9;
+  const double offsetX = left + ((right - left) - spanX * scale) / 2.0;
+  const double offsetY = top + ((bottom - top) - spanY * scale) / 2.0;
+  auto mx = [&](int32_t lng) { return int16_t(offsetX + double(lng - minLng) / 1e7 * cosLat * scale); };
+  auto my = [&](int32_t lat) { return int16_t(offsetY + double(maxLat - lat) / 1e7 * scale); };
+  uint16_t nearest = i0;
+  if (live) {
+    double best = 1e18;
+    for (uint16_t i = i0; i <= i1; i++) {
+      const double dx = double(s.points[i].lng - s.lng) / 1e7 * cosLat;
+      const double dy = double(s.points[i].lat - s.lat) / 1e7;
+      const double d = dx * dx + dy * dy;
+      if (d < best) { best = d; nearest = i; }
+    }
+  }
+  for (uint16_t i = i0 + 1; i <= i1; i++) {
+    if (live && i <= nearest && ((i - 1) % 2)) continue;
+    display.drawLine(mx(s.points[i - 1].lng), my(s.points[i - 1].lat), mx(s.points[i].lng), my(s.points[i].lat));
+  }
+  if (live && !s.arrived) {
+    if (s.turn > 0) {
+      int32_t la = 0, ln = 0;
+      const uint16_t idx = pointAhead(s, float(s.turn), la, ln);
+      if (idx >= i0 && idx <= i1) display.drawDisc(mx(ln), my(la), 2);
+    }
+    if (s.featureM >= 0 && s.featureM <= 900 && (millis() / 500) % 2 == 0) {
+      int32_t la = 0, ln = 0;
+      const uint16_t idx = pointAhead(s, float(s.featureM), la, ln);
+      if (idx >= i0 && idx <= i1) {
+        const int fx = mx(ln), fy = my(la);
+        const bool above = fy - 9 >= 12;
+        display.drawDisc(fx, fy, 1);
+        if (above) display.drawTriangle(fx, fy - 8, fx - 4, fy - 3, fx + 4, fy - 3);
+        else display.drawTriangle(fx, fy + 8, fx - 4, fy + 3, fx + 4, fy + 3);
+      }
+    }
+    const int px = mx(s.lng), py = my(s.lat);
+    if (s.headingValid) {
+      const double rad = double(s.heading) * PI / 180.0;
+      display.drawLine(px, py, px + int(sin(rad) * 7), py - int(cos(rad) * 7));
+    }
+    display.drawDisc(px, py, 2);
+  }
+}
+#endif
 void render(const State& s) {
 #if ROADLINK_OLED
-  display.clearBuffer(); display.setFont(u8g2_font_6x12_tf);
+  display.clearBuffer();
   if (!s.connected) {
-    display.drawStr(0,12,"RoadLink BLE"); display.drawStr(0,32,"Waiting for phone");
-  } else if (s.count && s.lastNav && millis() - s.lastNav > 10000) {
-    display.drawStr(0,12,"GPS / BLE stale"); display.drawStr(0,32,"Check your phone");
-  } else if (s.count && s.lastNav) {
-    display.drawStr(0,10,"ROADLINK");
-    display.drawStr(77,10,(String("OSM ")+(s.speedLimit>0?String(s.speedLimit):String("--"))).c_str());
-    String label=s.arrived ? "ARRIVED" : s.maneuver; label.toUpperCase();
-    display.drawStr(0,26,label.c_str());
-    display.drawStr(0,42,(String(s.turn)+" m").c_str());
-    display.drawStr(0,58,(String(s.speed)+" km/h").c_str());
-    int32_t minLat=s.points[0].lat,maxLat=minLat,minLng=s.points[0].lng,maxLng=minLng;
-    for(int i=1;i<s.count;i++) { minLat=min(minLat,s.points[i].lat); maxLat=max(maxLat,s.points[i].lat); minLng=min(minLng,s.points[i].lng); maxLng=max(maxLng,s.points[i].lng); }
-    const double cosLat=cos(s.lat/1e7*PI/180.0);
-    const double spanX=max(1.0,double(maxLng-minLng)*cosLat),spanY=max(1.0,double(maxLat-minLat));
-    const double scale=42.0/max(spanX,spanY);
-    auto x=[&](int32_t n){return int16_t(82+(n-minLng)*cosLat*scale);};
-    auto y=[&](int32_t n){return int16_t(59-(n-minLat)*scale);};
-    for(int i=1;i<s.count;i++) display.drawLine(x(s.points[i-1].lng),y(s.points[i-1].lat),x(s.points[i].lng),y(s.points[i].lat));
-    display.drawDisc(constrain(x(s.lng),80,126),constrain(y(s.lat),14,62),2);
+    display.setFont(u8g2_font_6x12_tf);
+    display.drawStr(0, 12, "RoadLink BLE");
+    display.drawStr(0, 32, "Waiting for phone");
+    display.sendBuffer();
+    return;
+  }
+  if (!s.count) {
+    display.setFont(u8g2_font_6x12_tf);
+    display.drawStr(0, 12, "Phone connected");
+    display.drawStr(0, 32, "Start navigation");
+    display.sendBuffer();
+    return;
+  }
+  if (s.lastNav && millis() - s.lastNav > 10000) {
+    display.setFont(u8g2_font_6x12_tf);
+    display.drawStr(0, 12, "GPS / BLE stale");
+    display.drawStr(0, 32, "Check your phone");
+    display.sendBuffer();
+    return;
+  }
+  display.setFont(u8g2_font_5x7_tf);
+  display.drawStr(0, 7, (String(s.speed) + "km/h").c_str());
+  if (s.speedLimit > 0) {
+    display.drawFrame(110, 0, 18, 10);
+    char limit[4];
+    snprintf(limit, sizeof(limit), "%d", s.speedLimit);
+    display.drawStr(112, 7, limit);
   } else {
-    display.drawStr(0,12,"Phone connected"); display.drawStr(0,32,"Start navigation");
+    display.drawStr(113, 7, "--");
+  }
+  if (s.lastNav && s.featureM >= 0 && s.featureM <= 900 && (millis() / 500) % 2 == 0) {
+    char warning[20];
+    snprintf(warning, sizeof(warning), "%s %dm", featureLabel(s.featureKind), s.featureM);
+    display.drawStr(44, 7, warning);
+  }
+  drawMap(s);
+  if (s.arrived) {
+    display.drawBox(36, 24, 56, 13);
+    display.setDrawColor(0);
+    display.setFont(u8g2_font_6x12_tf);
+    display.drawStr(42, 34, "ARRIVED");
+    display.setDrawColor(1);
   }
   display.sendBuffer();
 #else
