@@ -119,16 +119,7 @@ export function useLocation() {
     const handleOrientation=(event:DeviceOrientationEvent)=>{
       const heading=extractHeading(event);
       if(heading===null)return;
-      const now=Date.now();
-      compass.current={value:heading,timestamp:now};
-      if(now-lastOrientationUpdate.current<90)return;
-      lastOrientationUpdate.current=now;
-      setFix(prev=>{
-        if(!prev)return null;
-        if(prev.speed>2.5&&lastCourse.current&&now-lastCourse.current.timestamp<6000)return prev;
-        if(prev.headingAvailable&&Math.abs(prev.heading-heading)<1.5)return prev;
-        return {...prev,heading,headingAvailable:true};
-      });
+      compass.current={value:heading,timestamp:Date.now()};
     };
 
     window.addEventListener('deviceorientation',handleOrientation,{passive:true});

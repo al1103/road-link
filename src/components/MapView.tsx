@@ -24,6 +24,17 @@ function padding(instance:LibreMap){
 function centerOn(instance:LibreMap,point:Coordinate,zoom:number){instance.easeTo({center:[point.lng,point.lat],zoom,padding:padding(instance),duration:400});}
 function updateSource(instance:LibreMap,id:string,data:FeatureCollection){(instance.getSource(id) as GeoJSONSource|undefined)?.setData(data);}
 function pin(className:string,html:string):HTMLDivElement {const el=document.createElement('div');el.className=className;el.innerHTML=html;return el;}
+function extractHeading(event: DeviceOrientationEvent): number | null {
+  const e = event as unknown as { webkitCompassHeading?: unknown; alpha?: unknown };
+  if (typeof e.webkitCompassHeading === 'number' && Number.isFinite(e.webkitCompassHeading)) {
+    const val = e.webkitCompassHeading;
+    if (val >= 0 && val <= 360) return val;
+  }
+  if (typeof e.alpha === 'number' && Number.isFinite(e.alpha)) {
+    return (360 - e.alpha + 360) % 360;
+  }
+  return null;
+}
 function uncertainty(position:Fix):FeatureCollection<Polygon>{
   if(position.accuracy>100000)return {type:'FeatureCollection',features:[]};
   const latitude=position.lat*Math.PI/180,d=position.accuracy/6371000,coordinates:number[][]=[];
@@ -38,6 +49,7 @@ function uncertainty(position:Fix):FeatureCollection<Polygon>{
 export default function MapView({route,alternatives,destination,onSelectRoute,onPick,roadData,position,focusPosition,positionStale,navigating,follow,onDrag,onTileError,recenter,mode3D,northReset,onBearing}:Props){
   const element=useRef<HTMLDivElement>(null),map=useRef<LibreMap|null>(null),[ready,setReady]=useState(false);
   const callbacks=useRef({onPick,onSelectRoute,onDrag,onTileError,onBearing,alternatives,mode3D});callbacks.current={onPick,onSelectRoute,onDrag,onTileError,onBearing,alternatives,mode3D};
+  const positionRef=useRef(position);positionRef.current=position;
   const routePins=useRef<Marker[]>([]),roadMarkers=useRef<Marker[]>([]),placeMarker=useRef<Marker|null>(null),positionMarker=useRef<Marker|null>(null);
   const displayHeading=useRef(0),course=useRef<number|null>(null),lastCentered=useRef(0),initialPositionCentered=useRef(false);
   const rotateArrow=()=>{
@@ -45,6 +57,23 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
     const next=course.current-map.current.getBearing(),delta=((next-displayHeading.current+540)%360)-180;displayHeading.current+=delta;
     positionMarker.current?.getElement().style.setProperty('--heading',`${displayHeading.current}deg`);
   };
+
+  useEffect(()=>{
+    const handleOrientation=(event:DeviceOrientationEvent)=>{
+      const heading=extractHeading(event);
+      if(heading===null||!positionMarker.current)return;
+      if(positionRef.current&&positionRef.current.speed>2.5&&positionRef.current.headingAvailable)return;
+      course.current=heading;
+      positionMarker.current.getElement().classList.remove('direction-unknown');
+      rotateArrow();
+    };
+    window.addEventListener('deviceorientation',handleOrientation,{passive:true});
+    window.addEventListener('deviceorientationabsolute',handleOrientation,{passive:true});
+    return()=>{
+      window.removeEventListener('deviceorientation',handleOrientation);
+      window.removeEventListener('deviceorientationabsolute',handleOrientation);
+    };
+  },[]);
   const detailVisibility=()=>{const zoom=map.current?.getZoom()??0;for(const marker of roadMarkers.current){const el=marker.getElement();if(el.dataset.roadDetail==='true')el.style.display=zoom>=15?'':'none';}};
   useEffect(()=>{
     if(!element.current)return;
