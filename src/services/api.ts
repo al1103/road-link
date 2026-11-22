@@ -2,7 +2,9 @@ import { cumulative, distance, projectOnRoute } from '../domain/geometry';
 import type { Coordinate, Maneuver, OsmRouteEdge, Place, Route, RouteStep } from '../domain/types';
 const ROUTER = (import.meta.env.VITE_ROUTER_URL || 'https://router.project-osrm.org').replace(/\/$/, '');
 const GEOCODER = (import.meta.env.VITE_GEOCODER_URL || 'https://nominatim.openstreetmap.org').replace(/\/$/, '');
+const OVERPASS = (import.meta.env.VITE_OVERPASS_URL || (import.meta.env.DEV ? '/api/interpreter' : 'https://overpass-api.de/api/interpreter')).replace(/\/$/, '');
 const searchCache = new Map<string, Place[]>();
+const nearbyCache = new Map<string, Place[]>();
 let searchQueue: Promise<unknown> = Promise.resolve();
 let lastSearch = 0;
 async function getJson(url: string, signal?: AbortSignal): Promise<unknown> {
@@ -68,6 +70,33 @@ export async function searchPlaces(query: string, signal?: AbortSignal, near?: S
   });
   searchQueue = request.catch(() => undefined);
   return request;
+}
+const NEARBY_LABELS: Record<string, string> = {
+  restaurant: 'Nhà hàng', cafe: 'Cà phê', fast_food: 'Đồ ăn nhanh', fuel: 'Cây xăng',
+  hotel: 'Khách sạn', atm: 'ATM', bank: 'Ngân hàng', pharmacy: 'Nhà thuốc',
+  hospital: 'Bệnh viện', marketplace: 'Chợ', supermarket: 'Siêu thị',
+  convenience: 'Tạp hóa', bakery: 'Tiệm bánh', mall: 'Trung tâm thương mại'
+};
+export async function nearbyPlaces(lat: number, lng: number, signal?: AbortSignal, radius = 1500): Promise<Place[]> {
+  const key = `${lat.toFixed(2)},${lng.toFixed(2)},${radius}`;
+  const cached = nearbyCache.get(key);
+  if (cached) return cached;
+  const query = `[out:json][timeout:10];(node(around:${radius},${lat},${lng})["amenity"~"^(restaurant|cafe|fast_food|fuel|hotel|atm|bank|pharmacy|hospital|marketplace)$"];node(around:${radius},${lat},${lng})["shop"~"^(supermarket|convenience|bakery|mall)$"];);out body 40;`;
+  const data = await getJson(`${OVERPASS}?data=${encodeURIComponent(query)}`, signal);
+  if (!record(data) || !Array.isArray(data.elements)) throw new Error('Không tải được địa điểm gần đây.');
+  const places: Place[] = data.elements.flatMap((item: unknown) => {
+    if (!record(item) || typeof item.lat !== 'number' || typeof item.lon !== 'number' || !record(item.tags)) return [];
+    const tags = item.tags as Record<string, string>;
+    const name = tags.name || tags['name:vi'] || tags.brand;
+    if (!name) return [];
+    const street = tags['addr:street'] ? ` · ${tags['addr:street']}` : '';
+    return [{ id: `poi:${String(item.id)}`, name, detail: `${NEARBY_LABELS[tags.amenity] ?? NEARBY_LABELS[tags.shop] ?? 'Địa điểm'}${street}`, lat: item.lat, lng: item.lon }];
+  });
+  const unique = [...new Map(places.map(place => [place.id, place])).values()]
+    .sort((a, b) => distance(a, { lat, lng }) - distance(b, { lat, lng }))
+    .slice(0, 8);
+  nearbyCache.set(key, unique);
+  return unique;
 }
 function maneuverFor(type: string, modifier: string): Maneuver {
   if (type === 'arrive' || type === 'depart') return type;

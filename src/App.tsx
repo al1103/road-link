@@ -15,7 +15,7 @@ import { bearing, cumulative, distance, formatDistance, formatDuration, pointAt 
 import { Navigator } from './domain/navigation';
 import type { Fix, Place, Progress, Route } from './domain/types';
 import { useLocation } from './hooks/useLocation';
-import { fetchRoute,fetchRoutes, friendlyError, searchPlaces } from './services/api';
+import { fetchRoute,fetchRoutes, friendlyError, nearbyPlaces, searchPlaces } from './services/api';
 import { BluetoothLink, type BluetoothState } from './services/bluetooth';
 import { navMessage, routeMessages } from './services/protocol';
 import { say, silence } from './services/voice';
@@ -48,6 +48,10 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [searchError,setSearchError]=useState<string|null>(null);
   const [nearbyNote,setNearbyNote]=useState<string|null>(null);
+  const [nearbyList,setNearbyList]=useState<Place[]>([]);
+  const [nearbyLoading,setNearbyLoading]=useState(false);
+  const [nearbyError,setNearbyError]=useState<string|null>(null);
+  const [nearbyRetry,setNearbyRetry]=useState(0);
   const [shareStatus,setShareStatus]=useState<string|null>(null);
   const [navigationError,setNavigationError]=useState<string|null>(null);
   const [voiceUnavailable,setVoiceUnavailable]=useState(false);
@@ -79,6 +83,9 @@ export default function App() {
   const routeAbort = useRef<AbortController | null>(null);
   const searchAbort = useRef<AbortController | null>(null);
   const nearbySearch = useRef(false);
+  const nearbyCell = useRef('');
+  const nearbyAbort = useRef<AbortController | null>(null);
+  const nearbyCellKey = location.fix ? `${location.fix.lat.toFixed(2)},${location.fix.lng.toFixed(2)}` : '';
   const engine = useRef<Navigator | null>(null);
   const spoken = useRef(new Set<string>());
   const lastReroute = useRef(0);
@@ -187,6 +194,37 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [query, searchOpen]);
   useEffect(() => { if (!searchOpen) setNearbyNote(null); }, [searchOpen]);
+  useEffect(() => {
+    if (mode !== 'explore' || !nearbyCellKey) {
+      nearbyAbort.current?.abort();
+      if (!nearbyCellKey) {
+        setNearbyList([]);
+        setNearbyError(null);
+      }
+      setNearbyLoading(false);
+      return;
+    }
+    if (nearbyCellKey === nearbyCell.current) return;
+    nearbyCell.current = nearbyCellKey;
+    const [lat, lng] = nearbyCellKey.split(',').map(Number);
+    nearbyAbort.current?.abort();
+    const controller = new AbortController();
+    nearbyAbort.current = controller;
+    setNearbyLoading(true);
+    setNearbyError(null);
+    void nearbyPlaces(lat, lng, controller.signal)
+      .then(list => {
+        if (controller.signal.aborted) return;
+        setNearbyList(list);
+        if (!list.length) setNearbyError('Chưa thấy địa điểm có tên trong 1,5 km quanh bạn.');
+      })
+      .catch(err => { if (!controller.signal.aborted) setNearbyError(friendlyError(err)); })
+      .finally(() => { if (!controller.signal.aborted) setNearbyLoading(false); });
+    return () => {
+      controller.abort();
+      if (nearbyCell.current === nearbyCellKey) nearbyCell.current = '';
+    };
+  }, [mode, nearbyCellKey, nearbyRetry]);
 
   async function performSearch(text: string, options?: { nearby?: boolean }) {
     if (text.trim().length < 2) return;
@@ -397,6 +435,27 @@ export default function App() {
             </button>
           ))}
         </div>
+        <h2 className="destinations-heading saved-heading">Gần bạn</h2>
+        {!location.fix ? (
+          <p className="explore-help">Bật định vị để xem địa điểm gần nhất. <button type="button" className="text-button" onClick={() => void location.start()}>Bật định vị</button></p>
+        ) : nearbyLoading && !nearbyList.length ? (
+          <p className="explore-help">Đang tìm địa điểm gần bạn…</p>
+        ) : nearbyError ? (
+          <p className="explore-help">{nearbyError} <button type="button" className="text-button" onClick={() => { nearbyCell.current=''; setNearbyRetry(value => value + 1); }}>Thử lại</button></p>
+        ) : nearbyList.length ? (
+          <div className="quick-destinations">
+            {nearbyList.slice(0, 6).map((place, i) => (
+              <button key={place.id} onClick={() => choosePlace(place)}>
+                <span className={`quick-icon quick-${i}`}><MapPin size={20} /></span>
+                <strong>{place.name}</strong>
+                <span>{place.detail}{location.fix ? ` · ${formatDistance(distance(location.fix, place))}` : ''}</span>
+                <ChevronRight size={17} />
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="explore-help">Chưa thấy địa điểm có tên trong 1,5 km quanh bạn.</p>
+        )}
         {savedPlaces.length>0&&<><h2 className="destinations-heading saved-heading">Đã lưu</h2><div className="quick-destinations">{savedPlaces.slice(0,4).map((place,i)=><button key={place.id} onClick={()=>choosePlace(place)}><span className={`quick-icon quick-${i}`}><MapPin size={20}/></span><strong>{place.name}</strong><span>{place.detail}</span><ChevronRight size={17}/></button>)}</div></>}
       </>}
       {mode==='place'&&selected&&<PlaceCard place={selected} saved={saved} shareStatus={shareStatus} onRoute={()=>void plan(selected)} onSave={toggleFavorite} onShare={()=>void sharePlace()} onClose={stop}/>}
