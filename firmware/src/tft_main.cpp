@@ -27,16 +27,16 @@
 #define TFT_BL 7
 #endif
 #ifndef SD_SCLK
-#define SD_SCLK 36
+#define SD_SCLK 39
 #endif
 #ifndef SD_MOSI
-#define SD_MOSI 35
+#define SD_MOSI 40
 #endif
 #ifndef SD_MISO
-#define SD_MISO 37
+#define SD_MISO 41
 #endif
 #ifndef SD_CS
-#define SD_CS 34
+#define SD_CS 42
 #endif
 #ifndef ROADLINK_ROUND
 #define ROADLINK_ROUND 0
@@ -136,11 +136,16 @@ bool dropping = false;
 NimBLECharacteristic* statusCharacteristic;
 SemaphoreHandle_t stateMutex;
 
-struct Road { uint8_t cls, count; int32_t* pts; };
+struct Road { uint8_t cls, count; int32_t* pts; int32_t minLat, maxLat, minLng, maxLng; };
 uint8_t* mapBuf = nullptr;
 Road* roads = nullptr;
 uint16_t roadCount = 0;
 int mapLa = 9999, mapLo = 9999;
+bool mapMissing = false;
+int mapFailLa = 9999, mapFailLo = 9999;
+uint32_t mapRetryAt = 0;
+float smoothMapHeading = 0;
+bool smoothMapHeadingInit = false;
 
 void* psmalloc(size_t n) { void* p = ps_malloc(n); return p ? p : malloc(n); }
 
@@ -282,19 +287,20 @@ bool ensureMap(int32_t latE7, int32_t lngE7) {
   const int la = (int)floor((double)latE7 / 1e7 * 10.0);
   const int lo = (int)floor((double)lngE7 / 1e7 * 10.0);
   if (mapBuf && la == mapLa && lo == mapLo) return true;
+  if (mapMissing && la == mapFailLa && lo == mapFailLo && millis() < mapRetryAt) return false;
   char path[32];
   snprintf(path, sizeof path, "/map/%d_%d.rlm", la, lo);
   File f = SD.open(path, FILE_READ);
-  if (!f) return false;
+  if (!f) { mapMissing = true; mapFailLa = la; mapFailLo = lo; mapRetryAt = millis() + 2000; return false; }
   const size_t size = f.size();
   uint8_t* buf = (uint8_t*)psmalloc(size);
-  if (!buf) { f.close(); return false; }
+  if (!buf) { f.close(); mapRetryAt = millis() + 2000; return false; }
   const size_t got = f.read(buf, size);
   f.close();
-  if (got != size || memcmp(buf, "RLM1", 4) != 0) { free(buf); return false; }
+  if (got != size || memcmp(buf, "RLM1", 4) != 0) { free(buf); mapMissing = true; mapFailLa = la; mapFailLo = lo; mapRetryAt = millis() + 2000; return false; }
   const uint16_t n = buf[4] | (buf[5] << 8);
   Road* list = (Road*)psmalloc(n * sizeof(Road));
-  if (!list) { free(buf); return false; }
+  if (!list) { free(buf); mapRetryAt = millis() + 2000; return false; }
   size_t off = 8;
   uint16_t used = 0;
   for (uint16_t i = 0; i < n; i++) {
@@ -302,11 +308,21 @@ bool ensureMap(int32_t latE7, int32_t lngE7) {
     const uint8_t cls = buf[off], count = buf[off + 1];
     if (off + 4 + count * 8 > size) break;
     list[used].cls = cls; list[used].count = count; list[used].pts = (int32_t*)(buf + off + 4);
+    list[used].minLat = list[used].maxLat = list[used].pts[0];
+    list[used].minLng = list[used].maxLng = list[used].pts[1];
+    for (uint8_t k = 1; k < count; k++) {
+      const int32_t plat = list[used].pts[k * 2], plng = list[used].pts[k * 2 + 1];
+      if (plat < list[used].minLat) list[used].minLat = plat;
+      if (plat > list[used].maxLat) list[used].maxLat = plat;
+      if (plng < list[used].minLng) list[used].minLng = plng;
+      if (plng > list[used].maxLng) list[used].maxLng = plng;
+    }
     used++; off += 4 + count * 8;
   }
   if (mapBuf) free(mapBuf);
   if (roads) free(roads);
   mapBuf = buf; roads = list; roadCount = used; mapLa = la; mapLo = lo;
+  mapMissing = false;
   return true;
 }
 
@@ -363,7 +379,7 @@ const char* featureTag(const String& kind) {
   return "WARN";
 }
 
-void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading) {
+void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading, float extra) {
   const float scale = 0.42f;
   const double cosLat = cos(double(cLat) / 1e7 * PI / 180.0);
   const float rad = heading * PI / 180.0f;
@@ -392,20 +408,23 @@ void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading) {
     const Road& r = roads[i];
     uint16_t color; uint8_t width;
     style(r.cls, color, width);
+    const int x0 = px(r.minLng, r.minLat), x1 = px(r.maxLng, r.minLat), x2 = px(r.minLng, r.maxLat), x3 = px(r.maxLng, r.maxLat);
+    const int y0 = py(r.minLng, r.minLat), y1 = py(r.maxLng, r.minLat), y2 = py(r.minLng, r.maxLat), y3 = py(r.maxLng, r.maxLat);
+    const int minX = min(min(x0, x1), min(x2, x3)), maxX = max(max(x0, x1), max(x2, x3));
+    const int minY = min(min(y0, y1), min(y2, y3)), maxY = max(max(y0, y1), max(y2, y3));
+    if (maxX < -10 || minX > 250 || maxY < MAP_TOP || minY > MAP_BOTTOM + 5) continue;
+    int prevX = px(r.pts[1], r.pts[0]), prevY = py(r.pts[1], r.pts[0]);
     for (uint8_t k = 1; k < r.count; k++) {
-      const int x0 = px(r.pts[(k - 1) * 2 + 1], r.pts[(k - 1) * 2]);
-      const int y0 = py(r.pts[(k - 1) * 2 + 1], r.pts[(k - 1) * 2]);
-      const int x1 = px(r.pts[k * 2 + 1], r.pts[k * 2]);
-      const int y1 = py(r.pts[k * 2 + 1], r.pts[k * 2]);
-      if ((x0 < -10 && x1 < -10) || (x0 > 250 && x1 > 250) || (y0 < MAP_TOP && y1 < MAP_TOP) || (y0 > MAP_BOTTOM + 5 && y1 > MAP_BOTTOM + 5)) continue;
-      if (width >= 3) canvas.drawLine(x0, y0, x1, y1, DARK);
-      canvas.drawLine(x0 + (width >= 3), y0 + (width >= 3), x1 + (width >= 3), y1 + (width >= 3), color);
-      canvas.drawLine(x0, y0, x1, y1, color);
+      const int x = px(r.pts[k * 2 + 1], r.pts[k * 2]);
+      const int y = py(r.pts[k * 2 + 1], r.pts[k * 2]);
+      if (width >= 3) canvas.drawWideLine(prevX, prevY, x, y, width + 2.0f, DARK);
+      if (width >= 3) canvas.drawWideLine(prevX, prevY, x, y, width, color);
+      else canvas.drawLine(prevX, prevY, x, y, color);
+      prevX = x; prevY = y;
     }
   }
   if (s.count >= 2) {
     int32_t curLat, curLng;
-    const float extra = s.lastNav ? (float(s.speed) / 3.6f) * float(millis() - s.lastNav) / 1000.0f : 0;
     const uint16_t curIdx = pointAhead(s, extra, curLat, curLng);
     for (uint16_t i = 1; i < s.count; i++) {
       const int x0 = px(s.pts[i - 1].lng, s.pts[i - 1].lat);
@@ -415,8 +434,8 @@ void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading) {
       if (i <= curIdx) {
         canvas.drawLine(x0, y0, x1, y1, BLUE_DIM);
       } else {
-        canvas.drawLine(x0, y0, x1, y1, 0x0B4A);
-        canvas.drawLine(x0, y0, x1, y1, BLUE);
+        canvas.drawWideLine(x0, y0, x1, y1, 9.0f, 0x0B4A);
+        canvas.drawWideLine(x0, y0, x1, y1, 6.0f, BLUE);
       }
     }
     if (s.turn > 0 && !s.arrived) {
@@ -471,12 +490,26 @@ void render(const State& s) {
     canvas.pushSprite(0, 0);
     return;
   }
-  const float extra = s.lastNav ? (float(s.speed) / 3.6f) * float(millis() - s.lastNav) / 1000.0f : 0;
+  uint32_t age = s.lastNav ? millis() - s.lastNav : 0;
+  if (age > 2000) age = 2000;
+  float extra = s.lastNav ? (float(s.speed) / 3.6f) * float(age) / 1000.0f : 0;
+  if (extra > float(s.remaining)) extra = float(s.remaining);
   int32_t cLat = s.lat, cLng = s.lng;
   if (s.lastNav) pointAhead(s, extra, cLat, cLng);
   else { cLat = s.pts[0].lat; cLng = s.pts[0].lng; }
+  const float targetHeading = s.headingValid ? s.heading : 0;
+  if (!smoothMapHeadingInit) { smoothMapHeading = targetHeading; smoothMapHeadingInit = true; }
+  else {
+    const float delta = fmodf(targetHeading - smoothMapHeading + 540.0f, 360.0f) - 180.0f;
+    smoothMapHeading = fmodf(smoothMapHeading + delta * 0.2f + 360.0f, 360.0f);
+  }
   ensureMap(cLat, cLng);
-  drawMap(s, cLat, cLng, s.headingValid ? s.heading : 0);
+  drawMap(s, cLat, cLng, smoothMapHeading, extra);
+  if (!sdReady || !mapBuf) {
+    canvas.setTextColor(GRAY);
+    canvas.setFont(&fonts::Font2);
+    canvas.drawString(!sdReady ? "NO SD CARD" : "NO MAP DATA", 62, MAP_TOP + 6);
+  }
 
   char main[24], left[28], mid[28], right[28];
   snprintf(left, sizeof left, "%d km/h", s.speed);

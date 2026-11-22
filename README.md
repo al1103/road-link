@@ -91,9 +91,9 @@ pio run -d firmware -e esp32-s3-tft -t upload
 pio run -d firmware -e esp32-s3-round -t upload   # màn tròn GC9A01
 ```
 
-- 1.259 shard 0,1°, 48.292 đường, 5,67 MB sau khi chuyển sang nhị phân; thiết bị nạp shard quanh vị trí hiện tại.
+- 1.259 shard 0,1°, 48.815 đường, 5,67 MB sau khi chuyển sang nhị phân; thiết bị nạp shard quanh vị trí hiện tại.
 - Nền tối, đường tô theo cấp, tuyến xanh, heading-up, xe cố định gần đáy; banner xanh trên có mũi tên rẽ/khoảng cách/giới hạn tốc độ, thanh dưới có km/h, km còn lại và số phút.
-- Nhận tuyến và nav qua BLE như bản OLED, nội suy vị trí giữa 4 gói nav/giây và vẽ 15 fps vào sprite PSRAM nên không nháy.
+- Nhận tuyến và nav qua BLE như bản OLED, nội suy vị trí giữa 4 gói nav/giây, làm mượt heading và vẽ mục tiêu 15 fps vào sprite PSRAM nên không nháy.
 - Bản tròn bo banner trên và thanh dưới theo đường tròn, giữ nội dung trong vùng nhìn của màn; cảnh báo hiện nhãn `CAM/LIGHT/...` trong banner và tam giác chỉ vẽ khi còn trong tầm nhìn.
 - Chân mặc định, cách đổi chân và giới hạn: [docs/TFT_DISPLAY.md](docs/TFT_DISPLAY.md). Chưa có tên đường (font mặc định thiếu dấu tiếng Việt) và chưa kiểm thử trên phần cứng thật.
 

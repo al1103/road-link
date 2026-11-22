@@ -38,22 +38,29 @@ for (const name of fs.readdirSync(input)) {
     for (const p of geometry) {
       if (typeof p.lat !== 'number' || typeof p.lon !== 'number') continue;
       const lat = Math.round(p.lat * 1e7), lng = Math.round(p.lon * 1e7);
-      if (pts.length && pts[pts.length - 1] === lat && pts[pts.length - 1] === lng) continue;
+      if (pts.length >= 2 && pts[pts.length - 2] === lat && pts[pts.length - 1] === lng) continue;
       pts.push(lat, lng);
     }
     const pointCount = Math.floor(pts.length / 2);
     if (pointCount < 2) continue;
-    const chunk = Buffer.alloc(4 + pointCount * 8);
-    chunk.writeUInt8(cls, 0);
-    chunk.writeUInt8(Math.min(pointCount, 255), 1);
-    for (let i = 0; i < Math.min(pointCount, 255); i++) {
-      chunk.writeInt32LE(pts[i * 2], 4 + i * 8);
-      chunk.writeInt32LE(pts[i * 2 + 1], 8 + i * 8);
+    let start = 0;
+    while (start + 1 < pointCount) {
+      const end = Math.min(start + 255, pointCount);
+      const n = end - start;
+      const chunk = Buffer.alloc(4 + n * 8);
+      chunk.writeUInt8(cls, 0);
+      chunk.writeUInt8(n, 1);
+      for (let i = 0; i < n; i++) {
+        chunk.writeInt32LE(pts[(start + i) * 2], 4 + i * 8);
+        chunk.writeInt32LE(pts[(start + i) * 2 + 1], 8 + i * 8);
+      }
+      out.push(chunk);
+      count++;
+      ways++;
+      points += n;
+      if (end === pointCount) break;
+      start = end - 1;
     }
-    out.push(chunk);
-    count++;
-    ways++;
-    points += Math.min(pointCount, 255);
   }
   if (!count) continue;
   header.writeUInt16LE(count, 4);

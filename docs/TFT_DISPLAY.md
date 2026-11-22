@@ -26,10 +26,12 @@ Chân mặc định (đổi bằng `build_flags` nếu mạch của bạn khác)
 | TFT CS | 10 |
 | TFT RST | 8 |
 | TFT BL | 7 |
-| SD SCLK | 36 |
-| SD MOSI | 35 |
-| SD MISO | 37 |
-| SD CS | 34 |
+| SD SCLK | 39 |
+| SD MOSI | 40 |
+| SD MISO | 41 |
+| SD CS | 42 |
+
+GPIO 33–37 thường bị PSRAM octal chiếm trên ESP32-S3 N8R8, nên bộ chân SD mặc định đã tránh các chân này. Với board N8R2, đổi `board_build.arduino.memory_type` từ `qio_opi` sang `qio_qspi`.
 
 Ví dụ ghi đè:
 
@@ -73,7 +75,8 @@ Sau khi nạp: cắm thẻ SD, bật nguồn, kết nối `RoadLink ESP32` trong
 - Xe cố định gần đáy, bản đồ xoay heading-up; vị trí ngoại suy giữa các gói `nav` (4 gói/giây).
 - Banner xanh trên: mũi tên rẽ, khoảng cách, giới hạn tốc độ.
 - Thanh xanh dưới: tốc độ, quãng đường còn lại, số phút.
-- Vẽ 15 lần/giây vào sprite 240×240 trong PSRAM rồi đẩy một lần, nên không nháy.
+- Vẽ mục tiêu 15 lần/giây vào sprite 240×240 trong PSRAM rồi đẩy một lần, nên không nháy; heading bản đồ được làm mượt 20%/frame và vị trí ngoại suy bị giới hạn 2 giây.
+- Đường được lọc theo bbox trước khi chiếu, mỗi điểm chỉ chiếu một lần; thiếu shard/SD thì thử lại sau 2 giây và hiện `NO SD CARD`/`NO MAP DATA` thay vì mở thẻ liên tục.
 
 ## Khác biệt bản tròn GC9A01
 
