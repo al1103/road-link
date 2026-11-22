@@ -44,7 +44,7 @@ export function buildRoadQuery(route: Route, along: number): RoadQuery {
   }).join(',');
   const roadPart = nodes.length ? `node(id:${nodes.join(',')})->.rn;` : '';
   const ways = nodes.length ? 'way(bn.rn)["highway"][~"^maxspeed"~"."];' : '';
-  const query = `[out:json][timeout:18][maxsize:8388608];${roadPart}(${ways}node(around:30,${corridor})["traffic_sign"];node(around:30,${corridor})["highway"~"^(stop|give_way|speed_camera|traffic_signals)$"];node(around:30,${corridor})["man_made"="surveillance"];);out meta geom;`;
+  const query = `[out:json][timeout:18][maxsize:8388608];${roadPart}(${ways}node(around:30,${corridor})["traffic_sign"];node(around:30,${corridor})["highway"~"^(stop|give_way|speed_camera|traffic_signals|toll_gantry|weigh_station)$"];node(around:30,${corridor})["man_made"="surveillance"];node(around:30,${corridor})["barrier"="toll_booth"];node(around:30,${corridor})["amenity"="weighbridge"];node(around:30,${corridor})["maxheight"];node(around:30,${corridor})["maxweight"];);out meta geom;`;
   return { query, key: query, start, end, edges };
 }
 function object(v: unknown): v is Record<string, unknown> { return !!v && typeof v === 'object'; }
@@ -56,6 +56,10 @@ function classify(tags: Tags): {kind: FeatureKind; label: string} | null {
     return tags['surveillance:zone'] === 'traffic' ? {kind:'traffic-camera',label:'Camera/điểm giám sát giao thông'} : null;
   }
   if (tags.highway === 'traffic_signals') return {kind:'signals',label:'Đèn giao thông'};
+  if (tags.barrier === 'toll_booth' || tags.highway === 'toll_gantry') return {kind:'prohibition',label:'Trạm thu phí'};
+  if (tags.amenity === 'weighbridge' || tags.highway === 'weigh_station') return {kind:'prohibition',label:'Trạm cân tải trọng'};
+  if (tags.maxheight) return {kind:'prohibition',label:`Hạn chế chiều cao ${tags.maxheight}`};
+  if (tags.maxweight) return {kind:'prohibition',label:`Hạn chế tải trọng ${tags.maxweight}`};
   const code = tags.traffic_sign ?? '';
   if (tags.highway === 'stop' || /^(?:VN:)?R\.?122(?:$|;)/i.test(code) || /^stop(?:$|:)/i.test(code)) return {kind:'stop',label:'Biển STOP'};
   if (tags.highway === 'give_way' || /^(?:VN:)?W\.?208(?:$|;)/i.test(code) || /give way/i.test(code)) return {kind:'give-way',label:'Biển nhường đường'};

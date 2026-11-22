@@ -1,23 +1,26 @@
 import { cumulative, distance, projectOnRoute } from '../domain/geometry';
 import type { Coordinate, Maneuver, OsmRouteEdge, Place, Route, RouteStep } from '../domain/types';
 const ROUTER = (import.meta.env.VITE_ROUTER_URL || 'https://router.project-osrm.org').replace(/\/$/, '');
+const ROUTER_BIKE = (import.meta.env.VITE_ROUTER_BIKE_URL || 'https://routing.openstreetmap.de/routed-bike').replace(/\/$/, '');
+const ROUTER_FOOT = (import.meta.env.VITE_ROUTER_FOOT_URL || 'https://routing.openstreetmap.de/routed-foot').replace(/\/$/, '');
 const GEOCODER = (import.meta.env.VITE_GEOCODER_URL || 'https://nominatim.openstreetmap.org').replace(/\/$/, '');
 const OVERPASS = (import.meta.env.VITE_OVERPASS_URL || (import.meta.env.DEV ? '/api/interpreter' : 'https://overpass-api.de/api/interpreter')).replace(/\/$/, '');
+const OVERPASS_FR = (import.meta.env.VITE_OVERPASS_FR_URL || (import.meta.env.DEV ? '/api/overpass-fr' : 'https://overpass.openstreetmap.fr/api/interpreter')).replace(/\/$/, '');
 const searchCache = new Map<string, Place[]>();
 const nearbyCache = new Map<string, Place[]>();
 let searchQueue: Promise<unknown> = Promise.resolve();
 let lastSearch = 0;
-async function getJson(url: string, signal?: AbortSignal): Promise<unknown> {
+async function getJson(url: string, signal?: AbortSignal, timeoutMs = 16000): Promise<unknown> {
   // AbortSignal.any/timeout are unavailable on some supported iOS WebKit versions.
   const controller = new AbortController();
   const abort = () => controller.abort();
   let timedOut = false;
-  const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, 16000);
+  const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, timeoutMs);
   signal?.addEventListener('abort', abort, { once: true });
   if (signal?.aborted) controller.abort();
   try {
     const response = await fetch(url, { signal: controller.signal, headers: { Accept: 'application/json' } });
-    if (!response.ok) throw new Error(response.status === 429 ? 'Dịch vụ đang giới hạn lượt truy cập. Vui lòng chờ rồi thử lại.' : 'Chưa kết nối được dịch vụ bản đồ. Hãy kiểm tra mạng và thử lại.');
+    if (!response.ok) throw new Error(response.status === 429 ? 'Dịch vụ đang giới hạn lượt truy cập. Vui lòng chờ rồi thử lại.' : response.status >= 502 && response.status <= 504 ? 'Dịch vụ địa điểm đang quá tải. Thử lại sau ít phút.' : 'Chưa kết nối được dịch vụ bản đồ. Hãy kiểm tra mạng và thử lại.');
     return await response.json();
   } catch (error) {
     if (timedOut) { const timeoutError = new Error('Dịch vụ phản hồi chậm.'); timeoutError.name = 'TimeoutError'; throw timeoutError; }
@@ -49,7 +52,7 @@ export async function searchPlaces(query: string, signal?: AbortSignal, near?: S
     if (delay) await new Promise(resolve => setTimeout(resolve, delay));
     if (signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
     lastSearch = Date.now();
-    const params = new URLSearchParams({ q, format: 'jsonv2', limit: '6', 'accept-language': 'vi', addressdetails: '1',countrycodes:'vn' });
+    const params = new URLSearchParams({ q, format: 'jsonv2', limit: '6', 'accept-language': 'vi', addressdetails: '1' });
     if (near) {
       const d = near.radiusDeg ?? 0.12;
       params.set('viewbox', [near.lng - d, near.lat + d, near.lng + d, near.lat - d].join(','));
@@ -77,21 +80,36 @@ const NEARBY_LABELS: Record<string, string> = {
   hospital: 'Bệnh viện', marketplace: 'Chợ', supermarket: 'Siêu thị',
   convenience: 'Tạp hóa', bakery: 'Tiệm bánh', mall: 'Trung tâm thương mại'
 };
-export async function nearbyPlaces(lat: number, lng: number, signal?: AbortSignal, radius = 1500): Promise<Place[]> {
-  const key = `${lat.toFixed(2)},${lng.toFixed(2)},${radius}`;
+export async function nearbyPlaces(lat: number, lng: number, signal?: AbortSignal): Promise<Place[]> {
+  const key = `${lat.toFixed(2)},${lng.toFixed(2)}`;
   const cached = nearbyCache.get(key);
   if (cached) return cached;
-  const query = `[out:json][timeout:10];(node(around:${radius},${lat},${lng})["amenity"~"^(restaurant|cafe|fast_food|fuel|hotel|atm|bank|pharmacy|hospital|marketplace)$"];node(around:${radius},${lat},${lng})["shop"~"^(supermarket|convenience|bakery|mall)$"];);out body 40;`;
-  const data = await getJson(`${OVERPASS}?data=${encodeURIComponent(query)}`, signal);
-  if (!record(data) || !Array.isArray(data.elements)) throw new Error('Không tải được địa điểm gần đây.');
-  const places: Place[] = data.elements.flatMap((item: unknown) => {
-    if (!record(item) || typeof item.lat !== 'number' || typeof item.lon !== 'number' || !record(item.tags)) return [];
-    const tags = item.tags as Record<string, string>;
-    const name = tags.name || tags['name:vi'] || tags.brand;
-    if (!name) return [];
-    const street = tags['addr:street'] ? ` · ${tags['addr:street']}` : '';
-    return [{ id: `poi:${String(item.id)}`, name, detail: `${NEARBY_LABELS[tags.amenity] ?? NEARBY_LABELS[tags.shop] ?? 'Địa điểm'}${street}`, lat: item.lat, lng: item.lon }];
-  });
+  const hosts = [{ url: OVERPASS, timeout: 3500 }, { url: OVERPASS_FR, timeout: 14000 }];
+  const searchRadius = 20000;
+  let lastError: unknown = null;
+  let places: Place[] | null = null;
+  for (const host of hosts) {
+    const query = `[out:json][timeout:15];(node(around:${searchRadius},${lat},${lng})["amenity"~"^(restaurant|cafe|fast_food|fuel|hotel|atm|bank|pharmacy|hospital|marketplace)$"];node(around:${searchRadius},${lat},${lng})["shop"~"^(supermarket|convenience|bakery|mall)$"];);out body 60;`;
+    try {
+      const data = await getJson(`${host.url}?data=${encodeURIComponent(query)}`, signal, host.timeout);
+      if (!record(data) || !Array.isArray(data.elements)) throw new Error('Không tải được địa điểm gần đây.');
+      places = data.elements.flatMap((item: unknown) => {
+        if (!record(item) || typeof item.lat !== 'number' || typeof item.lon !== 'number' || !record(item.tags)) return [];
+        const tags = item.tags as Record<string, string>;
+        const name = tags.name || tags['name:vi'] || tags.brand;
+        if (!name) return [];
+        const street = tags['addr:street'] && !tags['addr:street'].includes(name) ? ` · ${tags['addr:street']}` : '';
+        return [{ id: `poi:${String(item.id)}`, name, detail: `${NEARBY_LABELS[tags.amenity] ?? NEARBY_LABELS[tags.shop] ?? 'Địa điểm'}${street}`, lat: item.lat, lng: item.lon }];
+      });
+      break;
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      lastError = error;
+    }
+  }
+  if (signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
+  if (places === null) throw lastError ?? new Error('Không tải được địa điểm gần đây.');
+  if (!places.length) return [];
   const unique = [...new Map(places.map(place => [place.id, place])).values()]
     .sort((a, b) => distance(a, { lat, lng }) - distance(b, { lat, lng }))
     .slice(0, 8);
@@ -171,14 +189,18 @@ export function parseRoute(data: unknown, destination: Place): Route {
   const summary=Array.isArray(raw.legs)?raw.legs.filter(record).map(leg=>typeof leg.summary==='string'?leg.summary:'').filter(Boolean).join(', '):'';
   return { id: `route-${Date.now()}`, coordinates: points, distance: raw.distance, duration: raw.duration, destination, steps, osmEdges,summary };
 }
-export async function fetchRoute(origin: Coordinate, destination: Place, signal?: AbortSignal): Promise<Route> {
-  return (await fetchRoutes(origin,destination,signal))[0];
+export type TransportProfile = 'car' | 'bike' | 'walk';
+export async function fetchRoute(origin: Coordinate, destination: Place, signal?: AbortSignal, profile: TransportProfile = 'car'): Promise<Route> {
+  return (await fetchRoutes(origin,destination,signal,[],profile))[0];
 }
-export async function fetchRoutes(origin: Coordinate, destination: Place, signal?: AbortSignal,via:Coordinate[]=[]): Promise<Route[]> {
+export async function fetchRoutes(origin: Coordinate, destination: Place, signal?: AbortSignal,via:Coordinate[]=[],profile:TransportProfile='car'): Promise<Route[]> {
   const coordinates = [origin,...via,destination].map(point=>`${point.lng},${point.lat}`).join(';');
-  const data = await getJson(`${ROUTER}/route/v1/driving/${coordinates}?overview=full&geometries=geojson&steps=true&alternatives=true&annotations=nodes,distance`, signal);
+  const base = profile === 'bike' ? ROUTER_BIKE : profile === 'walk' ? ROUTER_FOOT : ROUTER;
+  const alternatives = profile === 'car' ? '&alternatives=true' : '';
+  const data = await getJson(`${base}/route/v1/driving/${coordinates}?overview=full&geometries=geojson&steps=true${alternatives}&annotations=nodes,distance`, signal);
   if(!record(data)||data.code!=='Ok'||!Array.isArray(data.routes)||!data.routes.length)return [parseRoute(data,destination)];
-  return data.routes.slice(0,3).map((raw,i)=>({...parseRoute({...data,routes:[raw]},destination),id:`route-${Date.now()}-${i}`}));
+  const routes = profile === 'car' ? data.routes.slice(0,3) : data.routes.slice(0,1);
+  return routes.map((raw,i)=>({...parseRoute({...data,routes:[raw]},destination),id:`route-${Date.now()}-${i}`}));
 }
 export function friendlyError(error: unknown): string {
   if (error instanceof Error && error.name === 'AbortError') return 'Yêu cầu đã được hủy.';

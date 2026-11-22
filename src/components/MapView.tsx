@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Map as LibreMap, Marker, Popup, LngLatBounds, setWorkerUrl, setWorkerCount, type GeoJSONSource } from 'maplibre-gl';
+import { Map as LibreMap, Marker, Popup, LngLatBounds, ScaleControl, setWorkerUrl, setWorkerCount, type GeoJSONSource } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import type { FeatureCollection, LineString, Polygon } from 'geojson';
 import { MAP_CENTER, MAP_ZOOM } from '../domain/places';
@@ -13,7 +13,7 @@ setWorkerUrl(workerUrl);
 setWorkerCount(1);
 const STYLE = import.meta.env.VITE_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/positron';
 const empty = (): FeatureCollection => ({ type: 'FeatureCollection', features: [] });
-type Props = { route: Route | null; alternatives: Route[]; destination: Place | null; onSelectRoute: (route: Route) => void; onPick: (point: Coordinate) => void; roadData: RoadData | null; position: Fix | null; focusPosition: boolean; positionStale: boolean; navigating: boolean; follow: boolean; onDrag: () => void; onTileError: () => void; recenter: number; mode3D: boolean; northReset: number; headingUp: number; onBearing: (bearing: number) => void };
+type Props = { route: Route | null; alternatives: Route[]; destination: Place | null; onSelectRoute: (route: Route) => void; onPick: (point: Coordinate) => void; roadData: RoadData | null; position: Fix | null; focusPosition: boolean; positionStale: boolean; navigating: boolean; follow: boolean; onDrag: () => void; onTileError: () => void; recenter: number; mode3D: boolean; northReset: number; headingUp: number; focusPoint: Coordinate | null; showScale: boolean; onBearing: (bearing: number) => void };
 function padding(instance: LibreMap) {
   const view = instance.getContainer().getBoundingClientRect(), sheet = document.querySelector('.bottom-panel')?.getBoundingClientRect();
   const header = document.querySelector('.topbar')?.getBoundingClientRect(), turn = document.querySelector('.turn-banner')?.getBoundingClientRect(), editor = document.querySelector('.route-editor')?.getBoundingClientRect();
@@ -36,7 +36,7 @@ function uncertainty(position: Fix): FeatureCollection<Polygon> {
   }
   return { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [coordinates] } }] };
 }
-export default function MapView({ route, alternatives, destination, onSelectRoute, onPick, roadData, position, focusPosition, positionStale, navigating, follow, onDrag, onTileError, recenter, mode3D, northReset, headingUp, onBearing }: Props) {
+export default function MapView({ route, alternatives, destination, onSelectRoute, onPick, roadData, position, focusPosition, positionStale, navigating, follow, onDrag, onTileError, recenter, mode3D, northReset, headingUp, focusPoint, showScale, onBearing }: Props) {
   const element = useRef<HTMLDivElement>(null), map = useRef<LibreMap | null>(null), [ready, setReady] = useState(false);
   const callbacks = useRef({ onPick, onSelectRoute, onDrag, onTileError, onBearing, alternatives, mode3D }); callbacks.current = { onPick, onSelectRoute, onDrag, onTileError, onBearing, alternatives, mode3D };
   const positionRef = useRef(position); positionRef.current = position;
@@ -125,6 +125,17 @@ export default function MapView({ route, alternatives, destination, onSelectRout
     const heading = course.current ?? (fix?.headingAvailable ? fix.heading : null);
     if (heading !== null && Number.isFinite(heading)) map.current.easeTo({ bearing: heading, duration: 350 });
   }, [headingUp]);
+  useEffect(() => {
+    if (map.current && focusPoint) map.current.easeTo({ center: [focusPoint.lng, focusPoint.lat], zoom: 16, duration: 600 });
+  }, [focusPoint]);
+  useEffect(() => {
+    if (!map.current) return;
+    if (showScale) {
+      const control = new ScaleControl({ maxWidth: 80, unit: 'metric' });
+      map.current.addControl(control, 'bottom-left');
+      return () => { map.current?.removeControl(control); };
+    }
+  }, [showScale]);
   useEffect(() => {
     const instance = map.current; if (!instance || !ready) return;
     for (const marker of routePins.current) marker.remove(); routePins.current = [];

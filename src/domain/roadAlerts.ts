@@ -2,6 +2,7 @@ import type { CurrentLimit,FeatureKind,RoadData,RoadFeature } from './roadData';
 import type { Fix,Progress,Route } from './types';
 export type RoadAlert={id:string;kind:'camera'|'sign'|'limit'|'overspeed';title:string;text:string;speech:string;source:'osm';expiresAt:number;feature?:RoadFeature};
 export class RoadAlertEngine {
+  constructor(private warnDistance=500){}
   private routeId='';private seen=new Set<string>();private lastFix=0;private lastAlert=0;
   private speed:number|null=null;private stableSpeed:number|null=null;private speedCount=0;private overCount=0;private lastOverspeed=0;
   update(route:Route,data:RoadData|null,fix:Fix,progress:Progress,limit:CurrentLimit,now=Date.now()):RoadAlert|null {
@@ -15,7 +16,7 @@ export class RoadAlertEngine {
     const source='osm';const prefix='Theo dữ liệu bản đồ. ';
     const make=(id:string,kind:RoadAlert['kind'],title:string,text:string,feature?:RoadFeature):RoadAlert=>{this.seen.add(id);this.lastAlert=now;return{id,kind,title,text,speech:prefix+text,source,expiresAt:now+9000,feature};};
     if(this.overCount>=3&&limit.kmh!==null&&now-this.lastOverspeed>60000){this.lastOverspeed=now;return make(`over:${now}`,'overspeed','Chú ý tốc độ',`Tốc độ đang cao hơn mức ${limit.kmh} ki lô mét một giờ được ghi nhận. Đối chiếu biển trên đường.`);}
-    const ahead=Math.min(500,Math.max(200,fix.speed*20));
+    const ahead=Math.min(this.warnDistance,Math.max(200,fix.speed*20));
     const signKinds:FeatureKind[]=['stop','give-way','speed-sign','no-entry','wrong-way','prohibition','no-overtaking'];
     const alertKinds:FeatureKind[]=['speed-camera','traffic-camera',...signKinds];
     const feature=data.features.find(f=>f.along-progress.along>20&&f.along-progress.along<=ahead&&(f.onRoute||(signKinds.includes(f.kind)&&(f.distanceFromRoute??Infinity)<=8))&&alertKinds.includes(f.kind)&&!this.seen.has(f.id));

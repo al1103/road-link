@@ -13,9 +13,9 @@ import {roadSymbol} from './domain/roadSymbols';
 import {canNavigateFrom,canPreviewFrom} from './domain/location';
 import { bearing, cumulative, distance, formatDistance, formatDuration, pointAt } from './domain/geometry';
 import { Navigator } from './domain/navigation';
-import type { Fix, Place, Progress, Route } from './domain/types';
+import type { Coordinate, Fix, Place, Progress, Route } from './domain/types';
 import { useLocation } from './hooks/useLocation';
-import { fetchRoute,fetchRoutes, friendlyError, nearbyPlaces, searchPlaces } from './services/api';
+import { fetchRoute,fetchRoutes, friendlyError, nearbyPlaces, searchPlaces, type TransportProfile } from './services/api';
 import { BluetoothLink, type BluetoothState } from './services/bluetooth';
 import { navMessage, routeMessages } from './services/protocol';
 import { say, silence } from './services/voice';
@@ -31,6 +31,14 @@ const EXPLORE_CATEGORIES = [
 ] as const;
 function stored<T>(key: string, fallback: T): T { try { const value = localStorage.getItem(key); return value ? JSON.parse(value) as T : fallback; } catch { return fallback; } }
 function save(key: string, value: unknown) { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* Storage is optional. */ } }
+const STORAGE_SCHEMA = 2;
+try {
+  const schema = Number(localStorage.getItem('roadlink.schema') || 0);
+  if (schema < STORAGE_SCHEMA) {
+    localStorage.removeItem('roadlink.savedPlacesLegacy');
+    localStorage.setItem('roadlink.schema', String(STORAGE_SCHEMA));
+  }
+} catch { /* Storage is optional. */ }
 const link = new BluetoothLink();
 export default function App() {
   const location = useLocation();
@@ -56,6 +64,7 @@ export default function App() {
   const [navigationError,setNavigationError]=useState<string|null>(null);
   const [voiceUnavailable,setVoiceUnavailable]=useState(false);
   const [savedPlaces,setSavedPlaces]=useState<Place[]>(()=>{const value=stored<unknown>('roadlink.savedPlaces',[]);return Array.isArray(value)?value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.detail==='string'&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lng)&&Math.abs(p.lng)<=180):[];});
+  const [recentPlaces,setRecentPlaces]=useState<Place[]>(()=>{const value=stored<unknown>('roadlink.recentSearches',[]);return Array.isArray(value)?value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'):[];});
   const [routeError, setRouteError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Place | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
@@ -72,26 +81,51 @@ export default function App() {
   const [voice, setVoice] = useState(() => stored('roadlink.voice', true) === true);
   const [favorites, setFavorites] = useState<string[]>(() => { const v = stored<unknown>('roadlink.favorites', []); return Array.isArray(v) ? v.filter(x => typeof x === 'string') : []; });
   const [ble, setBle] = useState<BluetoothState>({ status: 'disconnected' });
+  const [preferredEsp, setPreferredEsp] = useState<string>(() => stored('roadlink.preferredESP32', ''));
+  const [termsAccepted, setTermsAccepted] = useState(() => stored<unknown>('roadlink.termsAccepted', false) === true);
   const [showBLE, setShowBLE] = useState(false);
   const [showRoadData,setShowRoadData]=useState(false);
-  const [roadFilters,setRoadFilters]=useState<RoadFilters>({speed:true,cameras:true,signs:true,signals:true});
+  const [roadFilters,setRoadFilters]=useState<RoadFilters>(()=>{const v=stored<Partial<RoadFilters>>('roadlink.roadFilters',{});return{speed:v.speed!==false,cameras:v.cameras!==false,signs:v.signs!==false,signals:v.signals!==false};});
+  const [roadLayerEnabled,setRoadLayerEnabled]=useState(()=>stored<unknown>('roadlink.roadData',true)!==false);
+  const [showScale,setShowScale]=useState(()=>stored<unknown>('roadlink.showScale',true)!==false);
+  const [warnDistance,setWarnDistance]=useState(()=>{const value=stored<unknown>('roadlink.warnDistance',500);return value===200||value===500||value===900?value:500;});
   const [rerouting, setRerouting] = useState(false);
   const [tileWarning, setTileWarning] = useState(false);
-  const [mode3D,setMode3D]=useState(false),[northReset,setNorthReset]=useState(0),[headingUp,setHeadingUp]=useState(0),[mapBearing,setMapBearing]=useState(0);
-  const [transportMode, setTransportMode] = useState<'car' | 'bike' | 'walk'>('car');
+  const [mode3D,setMode3D]=useState(()=>stored<unknown>('roadlink.mode3D',false)===true),[northReset,setNorthReset]=useState(0),[headingUp,setHeadingUp]=useState(0),[mapBearing,setMapBearing]=useState(0);
+  const [focusPoint,setFocusPoint]=useState<Coordinate|null>(null);
+  const [transportMode, setTransportMode] = useState<'car' | 'bike' | 'walk'>(()=>{const v=stored<string>('roadlink.transport','car');return v==='bike'||v==='walk'?v:'car';});
+  useEffect(()=>{save('roadlink.roadFilters',roadFilters)},[roadFilters]);
+  useEffect(()=>{save('roadlink.roadData',roadLayerEnabled)},[roadLayerEnabled]);
+  useEffect(()=>{save('roadlink.showScale',showScale)},[showScale]);
+  useEffect(()=>{save('roadlink.warnDistance',warnDistance)},[warnDistance]);
+  useEffect(()=>{save('roadlink.mode3D',mode3D)},[mode3D]);
+  useEffect(()=>{save('roadlink.transport',transportMode)},[transportMode]);
+  useEffect(()=>{ if(ble.status==='connected'&&ble.name&&ble.name!==preferredEsp){ setPreferredEsp(ble.name); save('roadlink.preferredESP32',ble.name); } },[ble.status,ble.name,preferredEsp]);
+  useEffect(()=>{ save('roadlink.termsAccepted', termsAccepted); },[termsAccepted]);
+  useEffect(()=>{
+    const onStorage=(event:StorageEvent)=>{
+      if(event.key==='roadlink.favorites')setFavorites(stored<string[]>('roadlink.favorites',[]).filter(value=>typeof value==='string'));
+      if(event.key==='roadlink.savedPlaces')setSavedPlaces(stored<Place[]>('roadlink.savedPlaces',[]));
+      if(event.key==='roadlink.recentSearches'){const value=stored<unknown>('roadlink.recentSearches',[]);setRecentPlaces(Array.isArray(value)?value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'):[]);}
+    };
+    window.addEventListener('storage',onStorage);
+    return()=>window.removeEventListener('storage',onStorage);
+  },[]);
   const [now, setNow] = useState(Date.now());
   const routeAbort = useRef<AbortController | null>(null);
   const searchAbort = useRef<AbortController | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const nearbySearch = useRef(false);
   const nearbyCell = useRef('');
   const nearbyAbort = useRef<AbortController | null>(null);
+  const nearbyToken = useRef(0);
   const nearbyCellKey = location.fix ? `${location.fix.lat.toFixed(2)},${location.fix.lng.toFixed(2)}` : '';
   const engine = useRef<Navigator | null>(null);
   const spoken = useRef(new Set<string>());
   const lastReroute = useRef(0);
   const sequence = useRef(0);
   const lastSent = useRef(0);
-  const roadAlertEngine=useRef(new RoadAlertEngine());
+  const roadAlertEngine=useRef(new RoadAlertEngine(warnDistance));
   const lastVoiceAt=useRef(0);
   const appElement=useRef<HTMLElement|null>(null),panelElement=useRef<HTMLElement|null>(null);
   const fix = location.fix;
@@ -99,10 +133,10 @@ export default function App() {
   const goodGPS = canNavigateFrom(location.fix,now);
   const previewGPS=canPreviewFrom(location.fix,now);
   const staleGPS = navigating && !!location.fix && now - location.fix.timestamp > 15000;
-  const road=useRoadData(route,progress?.along??0);
+  const road=useRoadData(route,progress?.along??0,roadLayerEnabled);
   const displayRoadData=road.overview??road.data;
   const limit=navigating?currentLimit(road.data,route,fix,progress?.along??0,progress?.offRoute):UNKNOWN_LIMIT;
-  const mapRoadData=useMemo(()=>displayRoadData?{...displayRoadData,sections:roadFilters.speed?displayRoadData.sections:[],features:displayRoadData.features.filter(f=>roadFilters[groupFor(f.kind)])}:null,[displayRoadData,roadFilters]);
+  const mapRoadData=useMemo(()=>roadLayerEnabled&&displayRoadData?{...displayRoadData,sections:roadFilters.speed?displayRoadData.sections:[],features:displayRoadData.features.filter(f=>roadFilters[groupFor(f.kind)])}:null,[displayRoadData,roadFilters,roadLayerEnabled]);
   useEffect(()=>{
     const panel=panelElement.current;if(!panel)return;
     const update=()=>appElement.current?.style.setProperty('--panel-height',sheetCollapsed?'calc(58px + var(--safe-bottom))':`${panel.getBoundingClientRect().height}px`);
@@ -121,7 +155,7 @@ export default function App() {
   }, [navigating]);
   useEffect(() => () => { routeAbort.current?.abort(); searchAbort.current?.abort(); silence(); }, []);
   useEffect(() => {
-    roadAlertEngine.current=new RoadAlertEngine();
+    roadAlertEngine.current=new RoadAlertEngine(warnDistance);
     if (!route) { engine.current = null; setProgress(null); return; }
     engine.current = new Navigator(route); spoken.current.clear();setRoadAlert(null);
   }, [route]);
@@ -156,7 +190,7 @@ export default function App() {
     const feature=road.data?.features.find(f=>f.along>=progress.along);
     link.enqueue([navMessage(route, progress, fix, ++sequence.current,{enabled:road.enabled,limit,feature})], 'nav');
   }, [progress, fix, route, navigating, mode, ble.status,road.data,road.enabled]);
-  const plan = useCallback(async (place: Place, start = false, origin = originOverride??(canPreviewFrom(location.fix)?location.fix:null)) => {
+  const plan = useCallback(async (place: Place, start = false, origin = originOverride??(canPreviewFrom(location.fix)?location.fix:null), profile: TransportProfile = transportMode) => {
     routeAbort.current?.abort();
     if(!origin){setSelected(place);setMode('preview');setRoute(null);setAlternatives([]);setLoading(false);setRouteError(null);setPendingGPS(start?'navigation':'preview');setSearchOpen(false);void location.start();return;}
     setPendingGPS(null);
@@ -164,12 +198,18 @@ export default function App() {
     setLoading(true); setRouteError(null); setSearchError(null);setShareStatus(null);setNavigationError(null); setSearchOpen(false); setDetails(false);
     setSelected(place);setAlternatives([]); setRoute(null); setProgress(null); setMode('preview');
     try {
-      const routes = await fetchRoutes(origin, place, controller.signal);
+      const routes = await fetchRoutes(origin, place, controller.signal, [], profile);
       if (controller.signal.aborted) return;
       setAlternatives(routes);setRoute(routes[0]); setMode(start ? 'navigating' : 'preview'); setFollow(true);
     } catch (err) { if (!controller.signal.aborted) setRouteError(friendlyError(err)); }
     finally { if (!controller.signal.aborted) setLoading(false); }
-  }, [location.fix,originOverride]);
+  }, [location.fix,originOverride,transportMode]);
+  const transportRef = useRef(transportMode);
+  useEffect(() => {
+    if (transportRef.current === transportMode) return;
+    transportRef.current = transportMode;
+    if (selected && mode === 'preview') void plan(selected, false, originOverride ?? (canPreviewFrom(location.fix) ? location.fix : null), transportMode);
+  }, [transportMode, selected, mode, plan, originOverride, location.fix]);
   useEffect(() => {
     if (!awaitingGPS || !(pendingGPS==='navigation'?goodGPS:previewGPS) || !location.fix || !selected) return;
     const start=pendingGPS==='navigation';setPendingGPS(null);void plan(selected,start,location.fix);
@@ -178,10 +218,10 @@ export default function App() {
     if (!navigating || !progress?.offRoute || !route || !location.fix || !goodGPS || rerouting || Date.now() - lastReroute.current < 15000) return;
     const controller = new AbortController(); routeAbort.current?.abort(); routeAbort.current = controller;
     lastReroute.current = Date.now(); setRerouting(true); setNavigationError(null);
-    void fetchRoute(location.fix, route.destination, controller.signal).then(next => {
+    void fetchRoute(location.fix, route.destination, controller.signal, transportMode).then(next => {
       if (!controller.signal.aborted) { setRoute(next); setProgress(null); setNavigationError(null); }
     }).catch(err => { if (!controller.signal.aborted) setNavigationError(`${friendlyError(err)} Tuyến cũ vẫn được giữ.`); }).finally(() => { if (!controller.signal.aborted) setRerouting(false); });
-  }, [navigating, progress, route, location.fix, goodGPS,rerouting]);
+  }, [navigating, progress, route, location.fix, goodGPS,rerouting,transportMode]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setShowBLE(false); setShowRoadData(false); setSearchOpen(false); setDetails(false); } };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
@@ -196,7 +236,9 @@ export default function App() {
   useEffect(() => { if (!searchOpen) setNearbyNote(null); }, [searchOpen]);
   useEffect(() => {
     if (mode !== 'explore' || !nearbyCellKey) {
+      nearbyToken.current++;
       nearbyAbort.current?.abort();
+      nearbyCell.current = '';
       if (!nearbyCellKey) {
         setNearbyList([]);
         setNearbyError(null);
@@ -206,6 +248,7 @@ export default function App() {
     }
     if (nearbyCellKey === nearbyCell.current) return;
     nearbyCell.current = nearbyCellKey;
+    const token = ++nearbyToken.current;
     const [lat, lng] = nearbyCellKey.split(',').map(Number);
     nearbyAbort.current?.abort();
     const controller = new AbortController();
@@ -214,16 +257,12 @@ export default function App() {
     setNearbyError(null);
     void nearbyPlaces(lat, lng, controller.signal)
       .then(list => {
-        if (controller.signal.aborted) return;
+        if (token !== nearbyToken.current) return;
         setNearbyList(list);
-        if (!list.length) setNearbyError('Chưa thấy địa điểm có tên trong 1,5 km quanh bạn.');
+        setNearbyError(null);
       })
-      .catch(err => { if (!controller.signal.aborted) setNearbyError(friendlyError(err)); })
-      .finally(() => { if (!controller.signal.aborted) setNearbyLoading(false); });
-    return () => {
-      controller.abort();
-      if (nearbyCell.current === nearbyCellKey) nearbyCell.current = '';
-    };
+      .catch(err => { if (token === nearbyToken.current) setNearbyError(friendlyError(err)); })
+      .finally(() => { if (token === nearbyToken.current) setNearbyLoading(false); });
   }, [mode, nearbyCellKey, nearbyRetry]);
 
   async function performSearch(text: string, options?: { nearby?: boolean }) {
@@ -259,6 +298,8 @@ export default function App() {
   }
   function toggleVoice() { setVoiceUnavailable(false); const next = !voice; setVoice(next); save('roadlink.voice', next); if (!next) silence();else spoken.current.clear(); }
   function choosePlace(place:Place){
+    const recent=[place,...recentPlaces.filter(item=>item.id!==place.id)].slice(0,10);
+    setRecentPlaces(recent);save('roadlink.recentSearches',recent);
     nearbySearch.current=false;setNearbyNote(null);
     setPendingGPS(null);setShareStatus(null);setSearchError(null);setSearchOpen(false);setQuery(place.name);setSearched(false);
     if(searchTarget==='origin'){setOriginOverride(place);setSearchTarget('destination');if(selected)void plan(selected,false,place);return;}
@@ -270,13 +311,15 @@ export default function App() {
   function swapEndpoints(){if(!selected)return;const from=originOverride??location.fix;if(!from){editEndpoint('origin');return;}const destination:Place={...from,id:`coord:${from.lat},${from.lng}`,name:originOverride?.name??'Vị trí của bạn',detail:originOverride?.detail??'Điểm đã chọn trên bản đồ'};setOriginOverride(selected);void plan(destination,false,selected);}
   async function sharePlace(){if(!selected)return;const text=`${selected.name}\n${selected.detail}\n${selected.lat}, ${selected.lng}`;try{if(navigator.share)await navigator.share({title:selected.name,text});else{await navigator.clipboard.writeText(text);setShareStatus('Đã sao chép địa điểm.');}}catch(error){if(!(error instanceof DOMException&&error.name==='AbortError'))setShareStatus('Chưa chia sẻ được. Bạn có thể sao chép tọa độ trên thẻ địa điểm.');}}
   function toggleFavorite() { if (!selected) return; const next = favorites.includes(selected.id) ? favorites.filter(x => x !== selected.id) : [...favorites, selected.id]; setFavorites(next); save('roadlink.favorites', next); const places=next.includes(selected.id)?[...savedPlaces.filter(p=>p.id!==selected.id),selected]:savedPlaces.filter(p=>p.id!==selected.id);setSavedPlaces(places);save('roadlink.savedPlaces',places); }
+  function exportFavorites(){const blob=new Blob([JSON.stringify(savedPlaces,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='roadlink-favorites.json';link.click();URL.revokeObjectURL(url);}
+  function importFavorites(file:File){const reader=new FileReader();reader.onload=()=>{try{const value:unknown=JSON.parse(String(reader.result));if(!Array.isArray(value))return;const places=value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.detail==='string'&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lng)&&Math.abs(p.lng)<=180);setSavedPlaces(places);setFavorites(places.map(p=>p.id));save('roadlink.savedPlaces',places);save('roadlink.favorites',places.map(p=>p.id));}catch{/* ignore invalid file */}};reader.readAsText(file);}
   const activeStep = progress?.step ?? route?.steps.find(s => s.maneuver !== 'depart') ?? route?.steps[0];
   const saved = !!selected && favorites.includes(selected.id);
   const baseSeconds = progress?.etaSeconds ?? route?.duration ?? 0;
-  const remainingSeconds = transportMode === 'bike' ? Math.round(baseSeconds * 1.05) : transportMode === 'walk' ? (route ? Math.round((progress?.remaining ?? route.distance) / 1.25) : baseSeconds * 4) : baseSeconds;
+  const remainingSeconds = baseSeconds;
   const eta = new Date(Date.now() + remainingSeconds * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   return <main ref={appElement} className={`app maps-ui ${searchOpen?'is-searching':''} ${navigating ? 'is-navigating' : ''} ${mode === 'explore' ? 'is-exploring' : ''} ${mode==='preview'?'is-routing':''} ${mode==='place'?'is-selecting':''}`}>
-    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} onBearing={setMapBearing}/>
+    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} focusPoint={focusPoint} showScale={showScale} onBearing={setMapBearing}/>
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
@@ -290,6 +333,7 @@ export default function App() {
             <Search size={20} className="search-glass-icon" />
           )}
           <input
+            ref={searchInputRef}
             aria-label="Tìm địa điểm"
             placeholder="Tìm kiếm ở đây"
             value={query}
@@ -297,7 +341,7 @@ export default function App() {
             onFocus={() => setSearchOpen(true)}
           />
           {query.length > 0 && (
-            <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { nearbySearch.current=false; searchAbort.current?.abort(); setSearching(false); setResults([]); setQuery(''); setSearched(false); setNearbyNote(null); }}>
+            <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { nearbySearch.current=false; searchAbort.current?.abort(); setSearching(false); setResults([]); setQuery(''); setSearched(false); setNearbyNote(null); searchInputRef.current?.focus(); }}>
               <X size={20} />
             </button>
           )}
@@ -332,7 +376,7 @@ export default function App() {
             <p className="search-empty">Đang tìm địa điểm…</p>
           ) : searched && !results.length ? (
             <p className="search-empty">{nearbySearch.current ? 'Không tìm thấy địa điểm quanh vị trí này. Thử từ khóa khác hoặc mở rộng khu vực.' : 'Chưa tìm thấy địa điểm. Thử thêm tên thành phố hoặc địa chỉ.'}</p>
-          ) : (searched ? results : savedPlaces).map(place => (
+          ) : (searched ? results : [...recentPlaces, ...savedPlaces.filter(place => !recentPlaces.some(recent => recent.id === place.id))].slice(0, 10)).map(place => (
             <button className="place-result" key={place.id} onClick={() => choosePlace(place)}>
               <span className="place-icon"><MapPin size={19} /></span>
               <span><strong>{place.name}</strong><small>{place.detail}{location.fix?` · ${formatDistance(distance(location.fix, place))}`:''}</small></span>
@@ -441,22 +485,27 @@ export default function App() {
         ) : nearbyLoading && !nearbyList.length ? (
           <p className="explore-help">Đang tìm địa điểm gần bạn…</p>
         ) : nearbyError ? (
-          <p className="explore-help">{nearbyError} <button type="button" className="text-button" onClick={() => { nearbyCell.current=''; setNearbyRetry(value => value + 1); }}>Thử lại</button></p>
+          <p className="explore-help">{nearbyError} <button type="button" className="text-button" onClick={() => { nearbyCell.current=''; nearbyToken.current++; setNearbyRetry(value => value + 1); }}>Thử lại</button></p>
         ) : nearbyList.length ? (
           <div className="quick-destinations">
             {nearbyList.slice(0, 6).map((place, i) => (
               <button key={place.id} onClick={() => choosePlace(place)}>
                 <span className={`quick-icon quick-${i}`}><MapPin size={20} /></span>
-                <strong>{place.name}</strong>
-                <span>{place.detail}{location.fix ? ` · ${formatDistance(distance(location.fix, place))}` : ''}</span>
+                <span className="quick-text">
+                  <strong>{place.name}</strong>
+                  <span className="quick-detail">
+                    <span>{place.detail}</span>
+                    {location.fix && <span className="quick-distance">{formatDistance(distance(location.fix, place))}</span>}
+                  </span>
+                </span>
                 <ChevronRight size={17} />
               </button>
             ))}
           </div>
         ) : (
-          <p className="explore-help">Chưa thấy địa điểm có tên trong 1,5 km quanh bạn.</p>
+          <p className="explore-help">Chưa thấy địa điểm có tên trong 20 km quanh bạn.</p>
         )}
-        {savedPlaces.length>0&&<><h2 className="destinations-heading saved-heading">Đã lưu</h2><div className="quick-destinations">{savedPlaces.slice(0,4).map((place,i)=><button key={place.id} onClick={()=>choosePlace(place)}><span className={`quick-icon quick-${i}`}><MapPin size={20}/></span><strong>{place.name}</strong><span>{place.detail}</span><ChevronRight size={17}/></button>)}</div></>}
+        <><h2 className="destinations-heading saved-heading saved-heading-row">Đã lưu<span className="saved-actions"><button type="button" className="text-button" onClick={exportFavorites}>Xuất</button><label className="text-button">Nhập<input type="file" accept="application/json" hidden onChange={event=>{const file=event.target.files?.[0];if(file)importFavorites(file);event.currentTarget.value='';}}/></label></span></h2>{savedPlaces.length?<div className="quick-destinations">{savedPlaces.slice(0,4).map((place,i)=><button key={place.id} onClick={()=>choosePlace(place)}><span className={`quick-icon quick-${i}`}><MapPin size={20}/></span><strong>{place.name}</strong><span>{place.detail}</span><ChevronRight size={17}/></button>)}</div>:<p className="explore-help">Chưa có địa điểm đã lưu.</p>}</>
       </>}
       {mode==='place'&&selected&&<PlaceCard place={selected} saved={saved} shareStatus={shareStatus} onRoute={()=>void plan(selected)} onSave={toggleFavorite} onShare={()=>void sharePlace()} onClose={stop}/>}
       {mode === 'preview' && <>
@@ -498,10 +547,10 @@ export default function App() {
         </div>
       </>}
       {mode === 'arrived' && <div className="arrived-panel"><span className="arrived-icon"><Flag size={32} /></span><span className="eyebrow">HÀNH TRÌNH HOÀN TẤT</span><h1>Bạn đã đến nơi<span className="accent">.</span></h1><p>{route?.destination.name}</p><button className="button primary full" onClick={stop}><Check size={20} />Về bản đồ</button></div>}
-      {details && route && <ol className="directions-list" aria-label="Danh sách chỉ dẫn">{route.steps.map(step => <li key={step.index} className={activeStep?.index === step.index && navigating ? 'current-step' : ''}><ManeuverIcon type={step.maneuver} size={22} /><div><strong>{step.instruction}</strong><span>{step.maneuver === 'arrive' ? 'Điểm đến' : formatDistance(step.distance)}</span></div></li>)}</ol>}
+      {details && route && <ol className="directions-list" aria-label="Danh sách chỉ dẫn">{route.steps.map(step => <li key={step.index} className={activeStep?.index === step.index && navigating ? 'current-step' : ''}><button type="button" className="directions-step" onClick={()=>setFocusPoint(step.at)}><ManeuverIcon type={step.maneuver} size={22} /><div><strong>{step.instruction}</strong><span>{step.maneuver === 'arrive' ? 'Điểm đến' : formatDistance(step.distance)}</span></div></button></li>)}</ol>}
     </section>
     <footer className="map-attribution"><a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a><span>·</span><a href="https://openmaptiles.org/" target="_blank" rel="noreferrer">OpenMapTiles</a><span>·</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OSM contributors</a><span>· OSRM</span></footer>
-    {showBLE && <BluetoothPanel state={ble} close={() => setShowBLE(false)} connect={() => void link.connect()} disconnect={() => void link.disconnect()} />}
-    {showRoadData&&<RoadDataPanel route={route} data={displayRoadData} loading={road.overviewLoading} error={road.overviewError??road.error} retry={road.retry} close={()=>setShowRoadData(false)} filters={roadFilters} setFilters={setRoadFilters} limit={limit} along={progress?.along??0} navigating={navigating}/>}
+    {showBLE && <BluetoothPanel state={ble} preferred={preferredEsp} close={() => setShowBLE(false)} connect={() => void link.connect()} disconnect={() => void link.disconnect()} />}
+    {showRoadData&&<RoadDataPanel route={route} data={displayRoadData} loading={road.overviewLoading} error={road.overviewError??road.error} retry={road.retry} close={()=>setShowRoadData(false)} filters={roadFilters} setFilters={setRoadFilters} limit={limit} along={progress?.along??0} navigating={navigating} enabled={roadLayerEnabled} setEnabled={setRoadLayerEnabled} showScale={showScale} setShowScale={setShowScale} warnDistance={warnDistance} setWarnDistance={setWarnDistance} termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} resetSettings={()=>{localStorage.clear();window.location.reload();}}/>}
   </main>;
 }

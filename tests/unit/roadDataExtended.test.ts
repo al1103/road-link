@@ -136,8 +136,10 @@ describe('roadData domain logic', () => {
         node(605, { hazard: 'school' }),
         node(606, { traffic_sign: 'overtaking' }),
         node(607, { traffic_sign: 'VN:401,127[60]' }),
+        node(608, { maxheight: '3.5' }),
+        node(609, { maxweight: '10' }),
       ] }, route, query);
-      expect(parsed.features.map(f => f.kind).sort()).toEqual(['no-entry', 'no-overtaking', 'speed-sign']);
+      expect(parsed.features.map(f => f.kind).sort()).toEqual(['no-entry', 'no-overtaking', 'prohibition', 'prohibition', 'speed-sign']);
     });
   });
 

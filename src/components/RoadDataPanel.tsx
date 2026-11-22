@@ -7,14 +7,16 @@ import SpeedLimitImage from './SpeedLimitImage';
 import {useEffect,useState} from 'react';
 export type RoadFilters={speed:boolean;cameras:boolean;signs:boolean;signals:boolean};
 export function groupFor(kind:FeatureKind):keyof RoadFilters { return kind.includes('camera')?'cameras':kind==='signals'?'signals':'signs'; }
-type Props={route:Route|null;data:RoadData|null;loading:boolean;error:string|null;retry:()=>void;close:()=>void;filters:RoadFilters;setFilters:(next:RoadFilters)=>void;limit:CurrentLimit;along:number;navigating:boolean};
-export default function RoadDataPanel({route,data,loading,error,retry,close,filters,setFilters,limit,along,navigating}:Props) {
-  const [shownPoints,setShownPoints]=useState(60),[shownSections,setShownSections]=useState(12);
-  useEffect(()=>{setShownPoints(60);setShownSections(12);},[route?.id]);
+type Props={route:Route|null;data:RoadData|null;loading:boolean;error:string|null;retry:()=>void;close:()=>void;filters:RoadFilters;setFilters:(next:RoadFilters)=>void;limit:CurrentLimit;along:number;navigating:boolean;enabled:boolean;setEnabled:(value:boolean)=>void;showScale:boolean;setShowScale:(value:boolean)=>void;warnDistance:number;setWarnDistance:(value:number)=>void;termsAccepted:boolean;setTermsAccepted:(value:boolean)=>void;resetSettings:()=>void};
+export default function RoadDataPanel({route,data,loading,error,retry,close,filters,setFilters,limit,along,navigating,enabled,setEnabled,showScale,setShowScale,warnDistance,setWarnDistance,termsAccepted,setTermsAccepted,resetSettings}:Props) {
+  const [shownPoints,setShownPoints]=useState(60),[shownSections,setShownSections]=useState(12),[signQuery,setSignQuery]=useState('');
+  useEffect(()=>{setShownPoints(60);setShownSections(12);setSignQuery('');},[route?.id]);
   const wholeRoute=data?.scope==='route',complete=wholeRoute&&data?.scan?.complete;
   const loadedFeatures=data?.features??[];
   const ahead=loadedFeatures.filter(f=>f.along>=along-30);
   const features=ahead.filter(f=>filters[groupFor(f.kind)]);
+  const search=signQuery.trim().toLocaleLowerCase('vi');
+  const listed=search?features.filter(f=>f.label.toLocaleLowerCase('vi').includes(search)||(f.code??'').toLocaleLowerCase('vi').includes(search)):features;
   const hiddenCount=ahead.length-features.length;
   const passedCount=loadedFeatures.length-ahead.length;
   const allValues=[...new Map((data?.sections??[]).map(s=>[`${s.wayId}:${s.raw}`,s])).values()];
@@ -22,9 +24,15 @@ export default function RoadDataPanel({route,data,loading,error,retry,close,filt
   return <div className="modal-backdrop" onClick={close}><section className="road-panel" role="dialog" aria-modal="true" aria-labelledby="road-data-title" onClick={e=>e.stopPropagation()}>
     <button className="icon-button modal-close" aria-label="Đóng dữ liệu đường" onClick={close} autoFocus><X size={20}/></button>
     <span className="road-panel-icon"><Layers2 size={25}/></span><h2 id="road-data-title">Dữ liệu đường</h2><p className="road-subtitle">Giới hạn tốc độ, camera và biển cấm có thể bị xử phạt được ghi nhận trên OpenStreetMap. Không hiển thị gờ giảm tốc, đường ngang hay lối đi bộ.</p>
-    <p className="road-data-meta">Tự động quét dữ liệu toàn tuyến · Cảnh báo khi lái xe theo vị trí hiện tại · Không cần bật thêm</p>
+    <label className="road-master-toggle"><input type="checkbox" checked={enabled} onChange={e=>setEnabled(e.target.checked)}/> Bật lớp dữ liệu đường</label>
+    <label className="road-master-toggle"><input type="checkbox" checked={showScale} onChange={e=>setShowScale(e.target.checked)}/> Hiện thước tỷ lệ</label>
+    <label className="road-master-toggle">Cảnh báo camera trước <select value={warnDistance} onChange={e=>setWarnDistance(Number(e.target.value))} aria-label="Khoảng cách cảnh báo camera"><option value={200}>200 m</option><option value={500}>500 m</option><option value={900}>900 m</option></select></label>
+    <p className="road-data-meta">{enabled?'Tự động quét dữ liệu toàn tuyến · Cảnh báo khi lái xe theo vị trí hiện tại':'Lớp dữ liệu đường đang tắt để tiết kiệm pin và băng thông.'}</p>
     <div className="road-disclaimer"><CircleHelp size={18}/><span>Dữ liệu cộng đồng có thể thiếu hoặc đã cũ. Không có dữ liệu không đồng nghĩa không có biển/camera. Luôn đối chiếu biển thực tế; camera quan sát chưa xác định là camera phạt nguội.</span></div>
+    <label className="road-master-toggle"><input type="checkbox" checked={termsAccepted} onChange={e=>setTermsAccepted(e.target.checked)}/> Tôi đã đọc lưu ý về vị trí, giới hạn dữ liệu và an toàn giao thông</label>
     <div className="road-filters">{([['speed','Tốc độ'],['cameras','Camera'],['signs','Biển báo'],['signals','Đèn giao thông']] as const).map(([key,label])=><label key={key}><input type="checkbox" checked={filters[key]} onChange={e=>setFilters({...filters,[key]:e.target.checked})}/>{label}</label>)}</div>
+    <input className="road-search" type="search" value={signQuery} onChange={e=>setSignQuery(e.target.value)} placeholder="Tìm biển theo tên hoặc mã OSM…" aria-label="Tìm biển theo tên hoặc mã OSM"/>
+    {search&&!listed.length&&<p className="road-empty">Không có điểm khớp “{signQuery}”.</p>}
     <div className="road-symbol-legend" aria-label="Chú giải ký hiệu"><span><img src="/signs/traffic-signals.svg" alt=""/><img src="/signs/traffic-signals-mono.svg" alt=""/>Đèn giao thông</span><span><img src="/signs/camera.svg" alt=""/>Camera</span><small>Ba chấm xếp dọc trong hình đèn tín hiệu, có màu hoặc đen/xám, đều chỉ vị trí đèn giao thông. Không hiển thị màu đèn đang sáng trực tiếp.</small></div>
     {!route?<p className="road-empty">Chọn điểm đến và tính tuyến để xem dữ liệu dọc đường.</p>:<>
       {loading&&<div className="road-loading" role="status"><LoaderCircle className="spin" size={19}/>Đang quét dữ liệu toàn tuyến…{data?.scan&&` ${data.scan.completed}/${data.scan.total} phần`}</div>}
@@ -43,10 +51,11 @@ export default function RoadDataPanel({route,data,loading,error,retry,close,filt
         {loading&&<p className="road-empty">Đang đọc phần còn lại của tuyến. Tổng số điểm sẽ được xác nhận khi quét xong.</p>}
         {error&&<p className="road-empty">Các điểm đã nạp chưa đại diện đầy đủ cho toàn tuyến. Bạn vẫn tiếp tục dẫn đường được.</p>}
         {!loading&&!error&&!features.length&&(hiddenCount>0?<div className="road-empty"><p>Có {hiddenCount} điểm phía trước trong dữ liệu đã tải, nhưng đang bị bộ lọc ẩn.</p><button className="text-button" onClick={()=>setFilters({...filters,cameras:true,signs:true,signals:true})}>Hiện tất cả điểm</button></div>:passedCount>0?<p className="road-empty">Đã đi qua {passedCount} điểm đã nạp. {complete?'Toàn tuyến đã quét hiện không còn điểm phía trước.':'Chưa kết luận về phần tuyến chưa tải.'}</p>:<p className="road-empty">App chưa tìm thấy điểm đèn giao thông, biển báo hoặc camera phù hợp trong phần dữ liệu OSM đã {complete?'quét trên toàn tuyến':'tải cho đoạn này'}. Không đồng nghĩa ngoài đường không có biển hoặc camera.</p>)}
-        {!!features.length&&<ul className="road-feature-list">{features.slice(0,shownPoints).map(f=><li key={f.id}><img className="road-feature-image" src={roadSymbol(f).src} alt={f.label}/><div><strong>{f.label}</strong><small>{formatDistance(Math.max(0,f.along-along))} dọc tuyến · {f.onRoute?'Nút thuộc tuyến':'Gần tuyến'} · Chưa xác nhận chiều áp dụng</small>{f.code&&<small>Mã OSM: {f.code}</small>}</div></li>)}</ul>}
-        {features.length>shownPoints&&<button className="text-button" onClick={()=>setShownPoints(value=>value+60)}>Xem thêm điểm ({shownPoints}/{features.length})</button>}
+        {!!listed.length&&<ul className="road-feature-list">{listed.slice(0,shownPoints).map(f=><li key={f.id}><img className="road-feature-image" src={roadSymbol(f).src} alt={f.label}/><div><strong>{f.label}</strong><small>{formatDistance(Math.max(0,f.along-along))} dọc tuyến · {f.onRoute?'Nút thuộc tuyến':'Gần tuyến'} · Chưa xác nhận chiều áp dụng</small>{f.code&&<small>Mã OSM: {f.code}</small>}</div></li>)}</ul>}
+        {listed.length>shownPoints&&<button className="text-button" onClick={()=>setShownPoints(value=>value+60)}>Xem thêm điểm ({shownPoints}/{listed.length})</button>}
         <p className="symbol-credit">SVG chỉ minh họa loại đối tượng; vị trí/thuộc tính lấy từ OSM. Không phải ảnh chụp thực địa. Dữ liệu cộng đồng có thể thiếu; camera quan sát chưa xác định là camera xử phạt.</p>
       </>}
     </>}
+    <button className="text-button road-reset" onClick={resetSettings}>Đặt lại toàn bộ cài đặt</button>
   </section></div>;
 }

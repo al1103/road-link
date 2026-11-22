@@ -2,6 +2,10 @@ import { ArrowLeft, ArrowRight, ArrowUpDown, Bike, CarFront, ChevronRight, Footp
 import { formatDistance, formatDuration } from '../domain/geometry';
 import type { Place, Route } from '../domain/types';
 
+function arrivalClock(seconds: number): string {
+  return new Date(Date.now() + seconds * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+}
+
 export function PlaceCard({ place, saved, shareStatus, onRoute, onSave, onShare, onClose }: { place: Place; saved: boolean; shareStatus: string | null; onRoute: () => void; onSave: () => void; onShare: () => void; onClose: () => void }) {
   return <>
     <div className="place-title-row">
@@ -305,6 +309,7 @@ export function RoutePlannerCard(p: CardProps) {
               <div className="route-choice-info">
                 <div className="route-time-line">
                   <strong className="eta-green">{formatDuration(dur)}</strong>
+                  <span className="route-eta" title="Giờ đến dự kiến">{arrivalClock(dur)}</span>
                   <span className="route-dist">({formatDistance(r.distance)})</span>
                 </div>
                 <p className="route-summary-text">{r.summary || `Tuyến đường ${i + 1}`}</p>
