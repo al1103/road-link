@@ -12,7 +12,7 @@ setWorkerUrl(workerUrl);
 setWorkerCount(1);
 const STYLE=import.meta.env.VITE_MAP_STYLE_URL||'https://tiles.openfreemap.org/styles/positron';
 const empty=():FeatureCollection=>({type:'FeatureCollection',features:[]});
-type Props={route:Route|null;alternatives:Route[];destination:Place|null;onSelectRoute:(route:Route)=>void;onPick:(point:Coordinate)=>void;roadData:RoadData|null;position:Fix|null;focusPosition:boolean;positionStale:boolean;navigating:boolean;follow:boolean;onDrag:()=>void;onTileError:()=>void;recenter:number;mode3D:boolean;northReset:number;onBearing:(bearing:number)=>void;simulated:boolean};
+type Props={route:Route|null;alternatives:Route[];destination:Place|null;onSelectRoute:(route:Route)=>void;onPick:(point:Coordinate)=>void;roadData:RoadData|null;position:Fix|null;focusPosition:boolean;positionStale:boolean;navigating:boolean;follow:boolean;onDrag:()=>void;onTileError:()=>void;recenter:number;mode3D:boolean;northReset:number;onBearing:(bearing:number)=>void};
 function padding(instance:LibreMap){
   const view=instance.getContainer().getBoundingClientRect(),sheet=document.querySelector('.bottom-panel')?.getBoundingClientRect();
   const header=document.querySelector('.topbar')?.getBoundingClientRect(),turn=document.querySelector('.turn-banner')?.getBoundingClientRect(),editor=document.querySelector('.route-editor')?.getBoundingClientRect();
@@ -35,7 +35,7 @@ function uncertainty(position:Fix):FeatureCollection<Polygon>{
   }
   return {type:'FeatureCollection',features:[{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[coordinates]}}]};
 }
-export default function MapView({route,alternatives,destination,onSelectRoute,onPick,roadData,position,focusPosition,positionStale,navigating,follow,onDrag,onTileError,recenter,mode3D,northReset,onBearing,simulated}:Props){
+export default function MapView({route,alternatives,destination,onSelectRoute,onPick,roadData,position,focusPosition,positionStale,navigating,follow,onDrag,onTileError,recenter,mode3D,northReset,onBearing}:Props){
   const element=useRef<HTMLDivElement>(null),map=useRef<LibreMap|null>(null),[ready,setReady]=useState(false);
   const callbacks=useRef({onPick,onSelectRoute,onDrag,onTileError,onBearing,alternatives,mode3D});callbacks.current={onPick,onSelectRoute,onDrag,onTileError,onBearing,alternatives,mode3D};
   const routePins=useRef<Marker[]>([]),roadMarkers=useRef<Marker[]>([]),placeMarker=useRef<Marker|null>(null),positionMarker=useRef<Marker|null>(null);
@@ -134,15 +134,15 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
   useEffect(()=>{
     const instance=map.current;if(!instance||!ready)return;
     if(!position){positionMarker.current?.remove();positionMarker.current=null;course.current=null;initialPositionCentered.current=false;updateSource(instance,'roadlink-accuracy',empty());return;}
-    updateSource(instance,'roadlink-accuracy',simulated?empty():uncertainty(position));
+    updateSource(instance,'roadlink-accuracy',uncertainty(position));
     for(const layer of ['roadlink-accuracy-fill','roadlink-accuracy-line'])instance.setPaintProperty(layer,layer.endsWith('fill')?'fill-color':'line-color',positionStale?'#8d99a5':'#1a73e8');
-    if(!positionMarker.current)positionMarker.current=new Marker({element:pin('position-marker navigation-position','<span class="position-halo"></span><svg class="position-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 35 20 27 5 35Z"/></svg><svg class="simulation-car" viewBox="0 0 40 48" aria-hidden="true"><rect x="10" y="3" width="20" height="42" rx="7" fill="#d87912" stroke="white" stroke-width="2"/><path d="m13 13 2-5h10l2 5v7H13Zm0 17h14v7H13Z" fill="#e7f4ff"/><path d="M9 15H6m25 0h3M9 35H6m25 0h3" stroke="#263238" stroke-width="3"/><path d="M14 5h3m6 0h3" stroke="#fff1b3" stroke-width="2"/></svg><span class="heading-unknown">?</span>')}).setLngLat([position.lng,position.lat]).addTo(instance);
+    if(!positionMarker.current)positionMarker.current=new Marker({element:pin('position-marker navigation-position','<span class="position-halo"></span><svg class="position-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 35 20 27 5 35Z"/></svg><span class="heading-unknown">?</span>')}).setLngLat([position.lng,position.lat]).addTo(instance);
     else positionMarker.current.setLngLat([position.lng,position.lat]);
     const el=positionMarker.current.getElement(),known=!positionStale&&position.headingAvailable!==false&&Number.isFinite(position.heading);course.current=known?position.heading:null;
-    el.classList.toggle('direction-unknown',!known);el.classList.toggle('simulation-position',simulated);el.setAttribute('role','img');el.setAttribute('aria-label',simulated?'Vị trí mô phỏng trên tuyến':known?`Hướng di chuyển ${Math.round(position.heading)} độ`:'Chưa xác định hướng di chuyển');rotateArrow();
+    el.classList.toggle('direction-unknown',!known);el.setAttribute('role','img');el.setAttribute('aria-label',known?`Hướng di chuyển ${Math.round(position.heading)} độ`:'Chưa xác định hướng di chuyển');rotateArrow();
     if(follow&&navigating)centerOn(instance,position,Math.min(17,locationZoom(position.accuracy)));
     else if(follow&&focusPosition&&!initialPositionCentered.current){initialPositionCentered.current=true;centerOn(instance,position,locationZoom(position.accuracy));}
-  },[position,ready,navigating,follow,focusPosition,positionStale,simulated]);
+  },[position,ready,navigating,follow,focusPosition,positionStale]);
   useEffect(()=>{
     if(map.current&&ready&&position&&recenter>lastCentered.current){lastCentered.current=recenter;centerOn(map.current,position,locationZoom(position.accuracy));}
   },[recenter,position,ready]);

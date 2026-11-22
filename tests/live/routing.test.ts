@@ -1,9 +1,12 @@
 import {describe,it,expect} from 'vitest';
 import {fetchRoutes,searchPlaces} from '../../src/services/api';
-import {SIMULATION_ORIGIN,SIMULATION_DESTINATION,SIMULATION_VIA} from '../../src/services/simulationScenario';
+import type {Place} from '../../src/domain/types';
+const testOrigin: Place = { id: 'osm-way-246256692', name: 'Ngõ 37 Phố Bằng Liệt', detail: 'Hà Nội', lat: 20.9631275, lng: 105.8208272 };
+const testDestination: Place = { id: 'hanoi-hoan-kiem-area', name: 'Khu vực Hồ Hoàn Kiếm', detail: 'Hà Nội', lat: 21.0283334, lng: 105.854041 };
+const testVia = { id: 10688320858, lat: 20.9655796, lng: 105.8416878 };
 describe('live routing service',()=>{
   it('does not announce an intermediate playback waypoint as the destination',async()=>{
-    const [route]=await fetchRoutes(SIMULATION_ORIGIN,SIMULATION_DESTINATION,undefined,[SIMULATION_VIA]);
+    const [route]=await fetchRoutes(testOrigin,testDestination,undefined,[testVia]);
     expect(route.steps.filter(step=>step.maneuver==='arrive')).toHaveLength(1);
     expect(route.steps.at(-1)?.maneuver).toBe('arrive');
     expect(route.distance).toBeGreaterThan(5000);

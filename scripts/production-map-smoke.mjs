@@ -26,35 +26,8 @@ try {
   const pitch=Number(await page.locator('.map-canvas').getAttribute('data-map-pitch'));
   if(points<1||pitch<45||errors.length||!workers.some(url=>url.includes('/assets/maplibre-gl-worker-')))throw new Error(JSON.stringify({points,pitch,errors,workers}));
   await page.screenshot({path:'docs/screenshots/production-tien-hai-hanoi-full-route.png'});
-  await page.setViewportSize({width:390,height:844});
-  await page.goto(origin,{waitUntil:'domcontentloaded'});
-  await page.getByRole('button',{name:'Mô phỏng từ Ngõ 37 Bằng Liệt',exact:true}).click();
-  const start=page.getByRole('button',{name:'Mô phỏng di chuyển trên tuyến này',exact:true});
-  await expect(start).toBeEnabled({timeout:60000});
-  await page.getByRole('button',{name:'Mở dữ liệu đường',exact:true}).click();
-  await expect(page.locator('[data-road-scope="route"]')).toHaveAttribute('data-scan-complete','true',{timeout:60000});
-  await expect(page.getByRole('dialog')).toContainText('20261120-r2');
-  const simulationSourcePoints=Number(await page.getByRole('heading',{name:/Điểm gần tuyến đang hiển thị/}).locator('span').innerText());
-  await page.getByRole('button',{name:'Đóng dữ liệu đường',exact:true}).click();
-  await page.getByRole('button',{name:'Tắt giọng nói',exact:true}).click();
-  await start.click();
-  const distance=page.locator('.simulation-distance'),initial=await distance.innerText();
-  await page.getByLabel('Tốc độ phát mô phỏng',{exact:true}).selectOption('8');
-  await expect.poll(()=>distance.innerText()).not.toBe(initial);
-  await expect(page.locator('.navigation-road-alert img[src^="/signs/warning-"]')).toBeVisible({timeout:35000});
-  await page.getByRole('button',{name:'Tạm dừng mô phỏng',exact:true}).click();
-  const paused=await distance.innerText();
-  await page.waitForTimeout(1200);await expect(distance).toHaveText(paused);
-  await expect(page.locator('.phone-status')).toContainText('BLE tắt');
-  await expect.poll(async()=>{
-    const car=await page.locator('.simulation-position').boundingBox(),turn=await page.locator('.turn-banner').boundingBox(),panel=await page.locator('.bottom-panel').boundingBox();
-    return !!car&&!!turn&&!!panel&&car.y>turn.y+turn.height&&car.y+car.height<panel.y;
-  }).toBe(true);
-  await page.screenshot({path:'docs/screenshots/production-bang-liet-playback.png'});
-  await page.getByRole('button',{name:'Dừng mô phỏng',exact:true}).click();
-  await expect(page.locator('.simulation-position')).toHaveCount(0);
   if(errors.length)throw new Error(JSON.stringify(errors));
-  const report={checkedAt:new Date().toISOString(),servedBuild:'dist through Vite preview',replacedAPIs:0,suppliedDevicePosition:false,renderedHanoiBuildingFeatures:buildings,tienHaiHanoiWholeRoutePoints:points,pitchAfterRouteSelection:pitch,vehiclePlayback:{source:'20261120-r2',sourcePoints:simulationSourcePoints,moved:true,nonSpeedWarningDisplayed:true,pauseFreezesDistance:true,carClearOfPanels:true,bleUiDisabled:true,stopRemovesCar:true},workers,errors};
+  const report={checkedAt:new Date().toISOString(),servedBuild:'dist through Vite preview',replacedAPIs:0,suppliedDevicePosition:false,renderedHanoiBuildingFeatures:buildings,tienHaiHanoiWholeRoutePoints:points,pitchAfterRouteSelection:pitch,workers,errors};
   await writeFile('docs/PRODUCTION_MAP_REPORT.json',JSON.stringify(report,null,2)+'\n');
   console.log(JSON.stringify(report));
 }finally{await browser.close();}

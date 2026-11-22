@@ -43,6 +43,6 @@ for(const bundle of bundles) {
   }
   checked.push({bundle,filesScanned:files.length,version:manifest.version,nodeCount:manifest.nodeCount,currentSourceManifestMatched:true,verifiedShards:Object.keys(manifest.tiles).length});
 }
-const report={checkedAt:new Date().toISOString(),simulationMode:'Explicit vehicle-movement playback requested by the user; native GPS and BLE are not fed simulated positions.',syntheticRoadObjectsBundled:false,sourceFilesChecked:sourceFiles.length,projectCodeFilesChecked:projectCode.length,bundles:checked,replacedServiceAPIs:0,suppliedDevicePositions:0,testFixtures:0,tests:'Pure calculations, actual packaged OSM data and live service/browser checks.',fieldAccuracyVerified:false};
+const report={checkedAt:new Date().toISOString(),simulationMode:'None; pure real GPS and live services only.',syntheticRoadObjectsBundled:false,sourceFilesChecked:sourceFiles.length,projectCodeFilesChecked:projectCode.length,bundles:checked,replacedServiceAPIs:0,suppliedDevicePositions:0,testFixtures:0,tests:'Pure calculations, actual packaged OSM data and live service/browser checks.',fieldAccuracyVerified:false};
 await writeFile('docs/NO_DEMO_AUDIT.json',JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report,null,2));
