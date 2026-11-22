@@ -1,0 +1,32 @@
+{
+  "verifiedAt": "2026-11-21T17:15:10.532Z",
+  "source": "https://download.geofabrik.de/asia/vietnam/vietnam-261120.osm.pbf",
+  "sourceSha256": "1794401290695929ba80c127e8e390d0f44a57cddad45f31f719f60ba55ae429",
+  "license": "ODbL-1.0",
+  "version": "20261120-r2",
+  "allShardHashesVerified": true,
+  "tiles": 1346,
+  "shardBytes": 55052301,
+  "uniqueSpeedWays": 45059,
+  "uniquePointObjects": 72759,
+  "nodeKinds": {
+    "traffic_signals": 8210,
+    "crossing": 51033,
+    "level_crossing": 6252,
+    "traffic_calming": 6060,
+    "surveillance": 303,
+    "traffic_sign": 808,
+    "hazard": 19,
+    "give_way": 19,
+    "stop": 11,
+    "speed_camera": 43,
+    "motorway_junction": 1
+  },
+  "tagCoverage": {
+    "baseMaxspeed": 42153,
+    "directional": 25,
+    "conditional": 107,
+    "lanes": 326
+  },
+  "notVerified": "Field accuracy, complete nationwide camera coverage, current physical signs and active enforcement have not been verified."
+}

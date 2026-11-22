@@ -1,0 +1,217 @@
+{
+  "checkedAt": "2026-11-21",
+  "results": [
+    {
+      "id": "amap-international-ios",
+      "url": "https://mapsplatform.opnavi.com/api/navigation-sdk-for-ios",
+      "status": 200,
+      "finalUrl": "https://mapsplatform.opnavi.com/api/navigation-sdk-for-ios/summary",
+      "title": "Overview-Navigation SDK for iOS | AMAP Platform",
+      "challenge": false
+    },
+    {
+      "id": "daklak-gis-schema",
+      "url": "https://gisapi.daklak.gov.vn/developers/Service/PartnerPortalservice.svc/rest/help/operations/ForecastRoadsByTrafficSign_Rest",
+      "status": 200,
+      "finalUrl": "https://gisapi.daklak.gov.vn/developers/Service/PartnerPortalservice.svc/rest/help/operations/ForecastRoadsByTrafficSign_Rest",
+      "title": "Reference for http://gisapi.daklak.gov.vn/developers/service/PartnerPortalService.svc/rest/ForecastRoadsByTrafficSign",
+      "challenge": false
+    },
+    {
+      "id": "geofabrik-vietnam",
+      "url": "https://download.geofabrik.de/asia/vietnam/index.html",
+      "status": 200,
+      "finalUrl": "https://download.geofabrik.de/asia/vietnam/index.html",
+      "title": "Download OpenStreetMap for Vietnam | Geofabrik Download Server",
+      "challenge": false
+    },
+    {
+      "id": "google-nav-feed",
+      "url": "https://developers.google.com/maps/documentation/navigation/ios-sdk/nav-only-feed",
+      "status": 200,
+      "finalUrl": "https://developers.google.com/maps/documentation/navigation/ios-sdk/nav-only-feed?hl=fr",
+      "title": "Informations sur le flux de données de navigation détaillée &nbsp;|&nbsp; Navigation SDK for iOS &nbsp;|&nbsp; Google for Developers",
+      "challenge": false
+    },
+    {
+      "id": "google-nav-ui",
+      "url": "https://developers.google.com/maps/documentation/navigation/ios-sdk/intro-google-nav",
+      "status": 200,
+      "finalUrl": "https://developers.google.com/maps/documentation/navigation/ios-sdk/intro-google-nav",
+      "title": "The Google navigation experience &nbsp;|&nbsp; Navigation SDK for iOS &nbsp;|&nbsp; Google for Developers",
+      "challenge": false
+    },
+    {
+      "id": "google-roads-speed",
+      "url": "https://developers.google.com/maps/documentation/roads/speed-limits",
+      "status": 200,
+      "finalUrl": "https://developers.google.com/maps/documentation/roads/speed-limits",
+      "title": "Speed limits &nbsp;|&nbsp; Roads API &nbsp;|&nbsp; Google for Developers",
+      "challenge": false
+    },
+    {
+      "id": "google-vn-coverage",
+      "url": "https://developers.google.com/maps/documentation/navigation/ios-sdk/coverage-nav-sdk",
+      "status": 200,
+      "finalUrl": "https://developers.google.com/maps/documentation/navigation/ios-sdk/coverage-nav-sdk?hl=es-419",
+      "title": "Cobertura de país y región del SDK de Navigation &nbsp;|&nbsp; Navigation SDK for iOS &nbsp;|&nbsp; Google for Developers",
+      "challenge": false
+    },
+    {
+      "id": "goong-changelog",
+      "url": "https://help.goong.io/kb/changelog/speed-limit-changelog/lich-su-cap-nhat-gioi-han-toc-do/",
+      "status": 200,
+      "finalUrl": "https://help.goong.io/kb/changelog/speed-limit-changelog/lich-su-cap-nhat-gioi-han-toc-do/",
+      "title": "LỊCH SỬ CẬP NHẬT GIỚI HẠN TỐC ĐỘ SPEEDLIMIT - Help Goong",
+      "challenge": false
+    },
+    {
+      "id": "goong-roadinfo-old",
+      "url": "https://document.goong.io/tutorial-Speed-limit.html",
+      "error": "fetch failed"
+    },
+    {
+      "id": "goong-speed",
+      "url": "https://help.goong.io/kb/rest-api/speed-limit/speed-limit-canh-bao-gioi-han-toc-do/",
+      "status": 200,
+      "finalUrl": "https://help.goong.io/kb/rest-api/speed-limit/speed-limit-canh-bao-gioi-han-toc-do/",
+      "title": "SPEED LIMIT – CẢNH BÁO GIỚI HẠN TỐC ĐỘ - Help Goong",
+      "challenge": false
+    },
+    {
+      "id": "graphhopper-maxspeed",
+      "url": "https://www.graphhopper.com/blog/2019/11/28/routing-api-using-path-details/",
+      "status": 200,
+      "finalUrl": "https://www.graphhopper.com/blog/2019/11/28/routing-api-using-path-details/",
+      "title": "Routing API: Using Path Details - GraphHopper Directions API",
+      "challenge": false
+    },
+    {
+      "id": "hcm-gis-forecast",
+      "url": "https://gisapi.tphcm.gov.vn/developers/Service/PartnerPortalservice.svc/rest/help",
+      "status": 200,
+      "finalUrl": "https://gisapi.tphcm.gov.vn/developers/Service/PartnerPortalservice.svc/rest/help",
+      "title": "Operations at http://gisapi.tphcm.gov.vn/developers/Service/PartnerPortalService.svc/rest",
+      "challenge": false
+    },
+    {
+      "id": "hcm-open-data",
+      "url": "https://opendata.hochiminhcity.gov.vn/",
+      "status": 200,
+      "finalUrl": "https://opendata.hochiminhcity.gov.vn/",
+      "title": "Cổng dữ liệu mở Thành Phố Hồ Chí Minh | Cổng thông tin dữ liệu mở",
+      "challenge": false
+    },
+    {
+      "id": "hcm-traffic-portal",
+      "url": "https://giaothong.hochiminhcity.gov.vn/",
+      "status": 200,
+      "finalUrl": "https://giaothong.hochiminhcity.gov.vn/",
+      "title": "Cổng thông tin giao thông thành phố Hồ Chí Minh",
+      "challenge": false
+    },
+    {
+      "id": "here-routing",
+      "url": "https://docs.here.com/routing/reference/routing-api-v8-importroute",
+      "status": 200,
+      "finalUrl": "https://docs.here.com/routing/reference/routing-api-v8-importroute",
+      "title": "Calculate a route from a sequence of trace points",
+      "challenge": false
+    },
+    {
+      "id": "mapbox-directions",
+      "url": "https://docs.mapbox.com/api/navigation/directions/",
+      "status": 200,
+      "finalUrl": "https://docs.mapbox.com/api/navigation/directions/",
+      "title": "Directions API | API Docs | Mapbox",
+      "challenge": false
+    },
+    {
+      "id": "mapcar",
+      "url": "https://mapcar.z-cloud.com.vn/en/limits",
+      "status": 200,
+      "finalUrl": "https://mapcar.z-cloud.com.vn/en/limits",
+      "title": "Known limits of MapCar — MapCar",
+      "challenge": false
+    },
+    {
+      "id": "navbridge",
+      "url": "https://github.com/DangLamTung/navbridge",
+      "status": 200,
+      "finalUrl": "https://github.com/DangLamTung/navbridge",
+      "title": "GitHub - DangLamTung/navbridge · GitHub",
+      "challenge": false
+    },
+    {
+      "id": "scdb-vietnam",
+      "url": "https://www.scdb.info/en/country/vietnam/",
+      "status": 404,
+      "finalUrl": "https://www.scdb.info/en/country/vietnam/",
+      "title": "Page Not Found - SCDB.info - The Worldwide Speed Camera Database",
+      "challenge": false
+    },
+    {
+      "id": "sforum-article",
+      "url": "https://cellphones.com.vn/sforum/cach-tra-cuu-tuyen-duong-lap-camera-phat-nguoi",
+      "status": 200,
+      "finalUrl": "https://cellphones.com.vn/sforum/cach-tra-cuu-tuyen-duong-lap-camera-phat-nguoi",
+      "title": "Cách tra cứu tuyến đường lắp camera giao thông chính xác",
+      "challenge": false
+    },
+    {
+      "id": "speedalert-data-license",
+      "url": "https://raw.githubusercontent.com/hvdwolf/SpeedAlert_Databases/main/LICENSE",
+      "status": 200,
+      "finalUrl": "https://raw.githubusercontent.com/hvdwolf/SpeedAlert_Databases/main/LICENSE",
+      "challenge": false
+    },
+    {
+      "id": "speedalert-vn-snapshot",
+      "url": "https://github.com/hvdwolf/SpeedAlert_Databases/releases/tag/asia-202611",
+      "status": 200,
+      "finalUrl": "https://github.com/hvdwolf/SpeedAlert_Databases/releases/tag/asia-202611",
+      "title": "Release asia-202611 Road speed limit and speed camera databases for Asia November 2026 · hvdwolf/SpeedAlert_Databases · GitHub",
+      "challenge": false
+    },
+    {
+      "id": "trackasia",
+      "url": "https://docs.track-asia.com/vi/examples/",
+      "status": 200,
+      "finalUrl": "https://docs.track-asia.com/vi/examples/",
+      "title": "Tổng Quan - TrackAsia",
+      "challenge": false
+    },
+    {
+      "id": "vietbando-forecast",
+      "url": "https://api.vietbando.com/vi/Home/HelpService",
+      "status": 200,
+      "finalUrl": "https://api.vietbando.com/vi/Home/HelpService",
+      "title": "Hướng dẫn - Vietbando Partner Portal",
+      "challenge": false
+    },
+    {
+      "id": "vietmap-ios-alert",
+      "url": "https://github.com/vietmap-company/vietmap_speed_alert_ios",
+      "status": 200,
+      "finalUrl": "https://github.com/vietmap-company/vietmap_speed_alert_ios",
+      "title": "GitHub - vietmap-company/vietmap_speed_alert_ios · GitHub",
+      "challenge": false
+    },
+    {
+      "id": "vnopenmap",
+      "url": "https://vnopenmap.pro.vn/",
+      "status": 530,
+      "finalUrl": "https://vnopenmap.pro.vn/",
+      "title": "Cloudflare Tunnel error | vnopenmap.pro.vn | Cloudflare",
+      "challenge": false
+    },
+    {
+      "id": "waze-partner",
+      "url": "https://www.waze.com/ccp",
+      "status": 200,
+      "finalUrl": "https://www.waze.com/partners/wazeforcities",
+      "title": "Waze for Cities - Driving Directions &amp; Traffic Reports by Waze",
+      "challenge": false
+    }
+  ]
+}

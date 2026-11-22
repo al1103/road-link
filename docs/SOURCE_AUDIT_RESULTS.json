@@ -1,0 +1,250 @@
+{
+  "date": "2026-11-21",
+  "datasets": [
+    {
+      "source": "https://github.com/hvdwolf/SpeedAlert_Databases/releases/download/asia-202611/vn-camera.sqlite.7z",
+      "archiveBytes": 1651,
+      "sha256": "1bc0fbb0ba899e8ae9b4419b8a59fd3c9f1d397f03f81b30b29fbe145f6265f9",
+      "files": [
+        {
+          "name": "vn-camera.sqlite",
+          "bytes": 20480,
+          "tables": [
+            {
+              "table": "cameras",
+              "schema": "CREATE TABLE cameras(\n            id INTEGER PRIMARY KEY,\n            lat REAL NOT NULL,\n            lon REAL NOT NULL,\n            type TEXT NOT NULL\n        )",
+              "columns": [
+                "id",
+                "lat",
+                "lon",
+                "type"
+              ],
+              "rows": 43,
+              "samples": [
+                {
+                  "id": 11378989804,
+                  "lat": 10.9560904,
+                  "lon": 106.8129385,
+                  "type": "speed"
+                },
+                {
+                  "id": 11378989805,
+                  "lat": 10.9562183,
+                  "lon": 106.8127039,
+                  "type": "speed"
+                }
+              ],
+              "typeCounts": {
+                "speed": 43
+              }
+            },
+            {
+              "table": "version",
+              "schema": "CREATE TABLE version(\n            version TEXT\n        )",
+              "columns": [
+                "version"
+              ],
+              "rows": 1,
+              "samples": [
+                {
+                  "version": "202611"
+                }
+              ]
+            },
+            {
+              "table": "sqlite_stat1",
+              "schema": "CREATE TABLE sqlite_stat1(tbl,idx,stat)",
+              "columns": [
+                "tbl",
+                "idx",
+                "stat"
+              ],
+              "rows": 2,
+              "samples": [
+                {
+                  "tbl": "version",
+                  "idx": null,
+                  "stat": "1"
+                },
+                {
+                  "tbl": "cameras",
+                  "idx": "idx_cam_latlon",
+                  "stat": "43 1 1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "https://github.com/hvdwolf/SpeedAlert_Databases/releases/download/asia-202611/vn.sqlite.7z",
+      "archiveBytes": 2590544,
+      "sha256": "ddd53dc38a7c7f1154a27622a10f6208549861aa43378e21af024f5736c3b2d4",
+      "files": [
+        {
+          "name": "vn.sqlite",
+          "bytes": 6041600,
+          "tables": [
+            {
+              "table": "speed_index",
+              "schema": "CREATE TABLE speed_index(\n            id INTEGER PRIMARY KEY,\n            minLat REAL,\n            maxLat REAL,\n            minLon REAL,\n            maxLon REAL,\n            polyline TEXT\n        )",
+              "columns": [
+                "id",
+                "minLat",
+                "maxLat",
+                "minLon",
+                "maxLon",
+                "polyline"
+              ],
+              "rows": 39430,
+              "samples": [
+                {
+                  "id": 9656653,
+                  "minLat": 21.0335224,
+                  "maxLat": 21.0351609,
+                  "minLon": 105.85309360000001,
+                  "maxLon": 105.853746,
+                  "polyline": "{jk_CaoaeSnEJ"
+                },
+                {
+                  "id": 9656730,
+                  "minLat": 21.0352451,
+                  "maxLat": 21.0400556,
+                  "minLon": 105.854888,
+                  "maxLon": 105.86594029999999,
+                  "polyline": "oil_Cg{ceShU`w@lBtGPP"
+                }
+              ]
+            },
+            {
+              "table": "speed_data",
+              "schema": "CREATE TABLE speed_data(\n            id INTEGER PRIMARY KEY,\n            speed INTEGER\n        ) WITHOUT ROWID\n    ",
+              "columns": [
+                "id",
+                "speed"
+              ],
+              "rows": 39430,
+              "samples": [
+                {
+                  "id": 9656653,
+                  "speed": 50
+                },
+                {
+                  "id": 9656730,
+                  "speed": 50
+                }
+              ],
+              "numericRange": [
+                2,
+                120,
+                0
+              ]
+            },
+            {
+              "table": "version",
+              "schema": "CREATE TABLE version(\n            version TEXT\n        )",
+              "columns": [
+                "version"
+              ],
+              "rows": 1,
+              "samples": [
+                {
+                  "version": "202611"
+                }
+              ]
+            },
+            {
+              "table": "sqlite_stat1",
+              "schema": "CREATE TABLE sqlite_stat1(tbl,idx,stat)",
+              "columns": [
+                "tbl",
+                "idx",
+                "stat"
+              ],
+              "rows": 4,
+              "samples": [
+                {
+                  "tbl": "version",
+                  "idx": null,
+                  "stat": "1"
+                },
+                {
+                  "tbl": "speed_data",
+                  "idx": "speed_data",
+                  "stat": "39430 1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "https://raw.githubusercontent.com/DangLamTung/navbridge/main/assets/offline_map/vietnam_cameras.json",
+      "bytes": 6380962,
+      "sha256": "b21ac9f49155e652025ba90bbb3540d16b999421aed0267993cb2d89369ad3f1",
+      "rootType": "dict",
+      "rootKeys": [
+        "version",
+        "generated",
+        "provinces",
+        "cameras"
+      ],
+      "version": 6,
+      "generated": "2026-10-24 (Waze cameras carry their own heading)",
+      "provincesCount": 42,
+      "camerasCount": 35448,
+      "recordCount": 35448,
+      "recordKeys": [
+        "name",
+        "lat",
+        "lng",
+        "focus",
+        "type",
+        "district",
+        "source",
+        "heading"
+      ],
+      "sourceCounts": {
+        "vietmap": 27010,
+        "waze": 6500,
+        "kiemtraphatnguoi": 1103,
+        "police": 832,
+        "osm": 3
+      },
+      "typeCounts": {
+        "traffic_camera": 26137,
+        "speed_camera": 2646,
+        "UNSPECIFIED": 2348,
+        "penalty_camera": 481,
+        "phone_camera": 1204,
+        "red_light_camera": 2517,
+        "seatbelt_camera": 15,
+        "distance_camera": 64,
+        "stop_camera": 16,
+        "bus_lane_camera": 20
+      },
+      "uniqueCoordinatePairs": 35344
+    },
+    {
+      "source": "https://raw.githubusercontent.com/DangLamTung/navbridge/main/assets/offline_map/vietnam_signs.json",
+      "bytes": 13,
+      "rootKeys": [
+        "signs"
+      ],
+      "recordKey": "signs",
+      "recordCount": 0
+    },
+    {
+      "source": "https://raw.githubusercontent.com/DangLamTung/navbridge/main/assets/offline_map/vietnam_speed_limits.geojson",
+      "bytes": 43,
+      "rootKeys": [
+        "type",
+        "features"
+      ],
+      "recordKey": "features",
+      "recordCount": 0
+    }
+  ]
+}

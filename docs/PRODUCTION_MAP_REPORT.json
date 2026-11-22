@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-11-21T17:44:47.804Z",
+  "servedBuild": "dist through Vite preview",
+  "replacedAPIs": 0,
+  "suppliedDevicePosition": false,
+  "renderedHanoiBuildingFeatures": 74,
+  "tienHaiHanoiWholeRoutePoints": 120,
+  "pitchAfterRouteSelection": 55,
+  "vehiclePlayback": {
+    "source": "20261120-r2",
+    "sourcePoints": 338,
+    "moved": true,
+    "nonSpeedWarningDisplayed": true,
+    "pauseFreezesDistance": true,
+    "carClearOfPanels": true,
+    "bleUiDisabled": true,
+    "stopRemovesCar": true
+  },
+  "workers": [
+    "http://127.0.0.1:4173/assets/maplibre-gl-worker-D77cS3iw.js",
+    "http://127.0.0.1:4173/assets/maplibre-gl-worker-D77cS3iw.js"
+  ],
+  "errors": []
+}

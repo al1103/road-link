@@ -1,0 +1,11 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import './styles.css';
+import './interaction-fixes.css';
+import './road-data.css';
+import './maps-ui.css';
+import './road-symbols.css';
+import './map-usability.css';
+ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

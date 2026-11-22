@@ -1,0 +1,32 @@
+import { chromium } from '@playwright/test';
+import { mkdir } from 'node:fs/promises';
+const browser=await chromium.launch();
+try {
+  await mkdir('docs/screenshots',{recursive:true});
+  const page=await browser.newPage({viewport:{width:430,height:932},deviceScaleFactor:1});
+  const shards=[];let overpassRequests=0;
+  page.on('request',request=>{if(request.url().includes('/api/interpreter'))overpassRequests++;});
+  page.on('response',response=>{if(response.url().includes('/data/vn-osm-20261120/tiles/'))shards.push({path:new URL(response.url()).pathname,status:response.status()});});
+  await page.goto('http://127.0.0.1:5173');
+  await page.getByRole('textbox',{name:'Tìm địa điểm',exact:true}).fill('10.7721,106.6983');
+  await page.getByRole('button',{name:'Tìm kiếm',exact:true}).click();
+  await page.locator('.place-result').filter({hasText:'Tọa độ đã nhập'}).click();
+  await page.getByRole('button',{name:'Chỉ đường',exact:true}).click();
+  await page.getByRole('button',{name:'Đổi điểm đi',exact:true}).click();
+  await page.getByRole('textbox',{name:'Tìm điểm đi',exact:true}).fill('10.77975,106.699');
+  await page.getByRole('button',{name:'Tìm kiếm',exact:true}).click();
+  await page.locator('.place-result').filter({hasText:'Tọa độ đã nhập'}).click();
+  await page.getByText('Tuyến đề xuất').waitFor({timeout:25000});
+  await page.getByRole('button',{name:'Mở dữ liệu đường'}).click();
+  await page.waitForFunction(()=>!document.querySelector('.road-loading'),{},{timeout:60000});
+  await page.getByText(/Dữ liệu Việt Nam trên thiết bị/).waitFor();
+  await page.locator('[data-road-scope="route"][data-scan-complete="true"]').waitFor({timeout:60000});
+  await page.screenshot({path:'docs/screenshots/mobile-road-data-live.png'});
+  const error=await page.locator('.road-error').textContent().catch(()=>null);
+  const report={checkedAt:new Date().toISOString(),endpoints:'Public HCMC coordinates entered through the search UI; no device position supplied.',network:'live',source:'OSM / Geofabrik 20261120',shards,overpassRequests,error,markers:await page.locator('.road-poi-marker').count(),limits:await page.locator('.limit-sections>div').count()};
+  const {writeFile}=await import('node:fs/promises');await writeFile('docs/LIVE_ROAD_DATA_REPORT.json',JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify(report));
+  if(error)throw new Error(error);
+  if(!shards.length||shards.some(s=>s.status!==200)||overpassRequests)throw new Error('Expected bundled shards with no Overpass fallback.');
+  await page.close();
+} finally {await browser.close();}

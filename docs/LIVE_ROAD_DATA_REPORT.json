@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-11-21T16:54:59.039Z",
+  "endpoints": "Public HCMC coordinates entered through the search UI; no device position supplied.",
+  "network": "live",
+  "source": "OSM / Geofabrik 20261120",
+  "shards": [
+    {
+      "path": "/data/vn-osm-20261120/tiles/107_1066.json",
+      "status": 200
+    },
+    {
+      "path": "/data/vn-osm-20261120/tiles/107_1067.json",
+      "status": 200
+    }
+  ],
+  "overpassRequests": 0,
+  "error": null,
+  "markers": 12,
+  "limits": 1
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "original-standard-style-svg-diagrams-not-street-photos",
+  "creator": "RoadLink",
+  "note": "SVG minh họa biển/loại đối tượng đường bộ. Vị trí và thuộc tính lấy từ OSM; hình vẽ không phải ảnh chụp hay bằng chứng có biển đã lắp tại một vị trí.",
+  "references": [
+    "https://commons.wikimedia.org/wiki/File:Vietnam_road_sign_P122.svg",
+    "https://commons.wikimedia.org/wiki/File:Vietnam_road_sign_W208.svg"
+  ],
+  "externalSvgUsed": false
+}

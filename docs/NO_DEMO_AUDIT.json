@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-11-21T17:45:05.822Z",
+  "simulationMode": "Explicit vehicle-movement playback requested by the user; native GPS and BLE are not fed simulated positions.",
+  "syntheticRoadObjectsBundled": false,
+  "sourceFilesChecked": 27,
+  "projectCodeFilesChecked": 47,
+  "bundles": [
+    {
+      "bundle": "dist",
+      "filesScanned": 1355,
+      "version": "20261120-r2",
+      "nodeCount": 72759,
+      "currentSourceManifestMatched": true,
+      "verifiedShards": 1346
+    },
+    {
+      "bundle": "ios/App/App/public",
+      "filesScanned": 1357,
+      "version": "20261120-r2",
+      "nodeCount": 72759,
+      "currentSourceManifestMatched": true,
+      "verifiedShards": 1346
+    }
+  ],
+  "replacedServiceAPIs": 0,
+  "suppliedDevicePositions": 0,
+  "testFixtures": 0,
+  "tests": "Pure calculations, actual packaged OSM data and live service/browser checks.",
+  "fieldAccuracyVerified": false
+}

@@ -1,0 +1,4380 @@
+{
+  "checkedAt": "2026-11-21T17:29:46.466Z",
+  "network": "live OSRM; packaged OSM/Geofabrik 20261120; no device location supplied",
+  "endpointAssumption": "Two live Nominatim matches for Tiền Hải, to the returned Hanoi centre. Exact user addresses and chosen alternative are not known.",
+  "geocoderLookups": [
+    "Tien Hai",
+    "Ha Noi, Vietnam"
+  ],
+  "reports": [
+    {
+      "origin": {
+        "id": "osm-relation-19541848",
+        "name": "Xã Tiền Hải",
+        "detail": "Nominatim relation 19541848",
+        "lat": 20.4057073,
+        "lng": 106.5031738
+      },
+      "destination": {
+        "id": "osm-relation-1903516",
+        "name": "Thành phố Hà Nội",
+        "detail": "Nominatim relation 1903516",
+        "lat": 21.0283334,
+        "lng": 105.854041
+      },
+      "router": "OSRM public live service",
+      "distance": 127674.9,
+      "duration": 5922.6,
+      "summary": "Quốc lộ 37, Đường cao tốc Hà Nội - Hải Phòng",
+      "routeGeometryMeters": 127849.55452609745,
+      "osmEdges": 1217,
+      "alternatives": 2,
+      "preview": {
+        "triggerAlong": 0,
+        "requestAlong": 300,
+        "start": 0,
+        "end": 6000,
+        "tiles": [
+          "204_1065"
+        ],
+        "points": 0,
+        "kinds": {},
+        "speedWays": 0,
+        "sectionCount": 0
+      },
+      "windowCount": 32,
+      "totalUniquePoints": 120,
+      "pointKinds": {
+        "sign": 11,
+        "traffic-calming": 13,
+        "signals": 17,
+        "pedestrian-crossing": 78,
+        "camera": 1
+      },
+      "speedWays": 46,
+      "firstPoint": {
+        "id": "node/13197088260",
+        "osmId": 13197088260,
+        "lat": 20.9295414,
+        "lng": 105.9725065,
+        "kind": "sign",
+        "label": "Biển báo · chưa rõ loại",
+        "code": "yes",
+        "along": 107273.58268989857,
+        "onRoute": true,
+        "distanceFromRoute": 28.685469805051678,
+        "updatedAt": "2025-10-06T05:28:13+00:00"
+      },
+      "lastPoint": {
+        "id": "node/9966237369",
+        "osmId": 9966237369,
+        "lat": 21.0282331,
+        "lng": 105.8538238,
+        "kind": "pedestrian-crossing",
+        "label": "Điểm sang đường cho người đi bộ",
+        "code": "crossing=unspecified",
+        "along": 127849.53202508159,
+        "onRoute": true,
+        "distanceFromRoute": 0.006945499900502245,
+        "updatedAt": "2026-09-14T03:35:55+00:00"
+      },
+      "pointsByTenKm": [
+        {
+          "from": 0,
+          "to": 10000,
+          "points": 0
+        },
+        {
+          "from": 10000,
+          "to": 20000,
+          "points": 0
+        },
+        {
+          "from": 20000,
+          "to": 30000,
+          "points": 0
+        },
+        {
+          "from": 30000,
+          "to": 40000,
+          "points": 0
+        },
+        {
+          "from": 40000,
+          "to": 50000,
+          "points": 0
+        },
+        {
+          "from": 50000,
+          "to": 60000,
+          "points": 0
+        },
+        {
+          "from": 60000,
+          "to": 70000,
+          "points": 0
+        },
+        {
+          "from": 70000,
+          "to": 80000,
+          "points": 0
+        },
+        {
+          "from": 80000,
+          "to": 90000,
+          "points": 0
+        },
+        {
+          "from": 90000,
+          "to": 100000,
+          "points": 0
+        },
+        {
+          "from": 100000,
+          "to": 110000,
+          "points": 8
+        },
+        {
+          "from": 110000,
+          "to": 120000,
+          "points": 49
+        },
+        {
+          "from": 120000,
+          "to": 127849.55452609745,
+          "points": 63
+        }
+      ],
+      "coverageGaps": [],
+      "windows": [
+        {
+          "triggerAlong": 0,
+          "requestAlong": 300,
+          "start": 0,
+          "end": 6000,
+          "tiles": [
+            "204_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 4300.01,
+          "requestAlong": 4300,
+          "start": 4000,
+          "end": 10000,
+          "tiles": [
+            "204_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 8300.01,
+          "requestAlong": 8300,
+          "start": 8000,
+          "end": 14000,
+          "tiles": [
+            "204_1065",
+            "205_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 12300.01,
+          "requestAlong": 12300,
+          "start": 12000,
+          "end": 18000,
+          "tiles": [
+            "205_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 16300.01,
+          "requestAlong": 16300,
+          "start": 16000,
+          "end": 22000,
+          "tiles": [
+            "205_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 20300.010000000002,
+          "requestAlong": 20300,
+          "start": 20000,
+          "end": 26000,
+          "tiles": [
+            "205_1065",
+            "206_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 24300.010000000002,
+          "requestAlong": 24300,
+          "start": 24000,
+          "end": 30000,
+          "tiles": [
+            "205_1065",
+            "206_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 28300.010000000002,
+          "requestAlong": 28300,
+          "start": 28000,
+          "end": 34000,
+          "tiles": [
+            "206_1064",
+            "206_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 32300.010000000002,
+          "requestAlong": 32300,
+          "start": 32000,
+          "end": 38000,
+          "tiles": [
+            "206_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 36300.01,
+          "requestAlong": 36300,
+          "start": 36000,
+          "end": 42000,
+          "tiles": [
+            "206_1064",
+            "207_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 40300.01,
+          "requestAlong": 40300,
+          "start": 40000,
+          "end": 46000,
+          "tiles": [
+            "207_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 44300.01,
+          "requestAlong": 44300,
+          "start": 44000,
+          "end": 50000,
+          "tiles": [
+            "207_1063",
+            "207_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 3,
+          "sectionCount": 23
+        },
+        {
+          "triggerAlong": 48300.01,
+          "requestAlong": 48300,
+          "start": 48000,
+          "end": 54000,
+          "tiles": [
+            "207_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 3,
+          "sectionCount": 27
+        },
+        {
+          "triggerAlong": 52300.01,
+          "requestAlong": 52300,
+          "start": 52000,
+          "end": 58000,
+          "tiles": [
+            "207_1063",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 56300.01,
+          "requestAlong": 56300,
+          "start": 56000,
+          "end": 62000,
+          "tiles": [
+            "207_1063",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 60300.01,
+          "requestAlong": 60300,
+          "start": 60000,
+          "end": 66000,
+          "tiles": [
+            "208_1062",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 64300.01,
+          "requestAlong": 64300,
+          "start": 64000,
+          "end": 70000,
+          "tiles": [
+            "208_1062",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 2,
+          "sectionCount": 2
+        },
+        {
+          "triggerAlong": 68300.01000000001,
+          "requestAlong": 68300,
+          "start": 68000,
+          "end": 74000,
+          "tiles": [
+            "208_1062",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 6,
+          "sectionCount": 14
+        },
+        {
+          "triggerAlong": 72300.01000000001,
+          "requestAlong": 72300,
+          "start": 72000,
+          "end": 78000,
+          "tiles": [
+            "208_1062"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 5,
+          "sectionCount": 11
+        },
+        {
+          "triggerAlong": 76300.01000000001,
+          "requestAlong": 76300,
+          "start": 76000,
+          "end": 82000,
+          "tiles": [
+            "208_1061",
+            "208_1062"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 1,
+          "sectionCount": 13
+        },
+        {
+          "triggerAlong": 80300.01000000001,
+          "requestAlong": 80300,
+          "start": 80000,
+          "end": 86000,
+          "tiles": [
+            "208_1061"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 3,
+          "sectionCount": 10
+        },
+        {
+          "triggerAlong": 84300.01000000001,
+          "requestAlong": 84300,
+          "start": 84000,
+          "end": 90000,
+          "tiles": [
+            "208_1060",
+            "208_1061"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 6,
+          "sectionCount": 9
+        },
+        {
+          "triggerAlong": 88300.01000000001,
+          "requestAlong": 88300,
+          "start": 88000,
+          "end": 94000,
+          "tiles": [
+            "208_1060",
+            "208_1061"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 5,
+          "sectionCount": 16
+        },
+        {
+          "triggerAlong": 92300.01000000001,
+          "requestAlong": 92300,
+          "start": 92000,
+          "end": 98000,
+          "tiles": [
+            "208_1060"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 4,
+          "sectionCount": 26
+        },
+        {
+          "triggerAlong": 96300.01000000001,
+          "requestAlong": 96300,
+          "start": 96000,
+          "end": 102000,
+          "tiles": [
+            "208_1059",
+            "208_1060"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 6,
+          "sectionCount": 15
+        },
+        {
+          "triggerAlong": 100300.01000000001,
+          "requestAlong": 100300,
+          "start": 100000,
+          "end": 106000,
+          "tiles": [
+            "208_1059",
+            "208_1060",
+            "209_1059",
+            "209_1060"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 6,
+          "sectionCount": 8
+        },
+        {
+          "triggerAlong": 104300.01000000001,
+          "requestAlong": 104300,
+          "start": 104000,
+          "end": 110000,
+          "tiles": [
+            "209_1059"
+          ],
+          "points": 8,
+          "kinds": {
+            "sign": 3,
+            "traffic-calming": 5
+          },
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 108300.01000000001,
+          "requestAlong": 108300,
+          "start": 108000,
+          "end": 114000,
+          "tiles": [
+            "209_1059"
+          ],
+          "points": 21,
+          "kinds": {
+            "sign": 3,
+            "traffic-calming": 13,
+            "signals": 2,
+            "pedestrian-crossing": 3
+          },
+          "speedWays": 4,
+          "sectionCount": 4
+        },
+        {
+          "triggerAlong": 112300.01000000001,
+          "requestAlong": 112300,
+          "start": 112000,
+          "end": 118000,
+          "tiles": [
+            "209_1059",
+            "210_1059"
+          ],
+          "points": 20,
+          "kinds": {
+            "pedestrian-crossing": 11,
+            "traffic-calming": 3,
+            "sign": 6
+          },
+          "speedWays": 8,
+          "sectionCount": 8
+        },
+        {
+          "triggerAlong": 116300.01000000001,
+          "requestAlong": 116300,
+          "start": 116000,
+          "end": 122000,
+          "tiles": [
+            "209_1058",
+            "209_1059",
+            "210_1058",
+            "210_1059"
+          ],
+          "points": 45,
+          "kinds": {
+            "pedestrian-crossing": 36,
+            "sign": 7,
+            "signals": 2
+          },
+          "speedWays": 7,
+          "sectionCount": 13
+        },
+        {
+          "triggerAlong": 120300.01000000001,
+          "requestAlong": 120300,
+          "start": 120000,
+          "end": 125034.39192455291,
+          "tiles": [
+            "210_1058",
+            "210_1059"
+          ],
+          "points": 28,
+          "kinds": {
+            "signals": 8,
+            "pedestrian-crossing": 20
+          },
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 124300.01000000001,
+          "requestAlong": 124300,
+          "start": 124000,
+          "end": 127849.55452609745,
+          "tiles": [
+            "210_1058"
+          ],
+          "points": 44,
+          "kinds": {
+            "pedestrian-crossing": 30,
+            "signals": 13,
+            "camera": 1
+          },
+          "speedWays": 8,
+          "sectionCount": 20
+        }
+      ],
+      "points": [
+        {
+          "id": "node/13197088260",
+          "osmId": 13197088260,
+          "lat": 20.9295414,
+          "lng": 105.9725065,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 107273.58268989857,
+          "onRoute": true,
+          "distanceFromRoute": 28.685469805051678,
+          "updatedAt": "2025-10-06T05:28:13+00:00"
+        },
+        {
+          "id": "node/13197088259",
+          "osmId": 13197088259,
+          "lat": 20.9360022,
+          "lng": 105.9693707,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 108062.29120962817,
+          "onRoute": false,
+          "distanceFromRoute": 0.019381278630026998,
+          "updatedAt": "2026-05-27T16:37:39+00:00"
+        },
+        {
+          "id": "node/13328191462",
+          "osmId": 13328191462,
+          "lat": 20.9462835,
+          "lng": 105.9645047,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 109312.23005252976,
+          "onRoute": false,
+          "distanceFromRoute": 4.3902888704101555,
+          "updatedAt": "2025-12-07T08:35:32+00:00"
+        },
+        {
+          "id": "node/13356898171",
+          "osmId": 13356898171,
+          "lat": 20.947617,
+          "lng": 105.9639955,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 109468.97933367871,
+          "onRoute": false,
+          "distanceFromRoute": 17.847002075564482,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356932804",
+          "osmId": 13356932804,
+          "lat": 20.9477289,
+          "lng": 105.9640543,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 109477.72439902175,
+          "onRoute": false,
+          "distanceFromRoute": 28.600118559735176,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356898172",
+          "osmId": 13356898172,
+          "lat": 20.9477844,
+          "lng": 105.963918,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 109489.25300153258,
+          "onRoute": false,
+          "distanceFromRoute": 18.327969996029584,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356898174",
+          "osmId": 13356898174,
+          "lat": 20.9485061,
+          "lng": 105.9636711,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 109572.86680173314,
+          "onRoute": false,
+          "distanceFromRoute": 28.627556139379703,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356898173",
+          "osmId": 13356898173,
+          "lat": 20.9487236,
+          "lng": 105.9635562,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 109599.82543491122,
+          "onRoute": false,
+          "distanceFromRoute": 27.912683623940854,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13434518775",
+          "osmId": 13434518775,
+          "lat": 20.9528134,
+          "lng": 105.9614724,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 110102.61845801336,
+          "onRoute": false,
+          "distanceFromRoute": 30.158076180057733,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13337642954",
+          "osmId": 13337642954,
+          "lat": 20.9529852,
+          "lng": 105.9613876,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 110123.64392327827,
+          "onRoute": false,
+          "distanceFromRoute": 30.797102323807028,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13337642955",
+          "osmId": 13337642955,
+          "lat": 20.9531408,
+          "lng": 105.9612964,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 110143.35355031595,
+          "onRoute": false,
+          "distanceFromRoute": 30.03786657059403,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/8871179174",
+          "osmId": 8871179174,
+          "lat": 20.9533191,
+          "lng": 105.9612115,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 110165.03054245908,
+          "onRoute": false,
+          "distanceFromRoute": 30.989964691512714,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13329794147",
+          "osmId": 13329794147,
+          "lat": 20.9537128,
+          "lng": 105.9610099,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 110213.54963613806,
+          "onRoute": false,
+          "distanceFromRoute": 31.778610009714868,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13197088258",
+          "osmId": 13197088258,
+          "lat": 20.9580619,
+          "lng": 105.9584099,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 110766.78946265268,
+          "onRoute": false,
+          "distanceFromRoute": 6.2070164563919334,
+          "updatedAt": "2026-05-27T16:37:39+00:00"
+        },
+        {
+          "id": "node/13818191649",
+          "osmId": 13818191649,
+          "lat": 20.9649278,
+          "lng": 105.9549909,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 111608.29301190413,
+          "onRoute": false,
+          "distanceFromRoute": 31.563970309852547,
+          "updatedAt": "2026-05-11T13:31:56+00:00"
+        },
+        {
+          "id": "node/13818191650",
+          "osmId": 13818191650,
+          "lat": 20.9651586,
+          "lng": 105.954863,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 111637.22183082007,
+          "onRoute": false,
+          "distanceFromRoute": 31.261737137441724,
+          "updatedAt": "2026-05-11T13:31:56+00:00"
+        },
+        {
+          "id": "node/11361169256",
+          "osmId": 11361169256,
+          "lat": 20.9713743,
+          "lng": 105.9514321,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 112414.78365478544,
+          "onRoute": false,
+          "distanceFromRoute": 24.593023386287882,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169255",
+          "osmId": 11361169255,
+          "lat": 20.9715195,
+          "lng": 105.9513542,
+          "kind": "traffic-calming",
+          "label": "Gờ giảm tốc",
+          "code": "traffic_calming=bump",
+          "along": 112432.84181582498,
+          "onRoute": false,
+          "distanceFromRoute": 24.607522406740284,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169254",
+          "osmId": 11361169254,
+          "lat": 20.9717529,
+          "lng": 105.951229,
+          "kind": "traffic-calming",
+          "label": "Gờ giảm tốc",
+          "code": "traffic_calming=bump",
+          "along": 112461.86828578795,
+          "onRoute": false,
+          "distanceFromRoute": 24.632630841590785,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169253",
+          "osmId": 11361169253,
+          "lat": 20.9720032,
+          "lng": 105.9510947,
+          "kind": "traffic-calming",
+          "label": "Gờ giảm tốc",
+          "code": "traffic_calming=bump",
+          "along": 112492.99810960909,
+          "onRoute": false,
+          "distanceFromRoute": 24.656352792907303,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169250",
+          "osmId": 11361169250,
+          "lat": 20.977953,
+          "lng": 105.9478366,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 113235.70629983893,
+          "onRoute": false,
+          "distanceFromRoute": 25.290596892244984,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169249",
+          "osmId": 11361169249,
+          "lat": 20.9782297,
+          "lng": 105.947681,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 113269.50041398963,
+          "onRoute": false,
+          "distanceFromRoute": 25.71490102339031,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169261",
+          "osmId": 11361169261,
+          "lat": 20.9845563,
+          "lng": 105.9435657,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 114090.09786246363,
+          "onRoute": false,
+          "distanceFromRoute": 31.07536778179828,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169277",
+          "osmId": 11361169277,
+          "lat": 20.9915516,
+          "lng": 105.9376045,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 115081.69983659792,
+          "onRoute": false,
+          "distanceFromRoute": 31.951373235735545,
+          "updatedAt": "2023-11-27T12:42:40+00:00"
+        },
+        {
+          "id": "node/11361169279",
+          "osmId": 11361169279,
+          "lat": 20.9937213,
+          "lng": 105.9356086,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 115399.7234372005,
+          "onRoute": false,
+          "distanceFromRoute": 31.855864892628652,
+          "updatedAt": "2024-02-12T08:40:46+00:00"
+        },
+        {
+          "id": "node/11096884021",
+          "osmId": 11096884021,
+          "lat": 21.0015021,
+          "lng": 105.9283329,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 116548.15388182196,
+          "onRoute": false,
+          "distanceFromRoute": 22.676481575171632,
+          "updatedAt": "2025-03-30T09:41:20+00:00"
+        },
+        {
+          "id": "node/11096844503",
+          "osmId": 11096844503,
+          "lat": 21.0016288,
+          "lng": 105.928288,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 116561.87277534271,
+          "onRoute": false,
+          "distanceFromRoute": 28.333352897934752,
+          "updatedAt": "2024-06-17T06:22:56+00:00"
+        },
+        {
+          "id": "node/11096844500",
+          "osmId": 11096844500,
+          "lat": 21.0035069,
+          "lng": 105.9265574,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 116837.32577493961,
+          "onRoute": false,
+          "distanceFromRoute": 28.56390155962994,
+          "updatedAt": "2024-06-17T06:23:10+00:00"
+        },
+        {
+          "id": "node/11096884015",
+          "osmId": 11096884015,
+          "lat": 21.0036072,
+          "lng": 105.9263931,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 116856.90873591603,
+          "onRoute": false,
+          "distanceFromRoute": 22.926132104471055,
+          "updatedAt": "2024-06-17T06:23:12+00:00"
+        },
+        {
+          "id": "node/11096844498",
+          "osmId": 11096844498,
+          "lat": 21.003776,
+          "lng": 105.9263095,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 116876.79207815911,
+          "onRoute": false,
+          "distanceFromRoute": 28.606657970008225,
+          "updatedAt": "2023-08-07T11:23:28+00:00"
+        },
+        {
+          "id": "node/13254634390",
+          "osmId": 13254634390,
+          "lat": 21.0048641,
+          "lng": 105.9251064,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 117049.98335666166,
+          "onRoute": true,
+          "distanceFromRoute": 12.911386232642537,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/13254634391",
+          "osmId": 13254634391,
+          "lat": 21.0047954,
+          "lng": 105.9250059,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 117051.00046560058,
+          "onRoute": false,
+          "distanceFromRoute": 0.02137476753788242,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/5722299684",
+          "osmId": 5722299684,
+          "lat": 21.006474,
+          "lng": 105.923834,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 117271.6563218195,
+          "onRoute": false,
+          "distanceFromRoute": 30.823051553321612,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/13254634405",
+          "osmId": 13254634405,
+          "lat": 21.0067379,
+          "lng": 105.9229769,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 117352.20619899499,
+          "onRoute": false,
+          "distanceFromRoute": 17.016460560750843,
+          "updatedAt": "2026-03-03T09:25:26+00:00"
+        },
+        {
+          "id": "node/13254634389",
+          "osmId": 13254634389,
+          "lat": 21.007716,
+          "lng": 105.922074,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 117495.77649140405,
+          "onRoute": false,
+          "distanceFromRoute": 16.298783999393965,
+          "updatedAt": "2026-03-03T09:25:26+00:00"
+        },
+        {
+          "id": "node/13254634388",
+          "osmId": 13254634388,
+          "lat": 21.0088312,
+          "lng": 105.9214601,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 117631.14841916562,
+          "onRoute": false,
+          "distanceFromRoute": 17.055386031448496,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/14111919518",
+          "osmId": 14111919518,
+          "lat": 21.015314,
+          "lng": 105.9157234,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 118567.270179484,
+          "onRoute": false,
+          "distanceFromRoute": 22.274247047361953,
+          "updatedAt": "2026-08-22T08:51:12+00:00"
+        },
+        {
+          "id": "node/12324818459",
+          "osmId": 12324818459,
+          "lat": 21.015146,
+          "lng": 105.9153801,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 118575.10923113306,
+          "onRoute": false,
+          "distanceFromRoute": 17.188529782924714,
+          "updatedAt": "2025-02-25T09:51:43+00:00"
+        },
+        {
+          "id": "node/11991288876",
+          "osmId": 11991288876,
+          "lat": 21.0162211,
+          "lng": 105.9148055,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 118705.61962758939,
+          "onRoute": false,
+          "distanceFromRoute": 11.261545442930315,
+          "updatedAt": "2024-11-23T12:34:39+00:00"
+        },
+        {
+          "id": "node/10577084629",
+          "osmId": 10577084629,
+          "lat": 21.0179957,
+          "lng": 105.9130979,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 118969.63577934864,
+          "onRoute": false,
+          "distanceFromRoute": 6.452481075978289,
+          "updatedAt": "2025-07-28T02:15:15+00:00"
+        },
+        {
+          "id": "node/9459646441",
+          "osmId": 9459646441,
+          "lat": 21.017947,
+          "lng": 105.9127718,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 118990.04907632282,
+          "onRoute": false,
+          "distanceFromRoute": 21.011177289978445,
+          "updatedAt": "2026-08-05T09:42:09+00:00"
+        },
+        {
+          "id": "node/10196700286",
+          "osmId": 10196700286,
+          "lat": 21.0183016,
+          "lng": 105.9124035,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119045.24126567102,
+          "onRoute": false,
+          "distanceFromRoute": 20.44121493681203,
+          "updatedAt": "2026-08-05T09:41:59+00:00"
+        },
+        {
+          "id": "node/14111919573",
+          "osmId": 14111919573,
+          "lat": 21.0185264,
+          "lng": 105.9125795,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119050.0162968766,
+          "onRoute": false,
+          "distanceFromRoute": 10.172717221167623,
+          "updatedAt": "2026-08-22T08:51:12+00:00"
+        },
+        {
+          "id": "node/10196700285",
+          "osmId": 10196700285,
+          "lat": 21.0188352,
+          "lng": 105.9118249,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119129.3293382266,
+          "onRoute": false,
+          "distanceFromRoute": 21.7952360917542,
+          "updatedAt": "2026-08-05T09:41:46+00:00"
+        },
+        {
+          "id": "node/10577084632",
+          "osmId": 10577084632,
+          "lat": 21.019108,
+          "lng": 105.9119343,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119142.8552706465,
+          "onRoute": false,
+          "distanceFromRoute": 7.574585429451842,
+          "updatedAt": "2026-08-04T05:42:49+00:00"
+        },
+        {
+          "id": "node/10577084630",
+          "osmId": 10577084630,
+          "lat": 21.0196857,
+          "lng": 105.9113119,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 119234.02670129464,
+          "onRoute": false,
+          "distanceFromRoute": 8.463185843143805,
+          "updatedAt": "2024-05-31T07:13:35+00:00"
+        },
+        {
+          "id": "node/10196700282",
+          "osmId": 10196700282,
+          "lat": 21.0200029,
+          "lng": 105.9105718,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119313.41045470095,
+          "onRoute": false,
+          "distanceFromRoute": 20.57875226853355,
+          "updatedAt": "2026-08-05T09:41:07+00:00"
+        },
+        {
+          "id": "node/10577084631",
+          "osmId": 10577084631,
+          "lat": 21.0204134,
+          "lng": 105.9105323,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 119348.46070960289,
+          "onRoute": false,
+          "distanceFromRoute": 8.947563574588004,
+          "updatedAt": "2025-08-18T11:34:50+00:00"
+        },
+        {
+          "id": "node/10196700281",
+          "osmId": 10196700281,
+          "lat": 21.0204527,
+          "lng": 105.910111,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119382.61286718714,
+          "onRoute": false,
+          "distanceFromRoute": 18.698435201716666,
+          "updatedAt": "2026-08-05T09:40:53+00:00"
+        },
+        {
+          "id": "node/10196700280",
+          "osmId": 10196700280,
+          "lat": 21.0207959,
+          "lng": 105.9097326,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119437.5887218663,
+          "onRoute": false,
+          "distanceFromRoute": 18.886329333368614,
+          "updatedAt": "2026-08-05T09:40:48+00:00"
+        },
+        {
+          "id": "node/10196700279",
+          "osmId": 10196700279,
+          "lat": 21.0210703,
+          "lng": 105.9094015,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119483.50391598021,
+          "onRoute": false,
+          "distanceFromRoute": 20.840761694912437,
+          "updatedAt": "2026-08-05T09:40:43+00:00"
+        },
+        {
+          "id": "node/10196700278",
+          "osmId": 10196700278,
+          "lat": 21.0216899,
+          "lng": 105.9084981,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119623.84271695571,
+          "onRoute": false,
+          "distanceFromRoute": 6.737737985424284,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/10196700277",
+          "osmId": 10196700277,
+          "lat": 21.021826,
+          "lng": 105.9080799,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119672.10235062243,
+          "onRoute": false,
+          "distanceFromRoute": 7.4697709079705525,
+          "updatedAt": "2024-02-22T03:11:07+00:00"
+        },
+        {
+          "id": "node/13286804038",
+          "osmId": 13286804038,
+          "lat": 21.0219443,
+          "lng": 105.9075566,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119727.9626318067,
+          "onRoute": false,
+          "distanceFromRoute": 9.15374948251289,
+          "updatedAt": "2025-11-07T08:44:02+00:00"
+        },
+        {
+          "id": "node/10196700276",
+          "osmId": 10196700276,
+          "lat": 21.0220234,
+          "lng": 105.9072203,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119763.95299461808,
+          "onRoute": false,
+          "distanceFromRoute": 9.902085439474885,
+          "updatedAt": "2024-02-22T03:11:07+00:00"
+        },
+        {
+          "id": "node/10196700275",
+          "osmId": 10196700275,
+          "lat": 21.022284,
+          "lng": 105.9059832,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 119895.97523859795,
+          "onRoute": false,
+          "distanceFromRoute": 5.321692400693706,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/6670426244",
+          "osmId": 6670426244,
+          "lat": 21.0228276,
+          "lng": 105.9054032,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 119973.34785904379,
+          "onRoute": false,
+          "distanceFromRoute": 22.49445382998183,
+          "updatedAt": "2024-06-17T06:29:03+00:00"
+        },
+        {
+          "id": "node/6670426239",
+          "osmId": 6670426239,
+          "lat": 21.0226432,
+          "lng": 105.9053095,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 120000,
+          "onRoute": false,
+          "distanceFromRoute": 23.609673774673624,
+          "updatedAt": "2019-08-01T15:22:15+00:00"
+        },
+        {
+          "id": "node/312954252",
+          "osmId": 312954252,
+          "lat": 21.0228072,
+          "lng": 105.9051974,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 120000,
+          "onRoute": false,
+          "distanceFromRoute": 15.551666375564391,
+          "updatedAt": "2024-06-17T06:29:40+00:00"
+        },
+        {
+          "id": "node/6670426242",
+          "osmId": 6670426242,
+          "lat": 21.0229739,
+          "lng": 105.905114,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 120000.28530364172,
+          "onRoute": false,
+          "distanceFromRoute": 29.671482477600957,
+          "updatedAt": "2024-06-17T06:29:41+00:00"
+        },
+        {
+          "id": "node/11230635006",
+          "osmId": 11230635006,
+          "lat": 21.0226577,
+          "lng": 105.9050349,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 120008.284732796,
+          "onRoute": false,
+          "distanceFromRoute": 0.01653619351248163,
+          "updatedAt": "2023-10-01T09:22:08+00:00"
+        },
+        {
+          "id": "node/10196700272",
+          "osmId": 10196700272,
+          "lat": 21.0221355,
+          "lng": 105.9045051,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 120087.56181184818,
+          "onRoute": false,
+          "distanceFromRoute": 6.633421814087755,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/10196700274",
+          "osmId": 10196700274,
+          "lat": 21.0218807,
+          "lng": 105.9040569,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 120140.04284507962,
+          "onRoute": false,
+          "distanceFromRoute": 5.93145100843906,
+          "updatedAt": "2024-02-22T03:11:07+00:00"
+        },
+        {
+          "id": "node/10196700273",
+          "osmId": 10196700273,
+          "lat": 21.021684,
+          "lng": 105.9031649,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 120235.23944371873,
+          "onRoute": false,
+          "distanceFromRoute": 8.331194710491777,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/12111919745",
+          "osmId": 12111919745,
+          "lat": 21.0211089,
+          "lng": 105.9006882,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 120569.69705627306,
+          "onRoute": false,
+          "distanceFromRoute": 0.01730454185810162,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919759",
+          "osmId": 12111919759,
+          "lat": 21.0212679,
+          "lng": 105.8987112,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 120778.42280313412,
+          "onRoute": false,
+          "distanceFromRoute": 5.326229880117465,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919762",
+          "osmId": 12111919762,
+          "lat": 21.0214205,
+          "lng": 105.8961424,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 121047.40574639085,
+          "onRoute": false,
+          "distanceFromRoute": 4.763550984622086,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919771",
+          "osmId": 12111919771,
+          "lat": 21.0215061,
+          "lng": 105.8955997,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 121104.53851008807,
+          "onRoute": false,
+          "distanceFromRoute": 6.17249932202317,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919770",
+          "osmId": 12111919770,
+          "lat": 21.0215207,
+          "lng": 105.8954065,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 121124.47145116662,
+          "onRoute": false,
+          "distanceFromRoute": 5.440489613282563,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919776",
+          "osmId": 12111919776,
+          "lat": 21.0216111,
+          "lng": 105.8948212,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 121186.27567403112,
+          "onRoute": false,
+          "distanceFromRoute": 5.644247865165675,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/6670741018",
+          "osmId": 6670741018,
+          "lat": 21.0236688,
+          "lng": 105.8865534,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 122086.71985443911,
+          "onRoute": false,
+          "distanceFromRoute": 23.17754749910634,
+          "updatedAt": "2026-11-06T09:34:59+00:00"
+        },
+        {
+          "id": "node/6610701246",
+          "osmId": 6610701246,
+          "lat": 21.0276565,
+          "lng": 105.8827189,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 122698.41356109179,
+          "onRoute": false,
+          "distanceFromRoute": 20.231162788126937,
+          "updatedAt": "2019-07-12T18:47:58+00:00"
+        },
+        {
+          "id": "node/6608780113",
+          "osmId": 6608780113,
+          "lat": 21.0281981,
+          "lng": 105.8823781,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 122766.94264739577,
+          "onRoute": false,
+          "distanceFromRoute": 29.602104303022386,
+          "updatedAt": "2019-08-01T19:41:18+00:00"
+        },
+        {
+          "id": "node/6610997051",
+          "osmId": 6610997051,
+          "lat": 21.0327814,
+          "lng": 105.876853,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 123534.6919726583,
+          "onRoute": true,
+          "distanceFromRoute": 0.03688679406088375,
+          "updatedAt": "2025-12-01T08:53:21+00:00"
+        },
+        {
+          "id": "node/6608067802",
+          "osmId": 6608067802,
+          "lat": 21.0342403,
+          "lng": 105.8745211,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 123826.0522608174,
+          "onRoute": true,
+          "distanceFromRoute": 0.033445289447695564,
+          "updatedAt": "2025-12-01T08:53:50+00:00"
+        },
+        {
+          "id": "node/97996367",
+          "osmId": 97996367,
+          "lat": 21.0348481,
+          "lng": 105.8735605,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 123946.49752878388,
+          "onRoute": true,
+          "distanceFromRoute": 0.019730462667923943,
+          "updatedAt": "2025-12-01T08:54:10+00:00"
+        },
+        {
+          "id": "node/97996073",
+          "osmId": 97996073,
+          "lat": 21.0353822,
+          "lng": 105.8727147,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 124052.48787625592,
+          "onRoute": true,
+          "distanceFromRoute": 0.0008352103227286986,
+          "updatedAt": "2025-11-13T19:17:47+00:00"
+        },
+        {
+          "id": "node/97995617",
+          "osmId": 97995617,
+          "lat": 21.0367089,
+          "lng": 105.8705681,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 124319.69626055243,
+          "onRoute": true,
+          "distanceFromRoute": 0.0036181618630768513,
+          "updatedAt": "2025-12-01T08:54:43+00:00"
+        },
+        {
+          "id": "node/97995535",
+          "osmId": 97995535,
+          "lat": 21.037197,
+          "lng": 105.8697843,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 124417.52094342739,
+          "onRoute": true,
+          "distanceFromRoute": 0.018589207744755126,
+          "updatedAt": "2025-08-17T10:49:47+00:00"
+        },
+        {
+          "id": "node/12045346410",
+          "osmId": 12045346410,
+          "lat": 21.0392826,
+          "lng": 105.8663224,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 124845.39575376143,
+          "onRoute": true,
+          "distanceFromRoute": 0.018855045517988278,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/12045346408",
+          "osmId": 12045346408,
+          "lat": 21.0392368,
+          "lng": 105.8662486,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 124850.12258078749,
+          "onRoute": false,
+          "distanceFromRoute": 7.913241776087431,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/11396505874",
+          "osmId": 11396505874,
+          "lat": 21.0395501,
+          "lng": 105.8660413,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 124871.33501409591,
+          "onRoute": false,
+          "distanceFromRoute": 17.052409223614355,
+          "updatedAt": "2023-12-05T17:34:27+00:00"
+        },
+        {
+          "id": "node/12045346409",
+          "osmId": 12045346409,
+          "lat": 21.0393592,
+          "lng": 105.8660341,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 124883.27743436593,
+          "onRoute": false,
+          "distanceFromRoute": 0.00894672173256698,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/439562196",
+          "osmId": 439562196,
+          "lat": 21.0401264,
+          "lng": 105.8654434,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 125023.15592456041,
+          "onRoute": true,
+          "distanceFromRoute": 0.01138816390309008,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/12045346412",
+          "osmId": 12045346412,
+          "lat": 21.04026,
+          "lng": 105.865493,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 125035.77189955623,
+          "onRoute": false,
+          "distanceFromRoute": 4.865293035484207,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/97993203",
+          "osmId": 97993203,
+          "lat": 21.0398992,
+          "lng": 105.8657916,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 125084.78875628262,
+          "onRoute": true,
+          "distanceFromRoute": 0.036979252840447556,
+          "updatedAt": "2023-12-05T17:34:27+00:00"
+        },
+        {
+          "id": "node/11229097055",
+          "osmId": 11229097055,
+          "lat": 21.0398954,
+          "lng": 105.8659996,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 125087.17030936973,
+          "onRoute": false,
+          "distanceFromRoute": 21.420000624379394,
+          "updatedAt": "2023-12-05T17:34:27+00:00"
+        },
+        {
+          "id": "node/12597788819",
+          "osmId": 12597788819,
+          "lat": 21.0354576,
+          "lng": 105.8545216,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 126377.68680510295,
+          "onRoute": false,
+          "distanceFromRoute": 12.774053098374363,
+          "updatedAt": "2026-05-29T12:15:29+00:00"
+        },
+        {
+          "id": "node/6601411960",
+          "osmId": 6601411960,
+          "lat": 21.0352826,
+          "lng": 105.854306,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 126407.19313399415,
+          "onRoute": false,
+          "distanceFromRoute": 6.790134199609118,
+          "updatedAt": "2025-02-18T08:08:58+00:00"
+        },
+        {
+          "id": "node/6641697579",
+          "osmId": 6641697579,
+          "lat": 21.0351076,
+          "lng": 105.8544515,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 126429.92890390214,
+          "onRoute": false,
+          "distanceFromRoute": 0.5336297989048154,
+          "updatedAt": "2025-02-18T08:08:58+00:00"
+        },
+        {
+          "id": "node/6603790928",
+          "osmId": 6603790928,
+          "lat": 21.0351954,
+          "lng": 105.8547897,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 126447.99611823949,
+          "onRoute": false,
+          "distanceFromRoute": 31.885621015349138,
+          "updatedAt": "2021-05-15T06:24:47+00:00"
+        },
+        {
+          "id": "node/6601411959",
+          "osmId": 6601411959,
+          "lat": 21.0349971,
+          "lng": 105.8546206,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 126451.01156278882,
+          "onRoute": false,
+          "distanceFromRoute": 3.86578959621836,
+          "updatedAt": "2026-05-29T11:28:27+00:00"
+        },
+        {
+          "id": "node/6601411958",
+          "osmId": 6601411958,
+          "lat": 21.0347468,
+          "lng": 105.8546374,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 126471.90555964247,
+          "onRoute": false,
+          "distanceFromRoute": 14.915194710252228,
+          "updatedAt": "2025-11-28T08:30:23+00:00"
+        },
+        {
+          "id": "node/6641697575",
+          "osmId": 6641697575,
+          "lat": 21.0347857,
+          "lng": 105.8547054,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 126473.83744225278,
+          "onRoute": false,
+          "distanceFromRoute": 6.866314402228302,
+          "updatedAt": "2026-05-29T12:12:16+00:00"
+        },
+        {
+          "id": "node/12597867613",
+          "osmId": 12597867613,
+          "lat": 21.0327104,
+          "lng": 105.8558931,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 126738.25398591602,
+          "onRoute": false,
+          "distanceFromRoute": 0.027632811670160295,
+          "updatedAt": "2025-02-18T08:08:58+00:00"
+        },
+        {
+          "id": "node/11347697026",
+          "osmId": 11347697026,
+          "lat": 21.0315635,
+          "lng": 105.854562,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 126966.47631831953,
+          "onRoute": false,
+          "distanceFromRoute": 0.0018859583417843659,
+          "updatedAt": "2024-02-10T07:14:07+00:00"
+        },
+        {
+          "id": "node/6603866909",
+          "osmId": 6603866909,
+          "lat": 21.0314424,
+          "lng": 105.8544409,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 126978.65923810049,
+          "onRoute": false,
+          "distanceFromRoute": 13.047731702129504,
+          "updatedAt": "2026-09-14T08:51:16+00:00"
+        },
+        {
+          "id": "node/6603859000",
+          "osmId": 6603859000,
+          "lat": 21.031434,
+          "lng": 105.8546945,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 126984.33442095529,
+          "onRoute": false,
+          "distanceFromRoute": 12.272144299076736,
+          "updatedAt": "2026-09-14T08:51:16+00:00"
+        },
+        {
+          "id": "node/6603858999",
+          "osmId": 6603858999,
+          "lat": 21.0313693,
+          "lng": 105.8545911,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 126988.43107038413,
+          "onRoute": true,
+          "distanceFromRoute": 0.018839470554203788,
+          "updatedAt": "2022-10-31T04:22:37+00:00"
+        },
+        {
+          "id": "node/11335293280",
+          "osmId": 11335293280,
+          "lat": 21.0302846,
+          "lng": 105.8548898,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 127112.79491145063,
+          "onRoute": true,
+          "distanceFromRoute": 6.274405451967558,
+          "updatedAt": "2023-11-09T07:00:01+00:00"
+        },
+        {
+          "id": "node/1497570415",
+          "osmId": 1497570415,
+          "lat": 21.0302521,
+          "lng": 105.854964,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127118.5485539316,
+          "onRoute": true,
+          "distanceFromRoute": 0.003303415606060359,
+          "updatedAt": "2023-01-26T12:33:46+00:00"
+        },
+        {
+          "id": "node/6644282410",
+          "osmId": 6644282410,
+          "lat": 21.0290543,
+          "lng": 105.8553988,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 127259.17645295172,
+          "onRoute": true,
+          "distanceFromRoute": 0.008971823146438084,
+          "updatedAt": "2023-12-25T17:10:02+00:00"
+        },
+        {
+          "id": "node/11348293010",
+          "osmId": 11348293010,
+          "lat": 21.0289403,
+          "lng": 105.8553248,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 127268.66085128106,
+          "onRoute": false,
+          "distanceFromRoute": 11.459646350473788,
+          "updatedAt": "2026-09-14T06:08:18+00:00"
+        },
+        {
+          "id": "node/6644282411",
+          "osmId": 6644282411,
+          "lat": 21.0289624,
+          "lng": 105.8555603,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 127274.82127215841,
+          "onRoute": false,
+          "distanceFromRoute": 12.319770580165054,
+          "updatedAt": "2023-12-25T17:10:02+00:00"
+        },
+        {
+          "id": "node/6644282408",
+          "osmId": 6644282408,
+          "lat": 21.0288459,
+          "lng": 105.8554799,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 127283.83992771262,
+          "onRoute": true,
+          "distanceFromRoute": 0.013294911694443884,
+          "updatedAt": "2026-10-27T03:25:47+00:00"
+        },
+        {
+          "id": "node/6644906351",
+          "osmId": 6644906351,
+          "lat": 21.0277541,
+          "lng": 105.8558309,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127410.59181197105,
+          "onRoute": true,
+          "distanceFromRoute": 0.006606931827837256,
+          "updatedAt": "2026-09-17T01:58:07+00:00"
+        },
+        {
+          "id": "node/6644906350",
+          "osmId": 6644906350,
+          "lat": 21.0276058,
+          "lng": 105.855779,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127424.36019841669,
+          "onRoute": false,
+          "distanceFromRoute": 10.452601000536186,
+          "updatedAt": "2023-12-20T15:05:30+00:00"
+        },
+        {
+          "id": "node/11438626846",
+          "osmId": 11438626846,
+          "lat": 21.0274116,
+          "lng": 105.8561924,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 127450.42627978281,
+          "onRoute": false,
+          "distanceFromRoute": 25.330800666831433,
+          "updatedAt": "2023-12-22T16:17:04+00:00"
+        },
+        {
+          "id": "node/11455065732",
+          "osmId": 11455065732,
+          "lat": 21.0272843,
+          "lng": 105.8560912,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127464.87587670701,
+          "onRoute": false,
+          "distanceFromRoute": 17.978708622905135,
+          "updatedAt": "2023-12-26T08:07:04+00:00"
+        },
+        {
+          "id": "node/11455065730",
+          "osmId": 11455065730,
+          "lat": 21.0272893,
+          "lng": 105.8559131,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127468.53837203032,
+          "onRoute": true,
+          "distanceFromRoute": 0.0009994578217528997,
+          "updatedAt": "2025-07-26T14:11:22+00:00"
+        },
+        {
+          "id": "node/6644906347",
+          "osmId": 6644906347,
+          "lat": 21.027026,
+          "lng": 105.8557439,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127508.60077301762,
+          "onRoute": true,
+          "distanceFromRoute": 0.0015203565930621819,
+          "updatedAt": "2026-09-14T03:17:14+00:00"
+        },
+        {
+          "id": "node/10146964677",
+          "osmId": 10146964677,
+          "lat": 21.0267559,
+          "lng": 105.8556585,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 127512.96945765392,
+          "onRoute": false,
+          "distanceFromRoute": 31.00968697951448,
+          "updatedAt": "2026-09-14T02:19:13+00:00"
+        },
+        {
+          "id": "node/8184606210",
+          "osmId": 8184606210,
+          "lat": 21.0271149,
+          "lng": 105.8547798,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 127609.01017286227,
+          "onRoute": false,
+          "distanceFromRoute": 4.88179892155649,
+          "updatedAt": "2023-09-25T06:26:47+00:00"
+        },
+        {
+          "id": "node/11217220363",
+          "osmId": 11217220363,
+          "lat": 21.0273097,
+          "lng": 105.8537248,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127720.52635643103,
+          "onRoute": false,
+          "distanceFromRoute": 0.03584844400948047,
+          "updatedAt": "2026-09-14T03:17:14+00:00"
+        },
+        {
+          "id": "node/8184606209",
+          "osmId": 8184606209,
+          "lat": 21.0270443,
+          "lng": 105.853619,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 127727.43624389742,
+          "onRoute": false,
+          "distanceFromRoute": 30.756258859577397,
+          "updatedAt": "2026-09-14T03:06:02+00:00"
+        },
+        {
+          "id": "node/5405026114",
+          "osmId": 5405026114,
+          "lat": 21.0276088,
+          "lng": 105.8536151,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127767.70842698423,
+          "onRoute": true,
+          "distanceFromRoute": 0.013390922256401478,
+          "updatedAt": "2026-09-16T02:34:55+00:00"
+        },
+        {
+          "id": "node/2587491500",
+          "osmId": 2587491500,
+          "lat": 21.0278593,
+          "lng": 105.8536277,
+          "kind": "camera",
+          "label": "Camera/điểm giám sát · chưa rõ chức năng",
+          "code": "",
+          "along": 127795.40519134942,
+          "onRoute": false,
+          "distanceFromRoute": 3.222749507997578,
+          "updatedAt": "2013-12-20T06:07:40+00:00"
+        },
+        {
+          "id": "node/11217220367",
+          "osmId": 11217220367,
+          "lat": 21.0278682,
+          "lng": 105.853811,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127799.50097245809,
+          "onRoute": false,
+          "distanceFromRoute": 15.382183349439813,
+          "updatedAt": "2023-12-20T15:05:30+00:00"
+        },
+        {
+          "id": "node/9966237370",
+          "osmId": 9966237370,
+          "lat": 21.0285036,
+          "lng": 105.853864,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 127848.39138069669,
+          "onRoute": false,
+          "distanceFromRoute": 30.332389044459557,
+          "updatedAt": "2026-09-14T03:35:55+00:00"
+        },
+        {
+          "id": "node/9966237369",
+          "osmId": 9966237369,
+          "lat": 21.0282331,
+          "lng": 105.8538238,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 127849.53202508159,
+          "onRoute": true,
+          "distanceFromRoute": 0.006945499900502245,
+          "updatedAt": "2026-09-14T03:35:55+00:00"
+        }
+      ]
+    },
+    {
+      "origin": {
+        "id": "osm-relation-7128372",
+        "name": "Huyện Tiền Hải",
+        "detail": "Nominatim historic relation 7128372",
+        "lat": 20.3768181,
+        "lng": 106.5223945
+      },
+      "destination": {
+        "id": "osm-relation-1903516",
+        "name": "Thành phố Hà Nội",
+        "detail": "Nominatim relation 1903516",
+        "lat": 21.0283334,
+        "lng": 105.854041
+      },
+      "router": "OSRM public live service",
+      "distance": 132270.3,
+      "duration": 6328.2,
+      "summary": "Quốc lộ 37, Đường cao tốc Hà Nội - Hải Phòng",
+      "routeGeometryMeters": 132452.4209741128,
+      "osmEdges": 1281,
+      "alternatives": 2,
+      "preview": {
+        "triggerAlong": 0,
+        "requestAlong": 300,
+        "start": 0,
+        "end": 6000,
+        "tiles": [
+          "203_1065",
+          "204_1065"
+        ],
+        "points": 0,
+        "kinds": {},
+        "speedWays": 0,
+        "sectionCount": 0
+      },
+      "windowCount": 34,
+      "totalUniquePoints": 120,
+      "pointKinds": {
+        "sign": 11,
+        "traffic-calming": 13,
+        "signals": 17,
+        "pedestrian-crossing": 78,
+        "camera": 1
+      },
+      "speedWays": 46,
+      "firstPoint": {
+        "id": "node/13197088260",
+        "osmId": 13197088260,
+        "lat": 20.9295414,
+        "lng": 105.9725065,
+        "kind": "sign",
+        "label": "Biển báo · chưa rõ loại",
+        "code": "yes",
+        "along": 111876.44913791394,
+        "onRoute": true,
+        "distanceFromRoute": 28.685469805051678,
+        "updatedAt": "2025-10-06T05:28:13+00:00"
+      },
+      "lastPoint": {
+        "id": "node/9966237369",
+        "osmId": 9966237369,
+        "lat": 21.0282331,
+        "lng": 105.8538238,
+        "kind": "pedestrian-crossing",
+        "label": "Điểm sang đường cho người đi bộ",
+        "code": "crossing=unspecified",
+        "along": 132452.39847309695,
+        "onRoute": true,
+        "distanceFromRoute": 0.006945499900502245,
+        "updatedAt": "2026-09-14T03:35:55+00:00"
+      },
+      "pointsByTenKm": [
+        {
+          "from": 0,
+          "to": 10000,
+          "points": 0
+        },
+        {
+          "from": 10000,
+          "to": 20000,
+          "points": 0
+        },
+        {
+          "from": 20000,
+          "to": 30000,
+          "points": 0
+        },
+        {
+          "from": 30000,
+          "to": 40000,
+          "points": 0
+        },
+        {
+          "from": 40000,
+          "to": 50000,
+          "points": 0
+        },
+        {
+          "from": 50000,
+          "to": 60000,
+          "points": 0
+        },
+        {
+          "from": 60000,
+          "to": 70000,
+          "points": 0
+        },
+        {
+          "from": 70000,
+          "to": 80000,
+          "points": 0
+        },
+        {
+          "from": 80000,
+          "to": 90000,
+          "points": 0
+        },
+        {
+          "from": 90000,
+          "to": 100000,
+          "points": 0
+        },
+        {
+          "from": 100000,
+          "to": 110000,
+          "points": 0
+        },
+        {
+          "from": 110000,
+          "to": 120000,
+          "points": 24
+        },
+        {
+          "from": 120000,
+          "to": 130000,
+          "points": 63
+        },
+        {
+          "from": 130000,
+          "to": 132452.4209741128,
+          "points": 33
+        }
+      ],
+      "coverageGaps": [],
+      "windows": [
+        {
+          "triggerAlong": 0,
+          "requestAlong": 300,
+          "start": 0,
+          "end": 6000,
+          "tiles": [
+            "203_1065",
+            "204_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 4300.01,
+          "requestAlong": 4300,
+          "start": 4000,
+          "end": 10000,
+          "tiles": [
+            "204_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 8300.01,
+          "requestAlong": 8300,
+          "start": 8000,
+          "end": 14000,
+          "tiles": [
+            "204_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 12300.01,
+          "requestAlong": 12300,
+          "start": 12000,
+          "end": 18000,
+          "tiles": [
+            "204_1065",
+            "205_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 16300.01,
+          "requestAlong": 16300,
+          "start": 16000,
+          "end": 22000,
+          "tiles": [
+            "204_1065",
+            "205_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 20300.010000000002,
+          "requestAlong": 20300,
+          "start": 20000,
+          "end": 26000,
+          "tiles": [
+            "205_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 24300.010000000002,
+          "requestAlong": 24300,
+          "start": 24000,
+          "end": 30000,
+          "tiles": [
+            "205_1065",
+            "206_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 28300.010000000002,
+          "requestAlong": 28300,
+          "start": 28000,
+          "end": 34000,
+          "tiles": [
+            "205_1065",
+            "206_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 32300.010000000002,
+          "requestAlong": 32300,
+          "start": 32000,
+          "end": 38000,
+          "tiles": [
+            "206_1064",
+            "206_1065"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 36300.01,
+          "requestAlong": 36300,
+          "start": 36000,
+          "end": 42000,
+          "tiles": [
+            "206_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 40300.01,
+          "requestAlong": 40300,
+          "start": 40000,
+          "end": 46000,
+          "tiles": [
+            "206_1064",
+            "207_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 44300.01,
+          "requestAlong": 44300,
+          "start": 44000,
+          "end": 50000,
+          "tiles": [
+            "207_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 48300.01,
+          "requestAlong": 48300,
+          "start": 48000,
+          "end": 54000,
+          "tiles": [
+            "207_1063",
+            "207_1064"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 1,
+          "sectionCount": 12
+        },
+        {
+          "triggerAlong": 52300.01,
+          "requestAlong": 52300,
+          "start": 52000,
+          "end": 58000,
+          "tiles": [
+            "207_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 3,
+          "sectionCount": 27
+        },
+        {
+          "triggerAlong": 56300.01,
+          "requestAlong": 56300,
+          "start": 56000,
+          "end": 62000,
+          "tiles": [
+            "207_1063",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 60300.01,
+          "requestAlong": 60300,
+          "start": 60000,
+          "end": 66000,
+          "tiles": [
+            "207_1063",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 64300.01,
+          "requestAlong": 64300,
+          "start": 64000,
+          "end": 70000,
+          "tiles": [
+            "208_1062",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 0,
+          "sectionCount": 0
+        },
+        {
+          "triggerAlong": 68300.01000000001,
+          "requestAlong": 68300,
+          "start": 68000,
+          "end": 74000,
+          "tiles": [
+            "208_1062",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 2,
+          "sectionCount": 2
+        },
+        {
+          "triggerAlong": 72300.01000000001,
+          "requestAlong": 72300,
+          "start": 72000,
+          "end": 78000,
+          "tiles": [
+            "208_1062",
+            "208_1063"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 5,
+          "sectionCount": 13
+        },
+        {
+          "triggerAlong": 76300.01000000001,
+          "requestAlong": 76300,
+          "start": 76000,
+          "end": 82000,
+          "tiles": [
+            "208_1062"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 5,
+          "sectionCount": 12
+        },
+        {
+          "triggerAlong": 80300.01000000001,
+          "requestAlong": 80300,
+          "start": 80000,
+          "end": 86000,
+          "tiles": [
+            "208_1061",
+            "208_1062"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 1,
+          "sectionCount": 13
+        },
+        {
+          "triggerAlong": 84300.01000000001,
+          "requestAlong": 84300,
+          "start": 84000,
+          "end": 90000,
+          "tiles": [
+            "208_1061"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 2,
+          "sectionCount": 9
+        },
+        {
+          "triggerAlong": 88300.01000000001,
+          "requestAlong": 88300,
+          "start": 88000,
+          "end": 94000,
+          "tiles": [
+            "208_1060",
+            "208_1061"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 6,
+          "sectionCount": 9
+        },
+        {
+          "triggerAlong": 92300.01000000001,
+          "requestAlong": 92300,
+          "start": 92000,
+          "end": 98000,
+          "tiles": [
+            "208_1060",
+            "208_1061"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 5,
+          "sectionCount": 15
+        },
+        {
+          "triggerAlong": 96300.01000000001,
+          "requestAlong": 96300,
+          "start": 96000,
+          "end": 102000,
+          "tiles": [
+            "208_1060"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 2,
+          "sectionCount": 24
+        },
+        {
+          "triggerAlong": 100300.01000000001,
+          "requestAlong": 100300,
+          "start": 100000,
+          "end": 106000,
+          "tiles": [
+            "208_1060"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 6,
+          "sectionCount": 17
+        },
+        {
+          "triggerAlong": 104300.01000000001,
+          "requestAlong": 104300,
+          "start": 104000,
+          "end": 110000,
+          "tiles": [
+            "208_1059",
+            "208_1060",
+            "209_1059",
+            "209_1060"
+          ],
+          "points": 0,
+          "kinds": {},
+          "speedWays": 6,
+          "sectionCount": 10
+        },
+        {
+          "triggerAlong": 108300.01000000001,
+          "requestAlong": 108300,
+          "start": 108000,
+          "end": 114000,
+          "tiles": [
+            "208_1059",
+            "209_1059"
+          ],
+          "points": 3,
+          "kinds": {
+            "sign": 3
+          },
+          "speedWays": 1,
+          "sectionCount": 1
+        },
+        {
+          "triggerAlong": 112300.01000000001,
+          "requestAlong": 112300,
+          "start": 112000,
+          "end": 118000,
+          "tiles": [
+            "209_1059"
+          ],
+          "points": 21,
+          "kinds": {
+            "sign": 3,
+            "traffic-calming": 13,
+            "signals": 2,
+            "pedestrian-crossing": 3
+          },
+          "speedWays": 4,
+          "sectionCount": 4
+        },
+        {
+          "triggerAlong": 116300.01000000001,
+          "requestAlong": 116300,
+          "start": 116000,
+          "end": 122000,
+          "tiles": [
+            "209_1059",
+            "210_1059"
+          ],
+          "points": 20,
+          "kinds": {
+            "signals": 2,
+            "pedestrian-crossing": 11,
+            "traffic-calming": 3,
+            "sign": 4
+          },
+          "speedWays": 9,
+          "sectionCount": 9
+        },
+        {
+          "triggerAlong": 120300.01000000001,
+          "requestAlong": 120300,
+          "start": 120000,
+          "end": 126000,
+          "tiles": [
+            "209_1058",
+            "209_1059",
+            "210_1058",
+            "210_1059"
+          ],
+          "points": 46,
+          "kinds": {
+            "pedestrian-crossing": 37,
+            "sign": 7,
+            "signals": 2
+          },
+          "speedWays": 8,
+          "sectionCount": 14
+        },
+        {
+          "triggerAlong": 124300.01000000001,
+          "requestAlong": 124300,
+          "start": 124000,
+          "end": 130000,
+          "tiles": [
+            "210_1058",
+            "210_1059"
+          ],
+          "points": 39,
+          "kinds": {
+            "pedestrian-crossing": 29,
+            "signals": 10
+          },
+          "speedWays": 3,
+          "sectionCount": 5
+        },
+        {
+          "triggerAlong": 128300.01000000001,
+          "requestAlong": 128300,
+          "start": 128000,
+          "end": 132452.4209741128,
+          "tiles": [
+            "210_1058"
+          ],
+          "points": 47,
+          "kinds": {
+            "pedestrian-crossing": 33,
+            "signals": 13,
+            "camera": 1
+          },
+          "speedWays": 8,
+          "sectionCount": 20
+        },
+        {
+          "triggerAlong": 132300.01,
+          "requestAlong": 132300,
+          "start": 132000,
+          "end": 132452.4209741128,
+          "tiles": [
+            "210_1058"
+          ],
+          "points": 15,
+          "kinds": {
+            "pedestrian-crossing": 14,
+            "camera": 1
+          },
+          "speedWays": 2,
+          "sectionCount": 2
+        }
+      ],
+      "points": [
+        {
+          "id": "node/13197088260",
+          "osmId": 13197088260,
+          "lat": 20.9295414,
+          "lng": 105.9725065,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 111876.44913791394,
+          "onRoute": true,
+          "distanceFromRoute": 28.685469805051678,
+          "updatedAt": "2025-10-06T05:28:13+00:00"
+        },
+        {
+          "id": "node/13197088259",
+          "osmId": 13197088259,
+          "lat": 20.9360022,
+          "lng": 105.9693707,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 112665.15765764353,
+          "onRoute": false,
+          "distanceFromRoute": 0.019381278630026998,
+          "updatedAt": "2026-05-27T16:37:39+00:00"
+        },
+        {
+          "id": "node/13328191462",
+          "osmId": 13328191462,
+          "lat": 20.9462835,
+          "lng": 105.9645047,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 113915.09650054513,
+          "onRoute": false,
+          "distanceFromRoute": 4.3902888704101555,
+          "updatedAt": "2025-12-07T08:35:32+00:00"
+        },
+        {
+          "id": "node/13356898171",
+          "osmId": 13356898171,
+          "lat": 20.947617,
+          "lng": 105.9639955,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114071.84578169408,
+          "onRoute": false,
+          "distanceFromRoute": 17.847002075564482,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356932804",
+          "osmId": 13356932804,
+          "lat": 20.9477289,
+          "lng": 105.9640543,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114080.59084703712,
+          "onRoute": false,
+          "distanceFromRoute": 28.600118559735176,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356898172",
+          "osmId": 13356898172,
+          "lat": 20.9477844,
+          "lng": 105.963918,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114092.11944954794,
+          "onRoute": false,
+          "distanceFromRoute": 18.327969996029584,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356898174",
+          "osmId": 13356898174,
+          "lat": 20.9485061,
+          "lng": 105.9636711,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114175.7332497485,
+          "onRoute": false,
+          "distanceFromRoute": 28.627556139379703,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13356898173",
+          "osmId": 13356898173,
+          "lat": 20.9487236,
+          "lng": 105.9635562,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114202.69188292659,
+          "onRoute": false,
+          "distanceFromRoute": 27.912683623940854,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13434518775",
+          "osmId": 13434518775,
+          "lat": 20.9528134,
+          "lng": 105.9614724,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114705.48490602872,
+          "onRoute": false,
+          "distanceFromRoute": 30.158076180057733,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13337642954",
+          "osmId": 13337642954,
+          "lat": 20.9529852,
+          "lng": 105.9613876,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114726.51037129364,
+          "onRoute": false,
+          "distanceFromRoute": 30.797102323807028,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13337642955",
+          "osmId": 13337642955,
+          "lat": 20.9531408,
+          "lng": 105.9612964,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114746.21999833132,
+          "onRoute": false,
+          "distanceFromRoute": 30.03786657059403,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/8871179174",
+          "osmId": 8871179174,
+          "lat": 20.9533191,
+          "lng": 105.9612115,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114767.89699047444,
+          "onRoute": false,
+          "distanceFromRoute": 30.989964691512714,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13329794147",
+          "osmId": 13329794147,
+          "lat": 20.9537128,
+          "lng": 105.9610099,
+          "kind": "traffic-calming",
+          "label": "Dải cảnh báo giảm tốc",
+          "code": "traffic_calming=rumble_strip",
+          "along": 114816.41608415343,
+          "onRoute": false,
+          "distanceFromRoute": 31.778610009714868,
+          "updatedAt": "2026-01-06T13:17:51+00:00"
+        },
+        {
+          "id": "node/13197088258",
+          "osmId": 13197088258,
+          "lat": 20.9580619,
+          "lng": 105.9584099,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 115369.65591066805,
+          "onRoute": false,
+          "distanceFromRoute": 6.2070164563919334,
+          "updatedAt": "2026-05-27T16:37:39+00:00"
+        },
+        {
+          "id": "node/13818191649",
+          "osmId": 13818191649,
+          "lat": 20.9649278,
+          "lng": 105.9549909,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 116211.1594599195,
+          "onRoute": false,
+          "distanceFromRoute": 31.563970309852547,
+          "updatedAt": "2026-05-11T13:31:56+00:00"
+        },
+        {
+          "id": "node/13818191650",
+          "osmId": 13818191650,
+          "lat": 20.9651586,
+          "lng": 105.954863,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 116240.08827883544,
+          "onRoute": false,
+          "distanceFromRoute": 31.261737137441724,
+          "updatedAt": "2026-05-11T13:31:56+00:00"
+        },
+        {
+          "id": "node/11361169256",
+          "osmId": 11361169256,
+          "lat": 20.9713743,
+          "lng": 105.9514321,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 117017.6501028008,
+          "onRoute": false,
+          "distanceFromRoute": 24.593023386287882,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169255",
+          "osmId": 11361169255,
+          "lat": 20.9715195,
+          "lng": 105.9513542,
+          "kind": "traffic-calming",
+          "label": "Gờ giảm tốc",
+          "code": "traffic_calming=bump",
+          "along": 117035.70826384035,
+          "onRoute": false,
+          "distanceFromRoute": 24.607522406740284,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169254",
+          "osmId": 11361169254,
+          "lat": 20.9717529,
+          "lng": 105.951229,
+          "kind": "traffic-calming",
+          "label": "Gờ giảm tốc",
+          "code": "traffic_calming=bump",
+          "along": 117064.73473380331,
+          "onRoute": false,
+          "distanceFromRoute": 24.632630841590785,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169253",
+          "osmId": 11361169253,
+          "lat": 20.9720032,
+          "lng": 105.9510947,
+          "kind": "traffic-calming",
+          "label": "Gờ giảm tốc",
+          "code": "traffic_calming=bump",
+          "along": 117095.86455762446,
+          "onRoute": false,
+          "distanceFromRoute": 24.656352792907303,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169250",
+          "osmId": 11361169250,
+          "lat": 20.977953,
+          "lng": 105.9478366,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 117838.5727478543,
+          "onRoute": false,
+          "distanceFromRoute": 25.290596892244984,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169249",
+          "osmId": 11361169249,
+          "lat": 20.9782297,
+          "lng": 105.947681,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 117872.366862005,
+          "onRoute": false,
+          "distanceFromRoute": 25.71490102339031,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169261",
+          "osmId": 11361169261,
+          "lat": 20.9845563,
+          "lng": 105.9435657,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 118692.964310479,
+          "onRoute": false,
+          "distanceFromRoute": 31.07536778179828,
+          "updatedAt": "2023-11-19T03:14:11+00:00"
+        },
+        {
+          "id": "node/11361169277",
+          "osmId": 11361169277,
+          "lat": 20.9915516,
+          "lng": 105.9376045,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 119684.56628461329,
+          "onRoute": false,
+          "distanceFromRoute": 31.951373235735545,
+          "updatedAt": "2023-11-27T12:42:40+00:00"
+        },
+        {
+          "id": "node/11361169279",
+          "osmId": 11361169279,
+          "lat": 20.9937213,
+          "lng": 105.9356086,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 120002.58988521587,
+          "onRoute": false,
+          "distanceFromRoute": 31.855864892628652,
+          "updatedAt": "2024-02-12T08:40:46+00:00"
+        },
+        {
+          "id": "node/11096884021",
+          "osmId": 11096884021,
+          "lat": 21.0015021,
+          "lng": 105.9283329,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 121151.02032983732,
+          "onRoute": false,
+          "distanceFromRoute": 22.676481575171632,
+          "updatedAt": "2025-03-30T09:41:20+00:00"
+        },
+        {
+          "id": "node/11096844503",
+          "osmId": 11096844503,
+          "lat": 21.0016288,
+          "lng": 105.928288,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 121164.73922335808,
+          "onRoute": false,
+          "distanceFromRoute": 28.333352897934752,
+          "updatedAt": "2024-06-17T06:22:56+00:00"
+        },
+        {
+          "id": "node/11096844500",
+          "osmId": 11096844500,
+          "lat": 21.0035069,
+          "lng": 105.9265574,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 121440.19222295498,
+          "onRoute": false,
+          "distanceFromRoute": 28.56390155962994,
+          "updatedAt": "2024-06-17T06:23:10+00:00"
+        },
+        {
+          "id": "node/11096884015",
+          "osmId": 11096884015,
+          "lat": 21.0036072,
+          "lng": 105.9263931,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 121459.7751839314,
+          "onRoute": false,
+          "distanceFromRoute": 22.926132104471055,
+          "updatedAt": "2024-06-17T06:23:12+00:00"
+        },
+        {
+          "id": "node/11096844498",
+          "osmId": 11096844498,
+          "lat": 21.003776,
+          "lng": 105.9263095,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 121479.65852617448,
+          "onRoute": false,
+          "distanceFromRoute": 28.606657970008225,
+          "updatedAt": "2023-08-07T11:23:28+00:00"
+        },
+        {
+          "id": "node/13254634390",
+          "osmId": 13254634390,
+          "lat": 21.0048641,
+          "lng": 105.9251064,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 121652.84980467703,
+          "onRoute": true,
+          "distanceFromRoute": 12.911386232642537,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/13254634391",
+          "osmId": 13254634391,
+          "lat": 21.0047954,
+          "lng": 105.9250059,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 121653.86691361594,
+          "onRoute": false,
+          "distanceFromRoute": 0.02137476753788242,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/5722299684",
+          "osmId": 5722299684,
+          "lat": 21.006474,
+          "lng": 105.923834,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 121874.52276983486,
+          "onRoute": false,
+          "distanceFromRoute": 30.823051553321612,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/13254634405",
+          "osmId": 13254634405,
+          "lat": 21.0067379,
+          "lng": 105.9229769,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 121955.07264701035,
+          "onRoute": false,
+          "distanceFromRoute": 17.016460560750843,
+          "updatedAt": "2026-03-03T09:25:26+00:00"
+        },
+        {
+          "id": "node/13254634389",
+          "osmId": 13254634389,
+          "lat": 21.007716,
+          "lng": 105.922074,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 122098.64293941941,
+          "onRoute": false,
+          "distanceFromRoute": 16.298783999393965,
+          "updatedAt": "2026-03-03T09:25:26+00:00"
+        },
+        {
+          "id": "node/13254634388",
+          "osmId": 13254634388,
+          "lat": 21.0088312,
+          "lng": 105.9214601,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 122234.01486718099,
+          "onRoute": false,
+          "distanceFromRoute": 17.055386031448496,
+          "updatedAt": "2025-10-24T17:27:51+00:00"
+        },
+        {
+          "id": "node/14111919518",
+          "osmId": 14111919518,
+          "lat": 21.015314,
+          "lng": 105.9157234,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 123170.13662749936,
+          "onRoute": false,
+          "distanceFromRoute": 22.274247047361953,
+          "updatedAt": "2026-08-22T08:51:12+00:00"
+        },
+        {
+          "id": "node/12324818459",
+          "osmId": 12324818459,
+          "lat": 21.015146,
+          "lng": 105.9153801,
+          "kind": "sign",
+          "label": "Biển báo · chưa rõ loại",
+          "code": "yes",
+          "along": 123177.97567914843,
+          "onRoute": false,
+          "distanceFromRoute": 17.188529782924714,
+          "updatedAt": "2025-02-25T09:51:43+00:00"
+        },
+        {
+          "id": "node/11991288876",
+          "osmId": 11991288876,
+          "lat": 21.0162211,
+          "lng": 105.9148055,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 123308.48607560476,
+          "onRoute": false,
+          "distanceFromRoute": 11.261545442930315,
+          "updatedAt": "2024-11-23T12:34:39+00:00"
+        },
+        {
+          "id": "node/10577084629",
+          "osmId": 10577084629,
+          "lat": 21.0179957,
+          "lng": 105.9130979,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 123572.502227364,
+          "onRoute": false,
+          "distanceFromRoute": 6.452481075978289,
+          "updatedAt": "2025-07-28T02:15:15+00:00"
+        },
+        {
+          "id": "node/9459646441",
+          "osmId": 9459646441,
+          "lat": 21.017947,
+          "lng": 105.9127718,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 123592.91552433818,
+          "onRoute": false,
+          "distanceFromRoute": 21.011177289978445,
+          "updatedAt": "2026-08-05T09:42:09+00:00"
+        },
+        {
+          "id": "node/10196700286",
+          "osmId": 10196700286,
+          "lat": 21.0183016,
+          "lng": 105.9124035,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 123648.10771368639,
+          "onRoute": false,
+          "distanceFromRoute": 20.44121493681203,
+          "updatedAt": "2026-08-05T09:41:59+00:00"
+        },
+        {
+          "id": "node/14111919573",
+          "osmId": 14111919573,
+          "lat": 21.0185264,
+          "lng": 105.9125795,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 123652.88274489196,
+          "onRoute": false,
+          "distanceFromRoute": 10.172717221167623,
+          "updatedAt": "2026-08-22T08:51:12+00:00"
+        },
+        {
+          "id": "node/10196700285",
+          "osmId": 10196700285,
+          "lat": 21.0188352,
+          "lng": 105.9118249,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 123732.19578624197,
+          "onRoute": false,
+          "distanceFromRoute": 21.7952360917542,
+          "updatedAt": "2026-08-05T09:41:46+00:00"
+        },
+        {
+          "id": "node/10577084632",
+          "osmId": 10577084632,
+          "lat": 21.019108,
+          "lng": 105.9119343,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 123745.72171866187,
+          "onRoute": false,
+          "distanceFromRoute": 7.574585429451842,
+          "updatedAt": "2026-08-04T05:42:49+00:00"
+        },
+        {
+          "id": "node/10577084630",
+          "osmId": 10577084630,
+          "lat": 21.0196857,
+          "lng": 105.9113119,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 123836.89314931001,
+          "onRoute": false,
+          "distanceFromRoute": 8.463185843143805,
+          "updatedAt": "2024-05-31T07:13:35+00:00"
+        },
+        {
+          "id": "node/10196700282",
+          "osmId": 10196700282,
+          "lat": 21.0200029,
+          "lng": 105.9105718,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 123916.27690271632,
+          "onRoute": false,
+          "distanceFromRoute": 20.57875226853355,
+          "updatedAt": "2026-08-05T09:41:07+00:00"
+        },
+        {
+          "id": "node/10577084631",
+          "osmId": 10577084631,
+          "lat": 21.0204134,
+          "lng": 105.9105323,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 123951.32715761826,
+          "onRoute": false,
+          "distanceFromRoute": 8.947563574588004,
+          "updatedAt": "2025-08-18T11:34:50+00:00"
+        },
+        {
+          "id": "node/10196700281",
+          "osmId": 10196700281,
+          "lat": 21.0204527,
+          "lng": 105.910111,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124000,
+          "onRoute": false,
+          "distanceFromRoute": 23.674499333037698,
+          "updatedAt": "2026-08-05T09:40:53+00:00"
+        },
+        {
+          "id": "node/10196700280",
+          "osmId": 10196700280,
+          "lat": 21.0207959,
+          "lng": 105.9097326,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124040.45516988166,
+          "onRoute": false,
+          "distanceFromRoute": 18.886329333368614,
+          "updatedAt": "2026-08-05T09:40:48+00:00"
+        },
+        {
+          "id": "node/10196700279",
+          "osmId": 10196700279,
+          "lat": 21.0210703,
+          "lng": 105.9094015,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124086.37036399558,
+          "onRoute": false,
+          "distanceFromRoute": 20.840761694912437,
+          "updatedAt": "2026-08-05T09:40:43+00:00"
+        },
+        {
+          "id": "node/10196700278",
+          "osmId": 10196700278,
+          "lat": 21.0216899,
+          "lng": 105.9084981,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124226.70916497108,
+          "onRoute": false,
+          "distanceFromRoute": 6.737737985424284,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/10196700277",
+          "osmId": 10196700277,
+          "lat": 21.021826,
+          "lng": 105.9080799,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124274.9687986378,
+          "onRoute": false,
+          "distanceFromRoute": 7.4697709079705525,
+          "updatedAt": "2024-02-22T03:11:07+00:00"
+        },
+        {
+          "id": "node/13286804038",
+          "osmId": 13286804038,
+          "lat": 21.0219443,
+          "lng": 105.9075566,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124330.82907982207,
+          "onRoute": false,
+          "distanceFromRoute": 9.15374948251289,
+          "updatedAt": "2025-11-07T08:44:02+00:00"
+        },
+        {
+          "id": "node/10196700276",
+          "osmId": 10196700276,
+          "lat": 21.0220234,
+          "lng": 105.9072203,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124366.81944263345,
+          "onRoute": false,
+          "distanceFromRoute": 9.902085439474885,
+          "updatedAt": "2024-02-22T03:11:07+00:00"
+        },
+        {
+          "id": "node/10196700275",
+          "osmId": 10196700275,
+          "lat": 21.022284,
+          "lng": 105.9059832,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124498.84168661332,
+          "onRoute": false,
+          "distanceFromRoute": 5.321692400693706,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/6670426244",
+          "osmId": 6670426244,
+          "lat": 21.0228276,
+          "lng": 105.9054032,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 124576.21430705916,
+          "onRoute": false,
+          "distanceFromRoute": 22.49445382998183,
+          "updatedAt": "2024-06-17T06:29:03+00:00"
+        },
+        {
+          "id": "node/6670426239",
+          "osmId": 6670426239,
+          "lat": 21.0226432,
+          "lng": 105.9053095,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 124579.25677954039,
+          "onRoute": true,
+          "distanceFromRoute": 0.005541495378320456,
+          "updatedAt": "2019-08-01T15:22:15+00:00"
+        },
+        {
+          "id": "node/312954252",
+          "osmId": 312954252,
+          "lat": 21.0228072,
+          "lng": 105.9051974,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 124595.85264965598,
+          "onRoute": false,
+          "distanceFromRoute": 13.88023914168263,
+          "updatedAt": "2024-06-17T06:29:40+00:00"
+        },
+        {
+          "id": "node/6670426242",
+          "osmId": 6670426242,
+          "lat": 21.0229739,
+          "lng": 105.905114,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 124603.15175165709,
+          "onRoute": false,
+          "distanceFromRoute": 29.671482477600957,
+          "updatedAt": "2024-06-17T06:29:41+00:00"
+        },
+        {
+          "id": "node/11230635006",
+          "osmId": 11230635006,
+          "lat": 21.0226577,
+          "lng": 105.9050349,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 124611.15118081137,
+          "onRoute": false,
+          "distanceFromRoute": 0.01653619351248163,
+          "updatedAt": "2023-10-01T09:22:08+00:00"
+        },
+        {
+          "id": "node/10196700272",
+          "osmId": 10196700272,
+          "lat": 21.0221355,
+          "lng": 105.9045051,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124690.42825986355,
+          "onRoute": false,
+          "distanceFromRoute": 6.633421814087755,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/10196700274",
+          "osmId": 10196700274,
+          "lat": 21.0218807,
+          "lng": 105.9040569,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124742.90929309498,
+          "onRoute": false,
+          "distanceFromRoute": 5.93145100843906,
+          "updatedAt": "2024-02-22T03:11:07+00:00"
+        },
+        {
+          "id": "node/10196700273",
+          "osmId": 10196700273,
+          "lat": 21.021684,
+          "lng": 105.9031649,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 124838.1058917341,
+          "onRoute": false,
+          "distanceFromRoute": 8.331194710491777,
+          "updatedAt": "2022-11-17T09:49:08+00:00"
+        },
+        {
+          "id": "node/12111919745",
+          "osmId": 12111919745,
+          "lat": 21.0211089,
+          "lng": 105.9006882,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 125172.56350428842,
+          "onRoute": false,
+          "distanceFromRoute": 0.01730454185810162,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919759",
+          "osmId": 12111919759,
+          "lat": 21.0212679,
+          "lng": 105.8987112,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 125381.28925114949,
+          "onRoute": false,
+          "distanceFromRoute": 5.326229880117465,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919762",
+          "osmId": 12111919762,
+          "lat": 21.0214205,
+          "lng": 105.8961424,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 125650.27219440622,
+          "onRoute": false,
+          "distanceFromRoute": 4.763550984622086,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919771",
+          "osmId": 12111919771,
+          "lat": 21.0215061,
+          "lng": 105.8955997,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 125707.40495810343,
+          "onRoute": false,
+          "distanceFromRoute": 6.17249932202317,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919770",
+          "osmId": 12111919770,
+          "lat": 21.0215207,
+          "lng": 105.8954065,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 125727.33789918199,
+          "onRoute": false,
+          "distanceFromRoute": 5.440489613282563,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/12111919776",
+          "osmId": 12111919776,
+          "lat": 21.0216111,
+          "lng": 105.8948212,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unmarked",
+          "along": 125789.14212204648,
+          "onRoute": false,
+          "distanceFromRoute": 5.644247865165675,
+          "updatedAt": "2024-08-15T04:03:06+00:00"
+        },
+        {
+          "id": "node/6670741018",
+          "osmId": 6670741018,
+          "lat": 21.0236688,
+          "lng": 105.8865534,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 126689.58630245448,
+          "onRoute": false,
+          "distanceFromRoute": 23.17754749910634,
+          "updatedAt": "2026-11-06T09:34:59+00:00"
+        },
+        {
+          "id": "node/6610701246",
+          "osmId": 6610701246,
+          "lat": 21.0276565,
+          "lng": 105.8827189,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127301.28000910715,
+          "onRoute": false,
+          "distanceFromRoute": 20.231162788126937,
+          "updatedAt": "2019-07-12T18:47:58+00:00"
+        },
+        {
+          "id": "node/6608780113",
+          "osmId": 6608780113,
+          "lat": 21.0281981,
+          "lng": 105.8823781,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 127369.80909541114,
+          "onRoute": false,
+          "distanceFromRoute": 29.602104303022386,
+          "updatedAt": "2019-08-01T19:41:18+00:00"
+        },
+        {
+          "id": "node/6610997051",
+          "osmId": 6610997051,
+          "lat": 21.0327814,
+          "lng": 105.876853,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 128137.55842067367,
+          "onRoute": true,
+          "distanceFromRoute": 0.03688679406088375,
+          "updatedAt": "2025-12-01T08:53:21+00:00"
+        },
+        {
+          "id": "node/6608067802",
+          "osmId": 6608067802,
+          "lat": 21.0342403,
+          "lng": 105.8745211,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 128428.91870883277,
+          "onRoute": true,
+          "distanceFromRoute": 0.033445289447695564,
+          "updatedAt": "2025-12-01T08:53:50+00:00"
+        },
+        {
+          "id": "node/97996367",
+          "osmId": 97996367,
+          "lat": 21.0348481,
+          "lng": 105.8735605,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 128549.36397679924,
+          "onRoute": true,
+          "distanceFromRoute": 0.019730462667923943,
+          "updatedAt": "2025-12-01T08:54:10+00:00"
+        },
+        {
+          "id": "node/97996073",
+          "osmId": 97996073,
+          "lat": 21.0353822,
+          "lng": 105.8727147,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 128655.35432427129,
+          "onRoute": true,
+          "distanceFromRoute": 0.0008352103227286986,
+          "updatedAt": "2025-11-13T19:17:47+00:00"
+        },
+        {
+          "id": "node/97995617",
+          "osmId": 97995617,
+          "lat": 21.0367089,
+          "lng": 105.8705681,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 128922.5627085678,
+          "onRoute": true,
+          "distanceFromRoute": 0.0036181618630768513,
+          "updatedAt": "2025-12-01T08:54:43+00:00"
+        },
+        {
+          "id": "node/97995535",
+          "osmId": 97995535,
+          "lat": 21.037197,
+          "lng": 105.8697843,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 129020.38739144275,
+          "onRoute": true,
+          "distanceFromRoute": 0.018589207744755126,
+          "updatedAt": "2025-08-17T10:49:47+00:00"
+        },
+        {
+          "id": "node/12045346410",
+          "osmId": 12045346410,
+          "lat": 21.0392826,
+          "lng": 105.8663224,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129448.2622017768,
+          "onRoute": true,
+          "distanceFromRoute": 0.018855045517988278,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/12045346408",
+          "osmId": 12045346408,
+          "lat": 21.0392368,
+          "lng": 105.8662486,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129452.98902880285,
+          "onRoute": false,
+          "distanceFromRoute": 7.913241776087431,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/11396505874",
+          "osmId": 11396505874,
+          "lat": 21.0395501,
+          "lng": 105.8660413,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129474.20146211128,
+          "onRoute": false,
+          "distanceFromRoute": 17.052409223614355,
+          "updatedAt": "2023-12-05T17:34:27+00:00"
+        },
+        {
+          "id": "node/12045346409",
+          "osmId": 12045346409,
+          "lat": 21.0393592,
+          "lng": 105.8660341,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129486.1438823813,
+          "onRoute": false,
+          "distanceFromRoute": 0.00894672173256698,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/439562196",
+          "osmId": 439562196,
+          "lat": 21.0401264,
+          "lng": 105.8654434,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129626.02237257578,
+          "onRoute": true,
+          "distanceFromRoute": 0.01138816390309008,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/12045346412",
+          "osmId": 12045346412,
+          "lat": 21.04026,
+          "lng": 105.865493,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129638.6383475716,
+          "onRoute": false,
+          "distanceFromRoute": 4.865293035484207,
+          "updatedAt": "2024-07-10T08:33:50+00:00"
+        },
+        {
+          "id": "node/97993203",
+          "osmId": 97993203,
+          "lat": 21.0398992,
+          "lng": 105.8657916,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129687.65520429799,
+          "onRoute": true,
+          "distanceFromRoute": 0.036979252840447556,
+          "updatedAt": "2023-12-05T17:34:27+00:00"
+        },
+        {
+          "id": "node/11229097055",
+          "osmId": 11229097055,
+          "lat": 21.0398954,
+          "lng": 105.8659996,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 129690.0367573851,
+          "onRoute": false,
+          "distanceFromRoute": 21.420000624379394,
+          "updatedAt": "2023-12-05T17:34:27+00:00"
+        },
+        {
+          "id": "node/12597788819",
+          "osmId": 12597788819,
+          "lat": 21.0354576,
+          "lng": 105.8545216,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 130980.55325311831,
+          "onRoute": false,
+          "distanceFromRoute": 12.774053098374363,
+          "updatedAt": "2026-05-29T12:15:29+00:00"
+        },
+        {
+          "id": "node/6601411960",
+          "osmId": 6601411960,
+          "lat": 21.0352826,
+          "lng": 105.854306,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 131010.05958200952,
+          "onRoute": false,
+          "distanceFromRoute": 6.790134199609118,
+          "updatedAt": "2025-02-18T08:08:58+00:00"
+        },
+        {
+          "id": "node/6641697579",
+          "osmId": 6641697579,
+          "lat": 21.0351076,
+          "lng": 105.8544515,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 131032.7953519175,
+          "onRoute": false,
+          "distanceFromRoute": 0.5336297989048154,
+          "updatedAt": "2025-02-18T08:08:58+00:00"
+        },
+        {
+          "id": "node/6603790928",
+          "osmId": 6603790928,
+          "lat": 21.0351954,
+          "lng": 105.8547897,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 131050.86256625486,
+          "onRoute": false,
+          "distanceFromRoute": 31.885621015349138,
+          "updatedAt": "2021-05-15T06:24:47+00:00"
+        },
+        {
+          "id": "node/6601411959",
+          "osmId": 6601411959,
+          "lat": 21.0349971,
+          "lng": 105.8546206,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 131053.87801080418,
+          "onRoute": false,
+          "distanceFromRoute": 3.86578959621836,
+          "updatedAt": "2026-05-29T11:28:27+00:00"
+        },
+        {
+          "id": "node/6601411958",
+          "osmId": 6601411958,
+          "lat": 21.0347468,
+          "lng": 105.8546374,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 131074.77200765786,
+          "onRoute": false,
+          "distanceFromRoute": 14.915194710252228,
+          "updatedAt": "2025-11-28T08:30:23+00:00"
+        },
+        {
+          "id": "node/6641697575",
+          "osmId": 6641697575,
+          "lat": 21.0347857,
+          "lng": 105.8547054,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 131076.70389026817,
+          "onRoute": false,
+          "distanceFromRoute": 6.866314402228302,
+          "updatedAt": "2026-05-29T12:12:16+00:00"
+        },
+        {
+          "id": "node/12597867613",
+          "osmId": 12597867613,
+          "lat": 21.0327104,
+          "lng": 105.8558931,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 131341.1204339314,
+          "onRoute": false,
+          "distanceFromRoute": 0.027632811670160295,
+          "updatedAt": "2025-02-18T08:08:58+00:00"
+        },
+        {
+          "id": "node/11347697026",
+          "osmId": 11347697026,
+          "lat": 21.0315635,
+          "lng": 105.854562,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 131569.34276633488,
+          "onRoute": false,
+          "distanceFromRoute": 0.0018859583417843659,
+          "updatedAt": "2024-02-10T07:14:07+00:00"
+        },
+        {
+          "id": "node/6603866909",
+          "osmId": 6603866909,
+          "lat": 21.0314424,
+          "lng": 105.8544409,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 131581.52568611584,
+          "onRoute": false,
+          "distanceFromRoute": 13.047731702129504,
+          "updatedAt": "2026-09-14T08:51:16+00:00"
+        },
+        {
+          "id": "node/6603859000",
+          "osmId": 6603859000,
+          "lat": 21.031434,
+          "lng": 105.8546945,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 131587.20086897066,
+          "onRoute": false,
+          "distanceFromRoute": 12.272144299076736,
+          "updatedAt": "2026-09-14T08:51:16+00:00"
+        },
+        {
+          "id": "node/6603858999",
+          "osmId": 6603858999,
+          "lat": 21.0313693,
+          "lng": 105.8545911,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 131591.29751839951,
+          "onRoute": true,
+          "distanceFromRoute": 0.018839470554203788,
+          "updatedAt": "2022-10-31T04:22:37+00:00"
+        },
+        {
+          "id": "node/11335293280",
+          "osmId": 11335293280,
+          "lat": 21.0302846,
+          "lng": 105.8548898,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 131715.661359466,
+          "onRoute": true,
+          "distanceFromRoute": 6.274405451967558,
+          "updatedAt": "2023-11-09T07:00:01+00:00"
+        },
+        {
+          "id": "node/1497570415",
+          "osmId": 1497570415,
+          "lat": 21.0302521,
+          "lng": 105.854964,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 131721.41500194697,
+          "onRoute": true,
+          "distanceFromRoute": 0.003303415606060359,
+          "updatedAt": "2023-01-26T12:33:46+00:00"
+        },
+        {
+          "id": "node/6644282410",
+          "osmId": 6644282410,
+          "lat": 21.0290543,
+          "lng": 105.8553988,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 131862.0429009671,
+          "onRoute": true,
+          "distanceFromRoute": 0.008971823146438084,
+          "updatedAt": "2023-12-25T17:10:02+00:00"
+        },
+        {
+          "id": "node/11348293010",
+          "osmId": 11348293010,
+          "lat": 21.0289403,
+          "lng": 105.8553248,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 131871.52729929643,
+          "onRoute": false,
+          "distanceFromRoute": 11.459646350473788,
+          "updatedAt": "2026-09-14T06:08:18+00:00"
+        },
+        {
+          "id": "node/6644282411",
+          "osmId": 6644282411,
+          "lat": 21.0289624,
+          "lng": 105.8555603,
+          "kind": "signals",
+          "label": "Đèn giao thông",
+          "code": "",
+          "along": 131877.68772017377,
+          "onRoute": false,
+          "distanceFromRoute": 12.319770580165054,
+          "updatedAt": "2023-12-25T17:10:02+00:00"
+        },
+        {
+          "id": "node/6644282408",
+          "osmId": 6644282408,
+          "lat": 21.0288459,
+          "lng": 105.8554799,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=traffic_signals",
+          "along": 131886.70637572795,
+          "onRoute": true,
+          "distanceFromRoute": 0.013294911694443884,
+          "updatedAt": "2026-10-27T03:25:47+00:00"
+        },
+        {
+          "id": "node/6644906351",
+          "osmId": 6644906351,
+          "lat": 21.0277541,
+          "lng": 105.8558309,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132013.45825998642,
+          "onRoute": true,
+          "distanceFromRoute": 0.006606931827837256,
+          "updatedAt": "2026-09-17T01:58:07+00:00"
+        },
+        {
+          "id": "node/6644906350",
+          "osmId": 6644906350,
+          "lat": 21.0276058,
+          "lng": 105.855779,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132027.22664643207,
+          "onRoute": false,
+          "distanceFromRoute": 10.452601000536186,
+          "updatedAt": "2023-12-20T15:05:30+00:00"
+        },
+        {
+          "id": "node/11438626846",
+          "osmId": 11438626846,
+          "lat": 21.0274116,
+          "lng": 105.8561924,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 132053.29272779822,
+          "onRoute": false,
+          "distanceFromRoute": 25.330800666831433,
+          "updatedAt": "2023-12-22T16:17:04+00:00"
+        },
+        {
+          "id": "node/11455065732",
+          "osmId": 11455065732,
+          "lat": 21.0272843,
+          "lng": 105.8560912,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132067.7423247224,
+          "onRoute": false,
+          "distanceFromRoute": 17.978708622905135,
+          "updatedAt": "2023-12-26T08:07:04+00:00"
+        },
+        {
+          "id": "node/11455065730",
+          "osmId": 11455065730,
+          "lat": 21.0272893,
+          "lng": 105.8559131,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132071.40482004572,
+          "onRoute": true,
+          "distanceFromRoute": 0.0009994578217528997,
+          "updatedAt": "2025-07-26T14:11:22+00:00"
+        },
+        {
+          "id": "node/6644906347",
+          "osmId": 6644906347,
+          "lat": 21.027026,
+          "lng": 105.8557439,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132111.467221033,
+          "onRoute": true,
+          "distanceFromRoute": 0.0015203565930621819,
+          "updatedAt": "2026-09-14T03:17:14+00:00"
+        },
+        {
+          "id": "node/10146964677",
+          "osmId": 10146964677,
+          "lat": 21.0267559,
+          "lng": 105.8556585,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 132115.83590566932,
+          "onRoute": false,
+          "distanceFromRoute": 31.00968697951448,
+          "updatedAt": "2026-09-14T02:19:13+00:00"
+        },
+        {
+          "id": "node/8184606210",
+          "osmId": 8184606210,
+          "lat": 21.0271149,
+          "lng": 105.8547798,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 132211.87662087765,
+          "onRoute": false,
+          "distanceFromRoute": 4.88179892155649,
+          "updatedAt": "2023-09-25T06:26:47+00:00"
+        },
+        {
+          "id": "node/11217220363",
+          "osmId": 11217220363,
+          "lat": 21.0273097,
+          "lng": 105.8537248,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132323.39280444643,
+          "onRoute": false,
+          "distanceFromRoute": 0.03584844400948047,
+          "updatedAt": "2026-09-14T03:17:14+00:00"
+        },
+        {
+          "id": "node/8184606209",
+          "osmId": 8184606209,
+          "lat": 21.0270443,
+          "lng": 105.853619,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 132330.3026919128,
+          "onRoute": false,
+          "distanceFromRoute": 30.756258859577397,
+          "updatedAt": "2026-09-14T03:06:02+00:00"
+        },
+        {
+          "id": "node/5405026114",
+          "osmId": 5405026114,
+          "lat": 21.0276088,
+          "lng": 105.8536151,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132370.57487499958,
+          "onRoute": true,
+          "distanceFromRoute": 0.013390922256401478,
+          "updatedAt": "2026-09-16T02:34:55+00:00"
+        },
+        {
+          "id": "node/2587491500",
+          "osmId": 2587491500,
+          "lat": 21.0278593,
+          "lng": 105.8536277,
+          "kind": "camera",
+          "label": "Camera/điểm giám sát · chưa rõ chức năng",
+          "code": "",
+          "along": 132398.27163936477,
+          "onRoute": false,
+          "distanceFromRoute": 3.222749507997578,
+          "updatedAt": "2013-12-20T06:07:40+00:00"
+        },
+        {
+          "id": "node/11217220367",
+          "osmId": 11217220367,
+          "lat": 21.0278682,
+          "lng": 105.853811,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=uncontrolled",
+          "along": 132402.36742047346,
+          "onRoute": false,
+          "distanceFromRoute": 15.382183349439813,
+          "updatedAt": "2023-12-20T15:05:30+00:00"
+        },
+        {
+          "id": "node/9966237370",
+          "osmId": 9966237370,
+          "lat": 21.0285036,
+          "lng": 105.853864,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 132451.25782871206,
+          "onRoute": false,
+          "distanceFromRoute": 30.332389044459557,
+          "updatedAt": "2026-09-14T03:35:55+00:00"
+        },
+        {
+          "id": "node/9966237369",
+          "osmId": 9966237369,
+          "lat": 21.0282331,
+          "lng": 105.8538238,
+          "kind": "pedestrian-crossing",
+          "label": "Điểm sang đường cho người đi bộ",
+          "code": "crossing=unspecified",
+          "along": 132452.39847309695,
+          "onRoute": true,
+          "distanceFromRoute": 0.006945499900502245,
+          "updatedAt": "2026-09-14T03:35:55+00:00"
+        }
+      ]
+    }
+  ]
+}
