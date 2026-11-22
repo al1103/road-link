@@ -4,7 +4,7 @@
 .destinations-heading { font-size: 17px; font-weight: 600; margin: 0 0 18px; }
 @media (max-width: 759px) {
   .destinations-heading { font-size: 15px; margin-bottom: 15px; }
-  .is-exploring .map-controls { bottom: calc(350px + var(--safe-bottom)); }
+  .is-exploring .map-controls { bottom: calc(var(--panel-height, 200px) + 10px); }
   .preview-panel { max-height: min(490px, 60dvh); }
   .preview-panel .button.primary { position: sticky; bottom: 0; z-index: 2; }
 }

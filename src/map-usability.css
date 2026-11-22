@@ -260,8 +260,27 @@
 }
 
 @media (max-width: 759px) {
-  .maps-ui.app .map-controls {
-    bottom: calc(var(--panel-height, 260px) + 28px + var(--safe-bottom));
+  /* Flush bottom sheet on mobile - eliminates the floating gap above home indicator bar */
+  .maps-ui .bottom-panel,
+  .app .bottom-panel {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding-bottom: calc(14px + var(--safe-bottom)) !important;
+  }
+
+  /* Map controls float neatly right above the bottom panel with a compact 10px margin */
+  .maps-ui.app .map-controls,
+  .maps-ui .map-controls,
+  .app .map-controls,
+  .is-exploring .map-controls,
+  .maps-ui.is-routing .map-controls,
+  .maps-ui.is-selecting .map-controls,
+  .maps-ui.is-navigating .map-controls {
+    bottom: calc(var(--panel-height, 200px) + 10px) !important;
+    right: 14px !important;
   }
 
   .location-status {
