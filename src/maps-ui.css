@@ -210,7 +210,8 @@
   color: #5f6368;
 }
 
-.maps-ui .place-result {
+.maps-ui .place-result,
+.maps-ui .place-quick-action {
   display: flex;
   align-items: center;
   width: 100%;
@@ -223,7 +224,9 @@
 }
 
 .maps-ui .place-result:hover,
-.maps-ui .place-result:active {
+.maps-ui .place-result:active,
+.maps-ui .place-quick-action:hover,
+.maps-ui .place-quick-action:active {
   background: #f1f3f4;
 }
 
@@ -238,14 +241,16 @@
   flex-shrink: 0;
 }
 
-.maps-ui .place-result strong {
+.maps-ui .place-result strong,
+.maps-ui .place-quick-action strong {
   font-size: 14px;
   font-weight: 500;
   color: #202124;
   display: block;
 }
 
-.maps-ui .place-result small {
+.maps-ui .place-result small,
+.maps-ui .place-quick-action small {
   font-size: 12px;
   color: #70757a;
   display: block;
@@ -364,6 +369,26 @@
   border: 1px solid #1a73e8;
   outline: none;
   font-size: 15px;
+}
+
+.maps-ui .route-inline-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.maps-ui .route-submit-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1a73e8;
+  color: #ffffff;
+  border: 0;
+  flex-shrink: 0;
 }
 
 .maps-ui .route-row-clear {

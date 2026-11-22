@@ -260,11 +260,11 @@ export default function App() {
             <span>{searched ? 'KẾT QUẢ TÌM KIẾM' : 'GỢI Ý TÌM KIẾM'}</span>
             <button aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}><X size={17} /></button>
           </div>
-          <button type="button" className="place-result" onClick={useMyOrigin}>
+          <button type="button" className="place-quick-action" onClick={useMyOrigin}>
             <span className="place-icon"><LocateFixed size={19} /></span>
             <span><strong>Vị trí của bạn</strong><small>Xem vị trí hiện tại</small></span>
           </button>
-          <button type="button" className="place-result" onClick={() => setSearchOpen(false)}>
+          <button type="button" className="place-quick-action" onClick={() => setSearchOpen(false)}>
             <span className="place-icon"><MapPin size={19} /></span>
             <span><strong>Chọn trên bản đồ</strong><small>Chạm lên một điểm bất kỳ trên bản đồ</small></span>
           </button>
@@ -319,6 +319,7 @@ export default function App() {
         onSelectPlace={choosePlace}
         onUseMyLocation={useMyOrigin}
         onPickOnMap={() => setSearchOpen(false)}
+        onSubmitSearch={submitSearch}
       />
     )}
     {navigating && activeStep && <section className="turn-banner" aria-label="Chỉ dẫn tiếp theo"><div className="turn-symbol"><ManeuverIcon type={activeStep.maneuver} size={39} /></div><div><span>{rerouting ? 'Đang tìm đường mới…' : `Sau ${formatDistance(progress?.nextTurn ?? activeStep.offset)}`}</span><h1>{activeStep.instruction}</h1><small>Theo biển báo và tình hình đường thực tế</small></div></section>}

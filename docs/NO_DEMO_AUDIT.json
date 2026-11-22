@@ -1,9 +1,9 @@
 {
-  "checkedAt": "2026-11-21T17:45:05.822Z",
-  "simulationMode": "Explicit vehicle-movement playback requested by the user; native GPS and BLE are not fed simulated positions.",
+  "checkedAt": "2026-11-22T07:59:29.966Z",
+  "simulationMode": "None; pure real GPS and live services only.",
   "syntheticRoadObjectsBundled": false,
-  "sourceFilesChecked": 27,
-  "projectCodeFilesChecked": 47,
+  "sourceFilesChecked": 25,
+  "projectCodeFilesChecked": 49,
   "bundles": [
     {
       "bundle": "dist",

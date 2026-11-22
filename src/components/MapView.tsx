@@ -7,6 +7,7 @@ import type {Coordinate,Fix,Place,Route} from '../domain/types';
 import type {RoadData} from '../domain/roadData';
 import {roadSymbol} from '../domain/roadSymbols';
 import {locationZoom} from '../domain/location';
+import {requestOrientationPermission} from '../hooks/useLocation';
 
 setWorkerUrl(workerUrl);
 setWorkerCount(1);
@@ -59,14 +60,9 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
   };
 
   useEffect(()=>{
-    const requestPerm=async()=>{
-      const doe=window.DeviceOrientationEvent as unknown as {requestPermission?:()=>Promise<'granted'|'denied'>};
-      if(typeof doe?.requestPermission==='function'){
-        try{await doe.requestPermission();}catch{/* ignore */}
-      }
-    };
-    window.addEventListener('click',requestPerm,{once:true,passive:true});
-    window.addEventListener('touchstart',requestPerm,{once:true,passive:true});
+    const requestPerm=async()=>{void requestOrientationPermission();};
+    window.addEventListener('click',requestPerm,{passive:true});
+    window.addEventListener('touchend',requestPerm,{passive:true});
     const handleOrientation=(event:DeviceOrientationEvent)=>{
       const heading=extractHeading(event);
       if(heading===null||!positionMarker.current)return;
@@ -79,7 +75,7 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
     window.addEventListener('deviceorientationabsolute',handleOrientation,{passive:true});
     return()=>{
       window.removeEventListener('click',requestPerm);
-      window.removeEventListener('touchstart',requestPerm);
+      window.removeEventListener('touchend',requestPerm);
       window.removeEventListener('deviceorientation',handleOrientation);
       window.removeEventListener('deviceorientationabsolute',handleOrientation);
     };
@@ -175,13 +171,20 @@ export default function MapView({route,alternatives,destination,onSelectRoute,on
     if(!position){positionMarker.current?.remove();positionMarker.current=null;course.current=null;initialPositionCentered.current=false;updateSource(instance,'roadlink-accuracy',empty());return;}
     updateSource(instance,'roadlink-accuracy',uncertainty(position));
     for(const layer of ['roadlink-accuracy-fill','roadlink-accuracy-line'])instance.setPaintProperty(layer,layer.endsWith('fill')?'fill-color':'line-color',positionStale?'#8d99a5':'#1a73e8');
-    if(!positionMarker.current)positionMarker.current=new Marker({element:pin('position-marker navigation-position','<span class="position-halo"></span><svg class="position-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 35 20 27 5 35Z"/></svg><span class="heading-unknown">?</span>')}).setLngLat([position.lng,position.lat]).addTo(instance);
+    if(!positionMarker.current)positionMarker.current=new Marker({element:pin('position-marker navigation-position','<span class="position-halo"></span><svg class="position-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 35 20 27 5 35Z"/></svg>')}).setLngLat([position.lng,position.lat]).addTo(instance);
     else positionMarker.current.setLngLat([position.lng,position.lat]);
-    const el=positionMarker.current.getElement(),known=!positionStale&&position.headingAvailable!==false&&Number.isFinite(position.heading);course.current=known?position.heading:null;
-    el.classList.toggle('direction-unknown',!known);el.setAttribute('role','img');el.setAttribute('aria-label',known?`Hướng di chuyển ${Math.round(position.heading)} độ`:'Chưa xác định hướng di chuyển');rotateArrow();
+    const el=positionMarker.current.getElement(),known=!positionStale&&position.headingAvailable!==false&&Number.isFinite(position.heading);
+    if(known){
+      course.current=position.heading;
+      el.classList.remove('direction-unknown');
+    }else if(course.current===null){
+      el.classList.add('direction-unknown');
+    }
+    el.setAttribute('role','img');el.setAttribute('aria-label',course.current!==null?`Hướng di chuyển ${Math.round(course.current)} độ`:'Chưa xác định hướng di chuyển');rotateArrow();
     if(follow&&navigating){
-      if(callbacks.current.mode3D&&known&&typeof position.heading==='number'&&Number.isFinite(position.heading)){
-        instance.easeTo({center:[position.lng,position.lat],zoom:Math.min(17,locationZoom(position.accuracy)),padding:padding(instance),pitch:50,bearing:position.heading,duration:400});
+      const activeHeading=course.current??(known?position.heading:null);
+      if(callbacks.current.mode3D&&activeHeading!==null&&Number.isFinite(activeHeading)){
+        instance.easeTo({center:[position.lng,position.lat],zoom:Math.min(17,locationZoom(position.accuracy)),padding:padding(instance),pitch:50,bearing:activeHeading,duration:400});
       }else{
         centerOn(instance,position,Math.min(17,locationZoom(position.accuracy)));
       }

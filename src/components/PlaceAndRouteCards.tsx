@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpDown, Bike, CarFront, ChevronRight, Footprints, Heart, Layers2, LoaderCircle, LocateFixed, MapPin, Navigation2, Route as RouteIcon, Share2, TriangleAlert, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpDown, Bike, CarFront, ChevronRight, Footprints, Heart, Layers2, LoaderCircle, LocateFixed, MapPin, Navigation2, Route as RouteIcon, Share2, TriangleAlert, X } from 'lucide-react';
 import { formatDistance, formatDuration } from '../domain/geometry';
 import type { Place, Route } from '../domain/types';
 
@@ -38,6 +38,7 @@ export function RouteInputs({
   onSelectPlace,
   onUseMyLocation,
   onPickOnMap,
+  onSubmitSearch,
 }: {
   origin: string;
   destination: string;
@@ -56,6 +57,7 @@ export function RouteInputs({
   onSelectPlace: (place: Place) => void;
   onUseMyLocation: () => void;
   onPickOnMap: () => void;
+  onSubmitSearch?: (e: React.FormEvent) => void;
 }) {
   const isEditingOrigin = searchOpen && editingTarget === 'origin';
   const isEditingDest = searchOpen && editingTarget === 'destination';
@@ -76,13 +78,25 @@ export function RouteInputs({
           <div className={`route-input-row ${isEditingOrigin ? 'focused' : ''}`}>
             <span className="route-origin-circle" />
             {isEditingOrigin ? (
-              <input
-                autoFocus
-                className="route-input-field editable"
-                placeholder="Chọn điểm đi hoặc nhập địa chỉ..."
-                value={query}
-                onChange={e => onQueryChange(e.target.value)}
-              />
+              <form
+                className="route-inline-form"
+                onSubmit={e => {
+                  e.preventDefault();
+                  onSubmitSearch?.(e);
+                }}
+              >
+                <input
+                  autoFocus
+                  aria-label="Tìm điểm đi"
+                  className="route-input-field editable"
+                  placeholder="Chọn điểm đi hoặc nhập địa chỉ..."
+                  value={query}
+                  onChange={e => onQueryChange(e.target.value)}
+                />
+                <button type="submit" className="route-submit-btn" aria-label="Tìm kiếm">
+                  <ArrowRight size={18} />
+                </button>
+              </form>
             ) : (
               <button
                 type="button"
@@ -123,13 +137,25 @@ export function RouteInputs({
           <div className={`route-input-row ${isEditingDest ? 'focused' : ''}`}>
             <span className="route-dest-pin"><MapPin size={17} /></span>
             {isEditingDest ? (
-              <input
-                autoFocus
-                className="route-input-field editable"
-                placeholder="Chọn điểm đến hoặc nhập địa chỉ..."
-                value={query}
-                onChange={e => onQueryChange(e.target.value)}
-              />
+              <form
+                className="route-inline-form"
+                onSubmit={e => {
+                  e.preventDefault();
+                  onSubmitSearch?.(e);
+                }}
+              >
+                <input
+                  autoFocus
+                  aria-label="Tìm địa điểm"
+                  className="route-input-field editable"
+                  placeholder="Chọn điểm đến hoặc nhập địa chỉ..."
+                  value={query}
+                  onChange={e => onQueryChange(e.target.value)}
+                />
+                <button type="submit" className="route-submit-btn" aria-label="Tìm kiếm">
+                  <ArrowRight size={18} />
+                </button>
+              </form>
             ) : (
               <button
                 type="button"
@@ -194,7 +220,7 @@ export function RouteInputs({
             <button
               key={place.id}
               type="button"
-              className="place-result-item"
+              className="place-result place-result-item"
               onClick={() => onSelectPlace(place)}
             >
               <div className="place-icon"><MapPin size={18} /></div>
@@ -279,7 +305,7 @@ export function RoutePlannerCard(p: CardProps) {
                   <span className="route-dist">({formatDistance(r.distance)})</span>
                 </div>
                 <p className="route-summary-text">{r.summary || `Tuyến đường ${i + 1}`}</p>
-                {i === 0 && <span className="best-route-tag">Tuyến nhanh nhất</span>}
+                {i === 0 && <span className="best-route-tag">Tuyến đề xuất</span>}
               </div>
               <ChevronRight size={18} className="route-choice-arrow" />
             </button>
@@ -292,9 +318,13 @@ export function RoutePlannerCard(p: CardProps) {
           <Navigation2 size={20} fill="currentColor" />
           <span>{p.awaitingGPS ? 'Đang chờ GPS…' : 'Bắt đầu'}</span>
         </button>
-        <button className="button outlined gmaps-steps-btn" onClick={p.toggleDetails}>
+        <button
+          className="button outlined gmaps-steps-btn"
+          onClick={p.toggleDetails}
+          aria-label={p.details ? 'Thu gọn các chặng' : 'Xem trước các chặng'}
+        >
           <RouteIcon size={18} />
-          <span>{p.details ? 'Thu gọn' : 'Các chặng'}</span>
+          <span>{p.details ? 'Thu gọn' : 'Xem trước các chặng'}</span>
         </button>
       </div>
       <button className="road-entry" onClick={p.roadData}><Layers2 size={16} />Giới hạn tốc độ, biển báo & camera<ChevronRight size={16} /></button>

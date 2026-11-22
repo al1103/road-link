@@ -17,16 +17,23 @@ function extractHeading(event: DeviceOrientationEvent): number | null {
   return null;
 }
 
-async function requestOrientationPermission() {
+let orientationPermissionRequested = false;
+export async function requestOrientationPermission() {
+  if (orientationPermissionRequested) return true;
   const DOE = typeof window !== 'undefined' ? (window.DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<'granted' | 'denied'> } | undefined) : undefined;
   if (typeof DOE?.requestPermission === 'function') {
     try {
       const res = await DOE.requestPermission();
-      return res === 'granted';
+      if (res === 'granted') {
+        orientationPermissionRequested = true;
+        return true;
+      }
+      return false;
     } catch {
       return false;
     }
   }
+  orientationPermissionRequested = true;
   return true;
 }
 
@@ -116,16 +123,28 @@ export function useLocation() {
   },[clearWatch]);
 
   useEffect(()=>{
+    const onUserInteraction=()=>{void requestOrientationPermission();};
+    window.addEventListener('click',onUserInteraction,{passive:true});
+    window.addEventListener('touchend',onUserInteraction,{passive:true});
+
     const handleOrientation=(event:DeviceOrientationEvent)=>{
       const heading=extractHeading(event);
       if(heading===null)return;
       compass.current={value:heading,timestamp:Date.now()};
+      const cur=latest.current;
+      if(cur&&cur.speed<=2.5&&Date.now()-cur.timestamp<15000){
+        const updated={...cur,heading,headingAvailable:true};
+        latest.current=updated;
+        setFix(updated);
+      }
     };
 
     window.addEventListener('deviceorientation',handleOrientation,{passive:true});
     window.addEventListener('deviceorientationabsolute',handleOrientation,{passive:true});
 
     return()=>{
+      window.removeEventListener('click',onUserInteraction);
+      window.removeEventListener('touchend',onUserInteraction);
       window.removeEventListener('deviceorientation',handleOrientation);
       window.removeEventListener('deviceorientationabsolute',handleOrientation);
     };
