@@ -318,9 +318,14 @@ export function RoutePlannerCard(p: CardProps) {
       {p.customOrigin && <p className="origin-warning">Điểm đi tùy chọn. Chọn Vị trí của bạn để dẫn đường bằng GPS thật.</p>}
       {p.locationError && <p className="inline-feedback" role="alert">{p.locationError}</p>}
       <div className="planner-actions">
-        <button className="button primary gmaps-start-btn" onClick={p.start} disabled={p.awaitingGPS && !p.locationError}>
+        <button
+          className="button primary gmaps-start-btn"
+          onClick={p.start}
+          disabled={p.customOrigin || (p.awaitingGPS && !p.locationError)}
+          title={p.customOrigin ? 'Đang dùng điểm đi tùy chọn. Chọn Vị trí của bạn để bắt đầu dẫn đường.' : undefined}
+        >
           <Navigation2 size={20} fill="currentColor" />
-          <span>{p.awaitingGPS ? 'Đang chờ GPS…' : 'Bắt đầu'}</span>
+          <span>{p.customOrigin ? 'Chọn vị trí để bắt đầu' : p.locationError ? 'Thử lại GPS' : p.awaitingGPS ? 'Đang chờ GPS…' : 'Bắt đầu'}</span>
         </button>
         <button
           className="button outlined gmaps-steps-btn"
@@ -331,7 +336,7 @@ export function RoutePlannerCard(p: CardProps) {
           <span>{p.details ? 'Thu gọn' : 'Xem trước các chặng'}</span>
         </button>
       </div>
-      <button className="road-entry" onClick={p.roadData}><Layers2 size={16} />Giới hạn tốc độ, biển báo & camera<ChevronRight size={16} /></button>
+      <button className="road-entry" onClick={p.roadData}><Layers2 size={16} />Giới hạn tốc độ, biển cấm & camera<ChevronRight size={16} /></button>
     </>}
   </>;
 }

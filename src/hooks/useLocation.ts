@@ -12,12 +12,13 @@ export async function requestOrientationPermission() {
   if (typeof DOE?.requestPermission === 'function') {
     try {
       const res = await DOE.requestPermission();
+      orientationPermissionRequested = true;
       if (res === 'granted') {
-        orientationPermissionRequested = true;
         return true;
       }
       return false;
     } catch {
+      orientationPermissionRequested = true;
       return false;
     }
   }

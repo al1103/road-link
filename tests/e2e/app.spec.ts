@@ -43,7 +43,7 @@ test('actual bundled road source loads without online fallback',async({page},inf
   await expect.poll(()=>page.locator('.road-feature-image').evaluateAll((items:HTMLImageElement[])=>items.every(i=>i.complete&&i.naturalWidth>0))).toBe(true);
   const pointCount=Number(await page.getByRole('heading',{name:/Điểm gần tuyến đang hiển thị/}).locator('span').innerText());
   expect(pointCount).toBeGreaterThan(0);
-  for(const name of ['Camera','Biển & cảnh báo','Đèn giao thông'])await page.getByRole('checkbox',{name,exact:true}).uncheck();
+  for(const name of ['Camera','Biển báo','Đèn giao thông'])await page.getByRole('checkbox',{name,exact:true}).uncheck();
   await expect(page.getByRole('heading',{name:/Điểm gần tuyến đang hiển thị/})).toHaveText('Điểm gần tuyến đang hiển thị 0');
   await expect(page.getByRole('dialog')).toContainText(`Có ${pointCount} điểm phía trước trong dữ liệu đã tải, nhưng đang bị bộ lọc ẩn.`);
   await page.getByRole('button',{name:'Hiện tất cả điểm',exact:true}).click();

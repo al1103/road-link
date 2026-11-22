@@ -186,9 +186,10 @@ export default function App() {
     }, 350);
     return () => clearTimeout(timer);
   }, [query, searchOpen]);
+  useEffect(() => { if (!searchOpen) setNearbyNote(null); }, [searchOpen]);
 
   async function performSearch(text: string, options?: { nearby?: boolean }) {
-    if (text.trim().length < 2 || searching) return;
+    if (text.trim().length < 2) return;
     const origin = options?.nearby ? (location.fix ?? route?.coordinates[0] ?? null) : null;
     if (options?.nearby) {
       setNearbyNote(origin ? null : 'Chưa có vị trí để tìm gần nhất. Bật định vị hoặc chọn điểm đi; đang tìm trên toàn quốc.');
@@ -206,6 +207,7 @@ export default function App() {
     void performSearch(query, { nearby: nearbySearch.current });
   }
   function stop() {
+    nearbySearch.current=false;
     routeAbort.current?.abort(); setLoading(false); setRerouting(false); setPendingGPS(null);
     setMode('explore');setOriginOverride(null);setAlternatives([]);setRoadAlert(null);setQuery('');setSearchTarget('destination'); setRoute(null); setProgress(null); setSelected(null); setSearchError(null);setNearbyNote(null);setShareStatus(null);setNavigationError(null); setRouteError(null); setDetails(false); silence();
     link.enqueue([{ v: 1, type: 'stop' }], 'control');
@@ -257,7 +259,7 @@ export default function App() {
             onFocus={() => setSearchOpen(true)}
           />
           {query.length > 0 && (
-            <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { setQuery(''); setSearched(false); }}>
+            <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { nearbySearch.current=false; searchAbort.current?.abort(); setSearching(false); setResults([]); setQuery(''); setSearched(false); setNearbyNote(null); }}>
               <X size={20} />
             </button>
           )}
@@ -291,7 +293,7 @@ export default function App() {
           ) : searching ? (
             <p className="search-empty">Đang tìm địa điểm…</p>
           ) : searched && !results.length ? (
-            <p className="search-empty">Chưa tìm thấy địa điểm. Thử thêm tên thành phố hoặc địa chỉ.</p>
+            <p className="search-empty">{nearbySearch.current ? 'Không tìm thấy địa điểm quanh vị trí này. Thử từ khóa khác hoặc mở rộng khu vực.' : 'Chưa tìm thấy địa điểm. Thử thêm tên thành phố hoặc địa chỉ.'}</p>
           ) : (searched ? results : savedPlaces).map(place => (
             <button className="place-result" key={place.id} onClick={() => choosePlace(place)}>
               <span className="place-icon"><MapPin size={19} /></span>
@@ -308,7 +310,7 @@ export default function App() {
         destination={selected?.name ?? 'Chọn điểm đến'}
         editingTarget={searchTarget}
         query={query}
-        onQueryChange={val => { nearbySearch.current=false; setNearbyNote(null); setQuery(val); setSearched(false); }}
+        onQueryChange={val => { nearbySearch.current=false; setNearbyNote(null); if(!val){searchAbort.current?.abort();setSearching(false);setResults([]);} setQuery(val); setSearched(false); }}
         onStartEdit={target => editEndpoint(target)}
         onClearTarget={target => {
           if (target === 'origin') useMyOrigin();
@@ -334,7 +336,7 @@ export default function App() {
       />
     )}
     {navigating && activeStep && <section className="turn-banner" aria-label="Chỉ dẫn tiếp theo"><div className="turn-symbol"><ManeuverIcon type={activeStep.maneuver} size={39} /></div><div><span>{rerouting ? 'Đang tìm đường mới…' : `Sau ${formatDistance(progress?.nextTurn ?? activeStep.offset)}`}</span><h1>{activeStep.instruction}</h1><small>Theo biển báo và tình hình đường thực tế</small></div></section>}
-    <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={24}/></button><button className="map-control compass-control" aria-label={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay theo hướng đang quay'} title={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay bản đồ theo hướng thiết bị đang quay'} onClick={()=>{ if(Math.abs(mapBearing)>1)setNorthReset(value=>value+1); else setHeadingUp(value=>value+1); }}><Compass size={24} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button>{navigating && <button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={24} /> : <VolumeX size={24} />}</button>}<button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={24} /> : <LocateFixed size={24} />}</button>{!navigating && mode !== 'arrived' && mode !== 'preview' && <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth"><span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span>{ble.status === 'connected' ? <BluetoothConnected size={22} /> : <Bluetooth size={22} />}<span className="device-dot" /></button>}</div>
+    <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={24}/></button><button className="map-control compass-control" aria-label={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':fix?.headingAvailable===true?'Xoay theo hướng đang quay':'Chưa xác định hướng thiết bị'} title={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':fix?.headingAvailable===true?'Xoay bản đồ theo hướng thiết bị đang quay':'Chưa có hướng thiết bị để xoay bản đồ'} disabled={Math.abs(mapBearing)<=1&&fix?.headingAvailable!==true} onClick={()=>{ if(Math.abs(mapBearing)>1)setNorthReset(value=>value+1); else setHeadingUp(value=>value+1); }}><Compass size={24} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button>{navigating && <button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={24} /> : <VolumeX size={24} />}</button>}<button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={24} /> : <LocateFixed size={24} />}</button>{!navigating && mode !== 'arrived' && mode !== 'preview' && <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth"><span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span>{ble.status === 'connected' ? <BluetoothConnected size={22} /> : <Bluetooth size={22} />}<span className="device-dot" /></button>}</div>
     <section
       ref={panelElement}
       className={`bottom-panel ${mode === 'explore' ? 'explore-panel' : ''} ${mode === 'preview' ? 'preview-panel' : ''} ${mode==='place'?'place-panel':''} ${sheetCollapsed?'collapsed':''}`}
@@ -382,6 +384,7 @@ export default function App() {
           setSheetCollapsed(value => !value);
         }}
       />
+      {location.error && mode !== 'preview' && <p className="inline-feedback" role="alert">{location.error}</p>}
       {tileWarning&&<p className="inline-feedback">Một số ô bản đồ chưa tải được. Kiểm tra kết nối mạng.</p>}
       {mode3D&&<p className="map-3d-hint">Chế độ 3D · Phóng to để xem nhà khối tại nơi có dữ liệu chiều cao. Có thể dùng hai ngón tay để nghiêng và xoay bản đồ.</p>}
       {mode === 'explore' && <>
