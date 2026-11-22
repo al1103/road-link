@@ -41,6 +41,9 @@
 #ifndef ROADLINK_ROUND
 #define ROADLINK_ROUND 0
 #endif
+#ifndef EXIT_BTN
+#define EXIT_BTN 0
+#endif
 
 constexpr const char* SERVICE_UUID = "7b2e0001-6a5b-4c3d-9e8f-1029384756ab";
 constexpr const char* WRITE_UUID = "7b2e0002-6a5b-4c3d-9e8f-1029384756ab";
@@ -119,7 +122,7 @@ struct State {
   float cum[MAX_POINTS] = { 0 };
   float total = 0;
   uint16_t count = 0;
-  String route, maneuver = "ready", featureKind;
+  String route, maneuver = "ready", featureKind, road;
   int turn = 0, remaining = 0, speed = 0, speedLimit = -1, featureM = -1, eta_s = 0;
   int32_t lat = 0, lng = 0;
   uint8_t heading = 0;
@@ -227,6 +230,7 @@ void handleLine() {
     if (id != state.route || seq <= state.lastSeq) { xSemaphoreGive(stateMutex); status("stale-nav"); return; }
     state.lastSeq = seq; state.maneuver = maneuver; state.turn = turn; state.remaining = remaining;
     state.speed = speed; state.lat = lat; state.lng = lng; state.eta_s = doc["eta_s"] | 0;
+    state.road = doc["road"] | "";
     state.speedLimit = doc["speed_limit_kmh"].is<int>() ? doc["speed_limit_kmh"].as<int>() : -1;
     if (state.speedLimit < 1 || state.speedLimit > 300) state.speedLimit = -1;
     state.headingValid = !doc["heading"].isNull() && (doc["heading_available"] | true) && doc["heading"].is<int>();
@@ -344,24 +348,28 @@ uint16_t pointAhead(const State& s, float ahead, int32_t& outLat, int32_t& outLn
 }
 
 void drawManeuver(const String& maneuver, int x, int y) {
-  canvas.drawLine(x, y - 12, x, y + 8, WHITE);
   if (maneuver == "left" || maneuver == "slight-left") {
+    canvas.drawLine(x, y + 8, x, y - 4, WHITE);
     canvas.drawLine(x, y - 4, x - 9, y - 4, WHITE);
     canvas.fillTriangle(x - 9, y - 10, x - 9, y + 2, x - 17, y - 4, WHITE);
   } else if (maneuver == "right" || maneuver == "slight-right") {
+    canvas.drawLine(x, y + 8, x, y - 4, WHITE);
     canvas.drawLine(x, y - 4, x + 9, y - 4, WHITE);
     canvas.fillTriangle(x + 9, y - 10, x + 9, y + 2, x + 17, y - 4, WHITE);
   } else if (maneuver == "uturn") {
+    canvas.drawLine(x, y + 8, x, y - 2, WHITE);
     canvas.drawCircle(x, y - 2, 7, WHITE);
     canvas.fillTriangle(x - 7, y - 6, x + 1, y - 10, x - 7, y - 12, WHITE);
   } else if (maneuver == "roundabout") {
+    canvas.drawLine(x, y + 8, x, y + 2, WHITE);
     canvas.drawCircle(x, y - 2, 8, WHITE);
     canvas.fillTriangle(x + 3, y - 12, x + 11, y - 8, x + 3, y - 4, WHITE);
   } else if (maneuver == "arrive") {
     canvas.drawRect(x - 7, y - 12, 14, 16, WHITE);
     canvas.fillRect(x - 5, y - 10, 4, 4, WHITE);
   } else {
-    canvas.fillTriangle(x, y - 14, x - 7, y - 2, x + 7, y - 2, WHITE);
+    canvas.drawLine(x, y + 8, x, y - 8, WHITE);
+    canvas.fillTriangle(x, y - 16, x - 7, y - 6, x + 7, y - 6, WHITE);
   }
 }
 
@@ -461,6 +469,32 @@ void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading, float ex
   canvas.fillTriangle(120, VEHICLE_Y - 14, 111, VEHICLE_Y + 5, 129, VEHICLE_Y + 5, WHITE);
 }
 
+void drawLimitSign(int cx, int cy, int r, int limit, bool over) {
+  const bool flash = over && (millis() / 400) % 2 == 0;
+  canvas.fillCircle(cx, cy, r, flash ? RED : WHITE);
+  canvas.drawCircle(cx, cy, r, RED);
+  canvas.drawCircle(cx, cy, r - 1, RED);
+  canvas.setTextColor(flash ? WHITE : 0x0000);
+  canvas.setFont(&fonts::Font4);
+  char text[4];
+  snprintf(text, sizeof text, "%d", limit);
+  const int width = limit >= 100 ? 24 : limit >= 10 ? 16 : 8;
+  canvas.drawString(text, cx - width / 2, cy - 8);
+}
+
+void drawCameraBadge(const State& s, int x, int y) {
+  if (!s.lastNav || s.featureM < 0 || s.featureM > 900 || (millis() / 500) % 2) return;
+  canvas.fillRoundRect(x, y, 96, 20, 10, 0x0841);
+  canvas.fillRect(x + 6, y + 6, 10, 8, WHITE);
+  canvas.fillCircle(x + 11, y + 10, 4, WHITE);
+  canvas.fillCircle(x + 11, y + 10, 2, 0x0841);
+  canvas.setTextColor(WHITE);
+  canvas.setFont(&fonts::Font2);
+  char text[20];
+  snprintf(text, sizeof text, "%s %dm", featureTag(s.featureKind), s.featureM);
+  canvas.drawString(text, x + 22, y + 2);
+}
+
 void render(const State& s) {
   canvas.fillScreen(BG);
   if (!s.connected) {
@@ -510,41 +544,43 @@ void render(const State& s) {
     canvas.setFont(&fonts::Font2);
     canvas.drawString(!sdReady ? "NO SD CARD" : "NO MAP DATA", 62, MAP_TOP + 6);
   }
+  const bool over = s.speedLimit > 0 && s.speed >= s.speedLimit + 3;
+#if ROADLINK_ROUND
+  if (over && (millis() / 350) % 2 == 0) {
+    for (int r = 116; r <= 119; r++) canvas.drawCircle(120, 120, r, RED);
+  }
+#else
+  if (over && (millis() / 350) % 2 == 0) {
+    for (int i = 0; i < 3; i++) canvas.drawRect(i, i, 239 - i, 239 - i, RED);
+  }
+#endif
 
   char main[24], left[28], mid[28], right[28];
   snprintf(left, sizeof left, "%d km/h", s.speed);
-  snprintf(mid, sizeof mid, "%d.%d km", s.remaining / 1000, (s.remaining % 1000) / 100);
+  snprintf(mid, sizeof mid, "%d,%d km", s.remaining / 1000, (s.remaining % 1000) / 100);
   snprintf(right, sizeof right, "%d min", (s.eta_s + 59) / 60);
+  String road = s.road.length() > 18 ? s.road.substring(0, 18) : s.road;
 #if ROADLINK_ROUND
-  canvas.fillRoundRect(26, 14, 188, 56, 28, GREEN);
-  drawManeuver(s.maneuver, 52, 42);
+  canvas.fillRoundRect(22, 12, 196, 68, 32, GREEN);
+  drawManeuver(s.maneuver, 50, 40);
   canvas.setTextColor(WHITE);
   canvas.setFont(&fonts::Font4);
   snprintf(main, sizeof main, "%dm", s.turn);
-  canvas.drawString(main, 76, 20);
+  canvas.drawString(main, 74, 16);
   canvas.setFont(&fonts::Font2);
-  if (s.lastNav && s.featureM >= 0 && s.featureM <= 900 && (millis() / 500) % 2 == 0) {
-    canvas.setTextColor(YELLOW);
-    snprintf(main, sizeof main, "%s %dm", featureTag(s.featureKind), s.featureM);
-    canvas.drawString(main, 76, 44);
-    canvas.setTextColor(WHITE);
-  } else {
-    canvas.drawString(s.arrived ? "ARRIVED" : "next", 76, 44);
-  }
-  if (s.speedLimit > 0) {
-    canvas.fillRoundRect(166, 26, 40, 30, 8, WHITE);
-    canvas.setTextColor(0x0000);
-    canvas.setFont(&fonts::Font4);
-    snprintf(main, sizeof main, "%d", s.speedLimit);
-    canvas.drawString(main, 174, 30);
-  }
+  canvas.drawString(s.arrived ? "ARRIVED" : (road.length() ? road : "next"), 74, 50);
+  if (s.speedLimit > 0) drawLimitSign(186, 34, 15, s.speedLimit, over);
+  drawCameraBadge(s, 132, 84);
 
   canvas.fillRoundRect(20, 176, 200, 52, 26, GREEN);
-  canvas.setTextColor(WHITE);
+  canvas.setTextColor(over ? RED : WHITE);
   canvas.setFont(&fonts::Font2);
-  canvas.drawString(left, 32, 190);
-  canvas.drawString(mid, 94, 190);
-  canvas.drawString(right, 164, 190);
+  canvas.drawString(left, 28, 192);
+  canvas.setTextColor(WHITE);
+  canvas.drawString(mid, 94, 192);
+  canvas.drawString(right, 154, 192);
+  canvas.fillCircle(88, 200, 1, WHITE);
+  canvas.fillCircle(148, 200, 1, WHITE);
 #else
   canvas.fillRect(0, 0, 240, 38, GREEN);
   drawManeuver(s.maneuver, 22, 20);
@@ -553,27 +589,19 @@ void render(const State& s) {
   snprintf(main, sizeof main, "%dm", s.turn);
   canvas.drawString(main, 48, 6);
   canvas.setFont(&fonts::Font2);
-  canvas.drawString(s.arrived ? "ARRIVED" : "next", 48, 24);
-  if (s.lastNav && s.featureM >= 0 && s.featureM <= 900 && (millis() / 500) % 2 == 0) {
-    canvas.setTextColor(YELLOW);
-    snprintf(main, sizeof main, "%s %dm", featureTag(s.featureKind), s.featureM);
-    canvas.drawString(main, 104, 8);
-    canvas.setTextColor(WHITE);
-  }
-  if (s.speedLimit > 0) {
-    canvas.fillRoundRect(186, 5, 46, 28, 6, WHITE);
-    canvas.setTextColor(0x0000);
-    canvas.setFont(&fonts::Font4);
-    snprintf(main, sizeof main, "%d", s.speedLimit);
-    canvas.drawString(main, 195, 7);
-  }
+  canvas.drawString(s.arrived ? "ARRIVED" : (road.length() ? road : "next"), 48, 24);
+  if (s.speedLimit > 0) drawLimitSign(210, 19, 14, s.speedLimit, over);
+  drawCameraBadge(s, 120, 44);
 
   canvas.fillRect(0, 204, 240, 36, GREEN);
-  canvas.setTextColor(WHITE);
+  canvas.setTextColor(over ? RED : WHITE);
   canvas.setFont(&fonts::Font2);
-  canvas.drawString(left, 8, 214);
-  canvas.drawString(mid, 82, 214);
-  canvas.drawString(right, 180, 214);
+  canvas.drawString(left, 8, 212);
+  canvas.setTextColor(WHITE);
+  canvas.drawString(mid, 82, 212);
+  canvas.drawString(right, 154, 212);
+  canvas.fillCircle(76, 220, 1, WHITE);
+  canvas.fillCircle(142, 220, 1, WHITE);
 #endif
   canvas.pushSprite(0, 0);
 }
@@ -583,6 +611,7 @@ void setup() {
   stateMutex = xSemaphoreCreateMutex();
   pinMode(TFT_BL, OUTPUT);
   digitalWrite(TFT_BL, HIGH);
+  pinMode(EXIT_BTN, INPUT_PULLUP);
   tft.init();
   tft.setRotation(0);
   canvas.setPsram(true);
@@ -613,6 +642,17 @@ void setup() {
 }
 
 void loop() {
+  static bool exitWasHigh = true;
+  static uint32_t exitAt = 0;
+  const bool exitHigh = digitalRead(EXIT_BTN) == HIGH;
+  if (exitWasHigh && !exitHigh && millis() - exitAt > 400) {
+    exitAt = millis();
+    status("exit-request");
+    xSemaphoreTake(stateMutex, portMAX_DELAY);
+    state.count = 0; state.route = ""; state.maneuver = "ready"; state.lastNav = 0;
+    xSemaphoreGive(stateMutex);
+  }
+  exitWasHigh = exitHigh;
   static State snapshot;
   xSemaphoreTake(stateMutex, portMAX_DELAY);
   snapshot = state;

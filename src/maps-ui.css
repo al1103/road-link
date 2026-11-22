@@ -1233,6 +1233,8 @@
   border: 0;
   border-radius: 12px;
   color: #5f6368;
+  touch-action: none;
+  cursor: grab;
 }
 
 .maps-ui .sheet-handle::after {

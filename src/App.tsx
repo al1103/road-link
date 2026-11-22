@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, Banknote, BedDouble, Bluetooth, BluetoothConnected, CarFront, Check, ChevronRight, Clock3, Coffee, Compass, Flag, Fuel, Heart, Layers2, LocateFixed, MapPin, Navigation2, Pause, Play, Route as RouteIcon, Search, ShieldCheck, ShoppingBasket, Signal, SlidersHorizontal, Sparkles, UtensilsCrossed, Volume2, VolumeX, X, LoaderCircle, TriangleAlert } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, Banknote, BedDouble, Bluetooth, BluetoothConnected, CarFront, Check, ChevronRight, Clock3, Coffee, Compass, Flag, Fuel, Heart, Layers2, LocateFixed, MapPin, Navigation2, Pause, Play, Route as RouteIcon, Search, ShoppingBasket, Signal, SlidersHorizontal, Sparkles, UtensilsCrossed, Volume2, VolumeX, X, LoaderCircle, TriangleAlert } from 'lucide-react';
 import MapView from './components/MapView';
 import ManeuverIcon from './components/ManeuverIcon';
 import BluetoothPanel from './components/BluetoothPanel';
@@ -59,6 +59,10 @@ export default function App() {
   const [follow, setFollow] = useState(true);
   const [recenter, setRecenter] = useState(0);
   const [sheetCollapsed, setSheetCollapsed] = useState(false);
+  const [sheetDragOffset, setSheetDragOffset] = useState<number | null>(null);
+  const sheetDrag = useRef<{ startY: number; base: number; moved: boolean } | null>(null);
+  const sheetDragOffsetRef = useRef(0);
+  const suppressSheetClick = useRef(false);
   const [details, setDetails] = useState(false);
   const [voice, setVoice] = useState(() => stored('roadlink.voice', true) === true);
   const [favorites, setFavorites] = useState<string[]>(() => { const v = stored<unknown>('roadlink.favorites', []); return Array.isArray(v) ? v.filter(x => typeof x === 'string') : []; });
@@ -99,6 +103,7 @@ export default function App() {
   },[sheetCollapsed]);
   useEffect(()=>{setSheetCollapsed(false);},[mode]);
   useEffect(() => link.subscribe(setBle), []);
+  useEffect(() => { if (ble.received === 'exit-request') stop(); }, [ble.received]);
   useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 2000); return () => clearInterval(timer); }, []);
   useEffect(() => {
     if (navigating) void KeepAwake.keepAwake().catch(() => undefined);
@@ -327,8 +332,53 @@ export default function App() {
     )}
     {navigating && activeStep && <section className="turn-banner" aria-label="Chỉ dẫn tiếp theo"><div className="turn-symbol"><ManeuverIcon type={activeStep.maneuver} size={39} /></div><div><span>{rerouting ? 'Đang tìm đường mới…' : `Sau ${formatDistance(progress?.nextTurn ?? activeStep.offset)}`}</span><h1>{activeStep.instruction}</h1><small>Theo biển báo và tình hình đường thực tế</small></div></section>}
     <div className="map-controls"><button className={`map-control mode3d-control ${mode3D?'active':''}`} aria-label={mode3D?'Chuyển bản đồ 2D':'Chuyển bản đồ 3D'} aria-pressed={mode3D} title="Nghiêng bản đồ; phóng to để xem nhà 3D" onClick={()=>setMode3D(value=>!value)}>{mode3D?'2D':'3D'}</button><button className={`map-control ${road.enabled?'active':''}`} aria-label="Mở dữ liệu đường" onClick={()=>setShowRoadData(true)}><Layers2 size={24}/></button><button className="map-control compass-control" aria-label={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay theo hướng đang quay'} title={Math.abs(mapBearing)>1?'Đưa hướng Bắc về phía trên':'Xoay bản đồ theo hướng thiết bị đang quay'} onClick={()=>{ if(Math.abs(mapBearing)>1)setNorthReset(value=>value+1); else setHeadingUp(value=>value+1); }}><Compass size={24} style={{transform:`rotate(${-mapBearing}deg)`}}/><small>N</small></button>{navigating && <button className="map-control" aria-label={voice ? 'Tắt giọng nói' : 'Bật giọng nói'} onClick={toggleVoice}>{voice ? <Volume2 size={24} /> : <VolumeX size={24} />}</button>}<button className={`map-control ${follow && fix ? 'active' : ''}`} aria-label="Về vị trí của tôi" onClick={() => { setFollow(true); setRecenter(x => x + 1); void location.start(); }}>{location.requesting ? <LoaderCircle className="spin" size={24} /> : <LocateFixed size={24} />}</button></div>
-    <section ref={panelElement} className={`bottom-panel ${mode === 'explore' ? 'explore-panel' : ''} ${mode === 'preview' ? 'preview-panel' : ''} ${mode==='place'?'place-panel':''} ${sheetCollapsed?'collapsed':''}`}>
-      <button type="button" className="sheet-handle" aria-label={sheetCollapsed?'Mở rộng bảng dưới':'Thu gọn bảng dưới'} aria-expanded={!sheetCollapsed} onClick={()=>setSheetCollapsed(value=>!value)} />
+    <section
+      ref={panelElement}
+      className={`bottom-panel ${mode === 'explore' ? 'explore-panel' : ''} ${mode === 'preview' ? 'preview-panel' : ''} ${mode==='place'?'place-panel':''} ${sheetCollapsed?'collapsed':''}`}
+      style={sheetDragOffset !== null ? { transform: `translateY(${sheetDragOffset}px)`, transition: 'none' } : undefined}
+    >
+      <button
+        type="button"
+        className="sheet-handle"
+        aria-label={sheetCollapsed?'Mở rộng bảng dưới':'Thu gọn bảng dưới'}
+        aria-expanded={!sheetCollapsed}
+        onPointerDown={e => {
+          const base = sheetCollapsed ? Math.max(0, (panelElement.current?.offsetHeight ?? 0) - 58) : 0;
+          sheetDrag.current = { startY: e.clientY, base, moved: false };
+          sheetDragOffsetRef.current = base;
+          suppressSheetClick.current = false;
+          setSheetDragOffset(base);
+          try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ }
+        }}
+        onPointerMove={e => {
+          const drag = sheetDrag.current;
+          if (!drag) return;
+          const dy = e.clientY - drag.startY;
+          if (Math.abs(dy) > 4) drag.moved = true;
+          const max = Math.max(0, (panelElement.current?.offsetHeight ?? 0) - 58);
+          const offset = Math.max(0, Math.min(max, drag.base + dy));
+          sheetDragOffsetRef.current = offset;
+          setSheetDragOffset(offset);
+        }}
+        onPointerUp={() => {
+          const drag = sheetDrag.current;
+          if (!drag) return;
+          sheetDrag.current = null;
+          setSheetDragOffset(null);
+          suppressSheetClick.current = true;
+          if (!drag.moved) { setSheetCollapsed(value => !value); return; }
+          const max = Math.max(0, (panelElement.current?.offsetHeight ?? 0) - 58);
+          setSheetCollapsed(sheetDragOffsetRef.current > max * 0.45);
+        }}
+        onPointerCancel={() => {
+          sheetDrag.current = null;
+          setSheetDragOffset(null);
+        }}
+        onClick={() => {
+          if (suppressSheetClick.current) { suppressSheetClick.current = false; return; }
+          setSheetCollapsed(value => !value);
+        }}
+      />
       {tileWarning&&<p className="inline-feedback">Một số ô bản đồ chưa tải được. Kiểm tra kết nối mạng.</p>}
       {mode3D&&<p className="map-3d-hint">Chế độ 3D · Phóng to để xem nhà khối tại nơi có dữ liệu chiều cao. Có thể dùng hai ngón tay để nghiêng và xoay bản đồ.</p>}
       {mode === 'explore' && <>
@@ -341,8 +391,7 @@ export default function App() {
             </button>
           ))}
         </div>
-        {savedPlaces.length?<><h2 className="destinations-heading saved-heading">Đã lưu</h2><div className="quick-destinations">{savedPlaces.slice(0,4).map((place,i)=><button key={place.id} onClick={()=>choosePlace(place)}><span className={`quick-icon quick-${i}`}><MapPin size={20}/></span><strong>{place.name}</strong><span>{place.detail}</span><ChevronRight size={17}/></button>)}</div></>:<p className="explore-help">Tìm địa chỉ, nhập tọa độ hoặc chạm lên bản đồ để chọn điểm đến.</p>}
-        <div className="independent-note"><ShieldCheck size={15} /><span>Dẫn đường độc lập · Bluetooth là tùy chọn</span></div>
+        {savedPlaces.length>0&&<><h2 className="destinations-heading saved-heading">Đã lưu</h2><div className="quick-destinations">{savedPlaces.slice(0,4).map((place,i)=><button key={place.id} onClick={()=>choosePlace(place)}><span className={`quick-icon quick-${i}`}><MapPin size={20}/></span><strong>{place.name}</strong><span>{place.detail}</span><ChevronRight size={17}/></button>)}</div></>}
       </>}
       {mode==='place'&&selected&&<PlaceCard place={selected} saved={saved} shareStatus={shareStatus} onRoute={()=>void plan(selected)} onSave={toggleFavorite} onShare={()=>void sharePlace()} onClose={stop}/>}
       {mode === 'preview' && <>

@@ -30,13 +30,15 @@ Firmware giữ tuyến đang nhận trong staging riêng, kiểm tra route ID, c
 ## Cập nhật dẫn đường
 
 ```json
-{"v":1,"type":"nav","route":"route-123","seq":1,"lat_e7":107797500,"lng_e7":1066990000,"heading":90,"speed_kmh":36,"maneuver":"right","turn_m":150,"remaining_m":1200,"eta_s":240,"arrived":false,"instruction":"Rẽ phải vào đường tiếp theo"}
+{"v":1,"type":"nav","route":"route-123","seq":1,"lat_e7":107797500,"lng_e7":1066990000,"heading":90,"speed_kmh":36,"maneuver":"right","turn_m":150,"remaining_m":1200,"eta_s":240,"arrived":false,"instruction":"Rẽ phải vào đường tiếp theo","road":"Vo Nguyen Giap"}
 {"v":1,"type":"stop"}
 ```
 
 App gửi tối đa khoảng 4 nav/giây khi đang dẫn đường (250 ms), coalesce nav cũ nếu BLE chậm. Khi đến nơi, gửi `arrived:true` ngay. `seq` tăng trong phiên app; firmware bỏ nav cũ hoặc sai route. Kết nối lại sẽ gửi lại tuyến đang dẫn trước khi gửi nav.
 
 `maneuver`: `depart`, `straight`, `left`, `right`, `slight-left`, `slight-right`, `uturn`, `roundabout`, `arrive`.
+
+`road` là tên đường đã bỏ dấu (ASCII) để màn hình bitmap hiển thị được; app vẫn gửi `instruction` UTF-8 đầy đủ cho Serial.
 
 Các field bổ sung tương thích ngược trong `nav`: `road_data_enabled`, `speed_limit_kmh` (số hoặc null), `speed_limit_source` (`osm` hoặc null), `road_feature` (`id`, `kind`, `distance_m`, `direction_verified:false`, hoặc null). Thiếu/không chắc phải gửi null, không giữ lại một mức cũ. `heading` là null và `heading_available:false` khi chưa xác định hướng. Firmware in đầy đủ JSON qua Serial; OLED có mức tốc độ nguồn OSM. Chưa có bộ icon/giọng Việt native trên ESP32.
 

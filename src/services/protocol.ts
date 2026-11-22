@@ -23,11 +23,14 @@ export function routeMessages(route: Route): WireMessage[] {
   messages.push({ v: 1, type: 'route.end', route: route.id, count: points.length });
   return messages;
 }
+function asciiRoad(name: string): string {
+  return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^\x20-\x7E]/g, '').trim().slice(0, 40);
+}
 export function navMessage(route: Route, progress: Progress, fix: Fix, seq: number, context?:{enabled:boolean;limit:CurrentLimit;feature?:RoadFeature}): WireMessage {
   return { v: 1, type: 'nav', route: route.id, seq, lat_e7: Math.round(fix.lat * 1e7), lng_e7: Math.round(fix.lng * 1e7),
     heading: fix.headingAvailable===false?null:Math.round(fix.heading),heading_available:fix.headingAvailable!==false, speed_kmh: Math.round(Math.max(0, fix.speed) * 3.6), maneuver: progress.step.maneuver,
     turn_m: Math.round(progress.nextTurn), remaining_m: Math.round(progress.remaining), eta_s: Math.round(progress.etaSeconds), arrived: progress.arrived,
-    instruction: progress.step.instruction.slice(0, 120),
+    instruction: progress.step.instruction.slice(0, 120), road: asciiRoad(progress.step.road),
     road_data_enabled:!!context?.enabled,speed_limit_kmh:context?.enabled?context.limit.kmh:null,speed_limit_source:context?.enabled&&context.limit.kmh!==null?'osm':null,
     road_feature:context?.enabled&&context.feature?{id:context.feature.id,kind:context.feature.kind,distance_m:Math.round(Math.max(0,context.feature.along-progress.along)),direction_verified:false}:null };
 }

@@ -10,6 +10,10 @@ Firmware `esp32-s3-tft` và `esp32-s3-round` vẽ bản đồ vector OSM offline
 
 *Bố cục GC9A01 tròn: banner và thanh dưới bo theo vòng tròn, cùng dữ liệu và chân SPI với bản vuông.*
 
+![Cảnh báo quá tốc độ](../exports/esp32-round-overspeed.png)
+
+*Vượt giới hạn 3 km/h: biển chuyển đỏ, tốc độ đỏ và viền màn hình nhấp nháy đỏ.*
+
 ## Phần cứng
 
 - ESP32-S3 có PSRAM (8 MB), flash 8 MB trở lên.
@@ -30,6 +34,7 @@ Chân mặc định (đổi bằng `build_flags` nếu mạch của bạn khác)
 | SD MOSI | 40 |
 | SD MISO | 41 |
 | SD CS | 42 |
+| Nút thoát (BOOT) | 0 |
 
 GPIO 33–37 thường bị PSRAM octal chiếm trên ESP32-S3 N8R8, nên bộ chân SD mặc định đã tránh các chân này. Với board N8R2, đổi `board_build.arduino.memory_type` từ `qio_opi` sang `qio_qspi`.
 
@@ -83,6 +88,9 @@ Sau khi nạp: cắm thẻ SD, bật nguồn, kết nối `RoadLink ESP32` trong
 - Banner trên và thanh dưới là hình chữ nhật bo tròn nằm trong vòng tròn hiển thị, không kéo hết mép màn để tránh bị cắt ở góc.
 - Xe đặt tại `(120, 138)` thay vì `(120, 158)`; vùng bản đồ và ngưỡng vẽ tam giác cảnh báo tính theo vùng nhìn của màn tròn.
 - Cảnh báo hiện nhãn `CAM/LIGHT/STOP/SIGN/...` trong banner và tam giác chỉ vẽ khi còn trong tầm nhìn (~157 m ở mức zoom hiện tại); thanh trên vẫn ghi khoảng cách tới 900 m.
+- Giới hạn tốc độ là biển tròn viền đỏ; khi vượt quá giới hạn 3 km/h, biển nhấp nháy đỏ, tốc độ chuyển đỏ và viền màn hình nhấp nháy đỏ.
+- Tên đường lấy từ `nav.road` (ASCII) hiện dưới khoảng cách rẽ; nếu không có thì hiện `next`.
+- Nhấn nút BOOT (GPIO0) gửi `exit-request`; app nhận và dừng dẫn đường, màn hình trở về trạng thái chờ.
 - Vật lý màn tròn che 4 góc nên phần ngoài vòng tròn là đen; không cần mask phần mềm.
 
 ## Giới hạn hiện tại

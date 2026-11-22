@@ -95,6 +95,7 @@ pio run -d firmware -e esp32-s3-round -t upload   # màn tròn GC9A01
 - Nền tối, đường tô theo cấp, tuyến xanh, heading-up, xe cố định gần đáy; banner xanh trên có mũi tên rẽ/khoảng cách/giới hạn tốc độ, thanh dưới có km/h, km còn lại và số phút.
 - Nhận tuyến và nav qua BLE như bản OLED, nội suy vị trí giữa 4 gói nav/giây, làm mượt heading và vẽ mục tiêu 15 fps vào sprite PSRAM nên không nháy.
 - Bản tròn bo banner trên và thanh dưới theo đường tròn, giữ nội dung trong vùng nhìn của màn; cảnh báo hiện nhãn `CAM/LIGHT/...` trong banner và tam giác chỉ vẽ khi còn trong tầm nhìn.
+- Giới hạn tốc độ vẽ thành biển tròn viền đỏ; vượt quá 3 km/h thì biển, tốc độ và viền màn hình nhấp nháy đỏ. Tên đường ASCII hiện dưới khoảng cách rẽ; nút BOOT gửi `exit-request` để app dừng dẫn đường.
 - Chân mặc định, cách đổi chân và giới hạn: [docs/TFT_DISPLAY.md](docs/TFT_DISPLAY.md). Chưa có tên đường (font mặc định thiếu dấu tiếng Việt) và chưa kiểm thử trên phần cứng thật.
 
 ![Bản đồ màu 240×240](exports/esp32-tft-preview.png)
@@ -104,6 +105,10 @@ pio run -d firmware -e esp32-s3-round -t upload   # màn tròn GC9A01
 ![Bản đồ màu trên màn tròn 240×240](exports/esp32-round-preview.png)
 
 *Bố cục màn tròn GC9A01: banner và thanh dưới bo theo vòng tròn, cùng dữ liệu và chân SPI với bản vuông.*
+
+![Cảnh báo quá tốc độ trên màn tròn](exports/esp32-round-overspeed.png)
+
+*Khi vượt giới hạn 3 km/h: biển 50 chuyển đỏ, tốc độ chuyển đỏ và viền màn hình nhấp nháy đỏ.*
 
 Chi tiết UUID, framing, E7, dữ liệu nav và giới hạn buffer: [docs/BLE_PROTOCOL.md](docs/BLE_PROTOCOL.md).
 
