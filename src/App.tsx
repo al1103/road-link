@@ -160,13 +160,17 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setShowBLE(false); setShowRoadData(false); setSearchOpen(false); setDetails(false); } };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
   }, []);
-  async function submitSearch(e: React.FormEvent) {
-    e.preventDefault(); if (query.trim().length < 2 || searching) return;
+  async function performSearch(text: string) {
+    if (text.trim().length < 2 || searching) return;
     searchAbort.current?.abort(); const controller = new AbortController(); searchAbort.current = controller;
-    setSearching(true); setSearched(true); setSearchOpen(true); setSearchError(null);setShareStatus(null);setNavigationError(null);
-    try { const places = await searchPlaces(query, controller.signal); if (!controller.signal.aborted) setResults(places); }
+    setSearching(true); setSearched(true); setSearchOpen(true); setSearchError(null); setShareStatus(null); setNavigationError(null);
+    try { const places = await searchPlaces(text, controller.signal); if (!controller.signal.aborted) setResults(places); }
     catch (err) { if (!controller.signal.aborted) { setResults([]); setSearchError(friendlyError(err)); } }
     finally { if (!controller.signal.aborted) setSearching(false); }
+  }
+  async function submitSearch(e: React.FormEvent) {
+    e.preventDefault();
+    void performSearch(query);
   }
   function stop() {
     routeAbort.current?.abort(); setLoading(false); setRerouting(false); setPendingGPS(null);
@@ -201,8 +205,24 @@ export default function App() {
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
-      {!navigating && mode !== 'arrived'&&(mode!=='preview'||searchOpen) && <div className="search-wrap"><form className="search-box" onSubmit={submitSearch} role="search"><Search size={21} /><input aria-label={searchTarget==='origin'?'Tìm điểm đi':'Tìm địa điểm'} placeholder={searchTarget==='origin'?'Chọn điểm đi':'Tìm kiếm ở đây'} value={query} onChange={e => { setQuery(e.target.value); setSearched(false); }} onFocus={() => setSearchOpen(true)} /><button type="submit" aria-label="Tìm kiếm" disabled={searching || query.trim().length < 2}>{searching ? <LoaderCircle className="spin" size={19} /> : <ArrowRight size={20} />}</button></form>
-        {searchOpen && <div className="search-results"><div className="section-label">{searched ? 'KẾT QUẢ TÌM KIẾM' : 'ĐỊA ĐIỂM ĐÃ LƯU'}<button aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}><X size={17} /></button></div>{searchTarget==='origin'&&<><button className="place-result" onClick={useMyOrigin}><LocateFixed size={20}/><strong>Vị trí của bạn</strong></button><button className="place-result" onClick={()=>setSearchOpen(false)}><MapPin size={20}/><strong>Chọn điểm đi trên bản đồ</strong></button></>}{searchError?<p className="search-empty" role="alert">{searchError}</p>:searching ? <p className="search-empty">Đang tìm địa điểm…</p> : searched && !results.length ? <p className="search-empty">Chưa tìm thấy địa điểm. Thử thêm tên thành phố hoặc địa chỉ.</p> : (searched ? results : savedPlaces).map(place => <button className="place-result" key={place.id} onClick={() => choosePlace(place)}><span className="place-icon"><MapPin size={19} /></span><span><strong>{place.name}</strong><small>{place.detail}</small></span><ChevronRight size={17} /></button>)}</div>}
+      {!navigating && mode !== 'arrived' && (mode !== 'preview' || searchOpen) && <div className="search-wrap">
+        <form className="search-box" onSubmit={submitSearch} role="search">
+          <Search size={21} className="search-glass-icon" />
+          <input aria-label={searchTarget === 'origin' ? 'Tìm điểm đi' : 'Tìm địa điểm'} placeholder={searchTarget === 'origin' ? 'Chọn điểm đi' : 'Tìm kiếm ở đây'} value={query} onChange={e => { setQuery(e.target.value); setSearched(false); }} onFocus={() => setSearchOpen(true)} />
+          {query.length > 0 && <button type="button" className="search-clear-btn" aria-label="Xóa tìm kiếm" onClick={() => { setQuery(''); setSearched(false); }}><X size={18} /></button>}
+          <button type="submit" aria-label="Tìm kiếm" className="search-submit-btn" disabled={searching || query.trim().length < 2}>{searching ? <LoaderCircle className="spin" size={19} /> : <ArrowRight size={20} />}</button>
+        </form>
+        {mode === 'explore' && !searchOpen && <div className="gmaps-quick-categories" role="toolbar" aria-label="Danh mục phổ biến">
+          {[
+            { label: 'Nhà hàng', icon: '🍽️' },
+            { label: 'Cây xăng', icon: '⛽' },
+            { label: 'Cà phê', icon: '☕' },
+            { label: 'Khách sạn', icon: '🏨' },
+            { label: 'ATM', icon: '🏧' },
+            { label: 'Tạp hóa', icon: '🛒' }
+          ].map(c => <button key={c.label} type="button" className="gmaps-cat-pill" onClick={() => { setQuery(c.label); setSearchOpen(true); void performSearch(c.label); }}><span>{c.icon}</span><span>{c.label}</span></button>)}
+        </div>}
+        {searchOpen && <div className="search-results"><div className="section-label">{searched ? 'KẾT QUẢ TÌM KIẾM' : 'ĐỊA ĐIỂM ĐÃ LƯU'}<button aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}><X size={17} /></button></div>{searchTarget === 'origin' && <><button className="place-result" onClick={useMyOrigin}><LocateFixed size={20} /><strong>Vị trí của bạn</strong></button><button className="place-result" onClick={() => setSearchOpen(false)}><MapPin size={20} /><strong>Chọn điểm đi trên bản đồ</strong></button></>}{searchError ? <p className="search-empty" role="alert">{searchError}</p> : searching ? <p className="search-empty">Đang tìm địa điểm…</p> : searched && !results.length ? <p className="search-empty">Chưa tìm thấy địa điểm. Thử thêm tên thành phố hoặc địa chỉ.</p> : (searched ? results : savedPlaces).map(place => <button className="place-result" key={place.id} onClick={() => choosePlace(place)}><span className="place-icon"><MapPin size={19} /></span><span><strong>{place.name}</strong><small>{place.detail}</small></span><ChevronRight size={17} /></button>)}</div>}
       </div>}
       <button className={`device-button ${ble.status === 'connected' ? 'connected' : ''}`} onClick={() => setShowBLE(true)} aria-label="Mở kết nối Bluetooth">{ble.status === 'connected' ? <BluetoothConnected size={20} /> : <Bluetooth size={20} />}<span>{ble.status === 'connected' ? 'ESP32 đã kết nối' : 'Kết nối thiết bị'}</span><span className="device-dot" /></button>
     </header>
@@ -227,9 +247,36 @@ export default function App() {
         {navigating&&roadAlert&&!staleGPS&&!progress?.offRoute&&<aside className="navigation-road-alert" role="status" aria-label="Cảnh báo trên tuyến">{roadAlert.kind==='camera'?<img className="road-feature-image" src="/signs/camera.svg" alt="Biểu tượng camera"/>:roadAlert.kind==='limit'||roadAlert.kind==='overspeed'?<SpeedLimitImage kmh={limit.kmh} small/>:<img className="road-feature-image" src={roadAlert.feature?roadSymbol(roadAlert.feature).src:'/signs/unknown.svg'} alt={roadAlert.feature?.label??'Điểm cảnh báo'}/>}<div><strong>{roadAlert.title}</strong><p>{roadAlert.text}</p><small>OSM · CHƯA XÁC MINH THỰC ĐỊA</small></div></aside>}
         {navigationError&&<p className="inline-feedback">{navigationError}</p>}
         {voice&&voiceUnavailable&&<p className="inline-feedback">Thiết bị chưa có giọng tiếng Việt. Hãy tải giọng tiếng Việt trong cài đặt giọng nói.</p>}
-        <div className="navigation-summary"><div className="arrival-time"><span>ĐẾN LÚC</span><strong>{eta}</strong><small>{route.destination.name}</small></div><div className="remaining-stats"><strong>{formatDuration(remainingSeconds)}</strong><span>{formatDistance(progress?.remaining ?? route.distance)} còn lại</span></div><div className="speed-badge"><strong>{Math.round(Math.max(0,fix?.speed??0)*3.6)}</strong><span>km/h</span></div>{road.enabled&&navigating&&roadFilters.speed&&<button className="road-limit-badge inline-limit" aria-label="Xem giới hạn tốc độ ghi nhận" onClick={()=>setShowRoadData(true)}><small>GIỚI HẠN</small><SpeedLimitImage kmh={limit.kmh}/><span className="road-source">{limit.kmh===null?'CHƯA CÓ DỮ LIỆU':'km/h · OSM'}</span></button>}</div>
+        <div className="navigation-summary gmaps-nav-summary">
+          <div className="arrival-col">
+            <span className="eta-main">{formatDuration(remainingSeconds)}</span>
+            <div className="eta-sub">
+              <span className="eta-dist">{formatDistance(progress?.remaining ?? route.distance)}</span>
+              <span className="middot">·</span>
+              <span className="eta-clock">{eta}</span>
+            </div>
+          </div>
+          <div className="speed-cluster">
+            <div className={`speed-badge ${limit.kmh && Math.round((fix?.speed ?? 0) * 3.6) > limit.kmh ? 'overspeed-alert' : ''}`}>
+              <strong>{Math.round(Math.max(0, fix?.speed ?? 0) * 3.6)}</strong>
+              <span>km/h</span>
+            </div>
+            {road.enabled && navigating && roadFilters.speed && (
+              <button className="road-limit-badge" aria-label="Xem giới hạn tốc độ ghi nhận" onClick={() => setShowRoadData(true)}>
+                <SpeedLimitImage kmh={limit.kmh} />
+              </button>
+            )}
+          </div>
+          <button className="nav-stop-round-btn" aria-label="Kết thúc dẫn đường" onClick={stop}>
+            <X size={22} />
+          </button>
+        </div>
         <div className="trip-progress"><span style={{ width: `${100 * (1 - (progress?.remaining ?? route.distance) / route.distance)}%` }} /></div>
-        <div className="navigation-actions"><button className="stop-button" onClick={stop}><X size={18} />Kết thúc</button><button className="text-button" onClick={() => setDetails(!details)}><RouteIcon size={18} />Các chặng</button><span className="phone-status"><Signal size={15} />{ble.status === 'connected' ? 'BLE đã kết nối' : 'Trên điện thoại'}</span></div>
+        <div className="navigation-actions">
+          <button className="text-button" onClick={() => setDetails(!details)}><RouteIcon size={18} /><span>Các chặng</span></button>
+          <button className="text-button" onClick={toggleVoice}>{voice ? <Volume2 size={18} /> : <VolumeX size={18} />}<span>{voice ? 'Giọng nói' : 'Đã tắt tiếng'}</span></button>
+          <span className="phone-status"><Signal size={14} /><span>{ble.status === 'connected' ? 'BLE đã kết nối' : 'GPS'}</span></span>
+        </div>
       </>}
       {mode === 'arrived' && <div className="arrived-panel"><span className="arrived-icon"><Flag size={32} /></span><span className="eyebrow">HÀNH TRÌNH HOÀN TẤT</span><h1>Bạn đã đến nơi<span className="accent">.</span></h1><p>{route?.destination.name}</p><button className="button primary full" onClick={stop}><Check size={20} />Về bản đồ</button></div>}
       {details && route && <ol className="directions-list" aria-label="Danh sách chỉ dẫn">{route.steps.map(step => <li key={step.index} className={activeStep?.index === step.index && navigating ? 'current-step' : ''}><ManeuverIcon type={step.maneuver} size={22} /><div><strong>{step.instruction}</strong><span>{step.maneuver === 'arrive' ? 'Điểm đến' : formatDistance(step.distance)}</span></div></li>)}</ol>}

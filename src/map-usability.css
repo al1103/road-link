@@ -295,7 +295,8 @@
   textarea,
   .search-box input,
   .maps-ui .search-box input,
-  .route-inputs>button {
+  .route-inputs>button,
+  .route-input-field {
     font-size: 16px !important;
     touch-action: manipulation;
   }

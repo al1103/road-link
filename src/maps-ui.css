@@ -1,2 +1,877 @@
-.maps-ui{--teal:#1a73e8;--ink:#202124;--muted:#5f6368;--line:#e8eaed;color:#202124;font-family:Arial,'Be Vietnam Pro',sans-serif}.maps-ui .map-shade{display:none}.maps-ui .map-canvas{background:#e5e3df}.maps-ui .leaflet-tile{filter:saturate(.8) brightness(1.02)}.maps-ui .topbar{top:calc(16px + var(--safe-top));left:16px;right:16px;gap:12px}.maps-ui .brand{display:none}.maps-ui .search-wrap{left:0;transform:none;width:390px}.maps-ui .search-box{height:56px;border:0;border-radius:28px;padding:8px 10px 8px 20px;box-shadow:0 2px 7px #0003;gap:15px}.maps-ui .search-box input{font-size:15px;color:#3c4043}.maps-ui .search-box>button{border-radius:50%;background:transparent;color:#1a73e8}.maps-ui .search-results{top:63px;border-radius:14px;box-shadow:0 3px 10px #0003}.maps-ui .section-label{letter-spacing:0;font-size:11px;font-weight:500;color:#5f6368}.maps-ui .place-result{padding:13px 10px;gap:14px}.maps-ui .place-result strong{font-size:13px;color:#202124;font-weight:500}.maps-ui .place-result small{font-size:11px;color:#70757a}.maps-ui .place-icon{border-radius:50%;background:#f1f3f4;color:#5f6368;width:38px;height:38px}.maps-ui .device-button{margin-left:auto;border-radius:50%;width:48px;height:48px;padding:12px;box-shadow:0 2px 6px #0002;position:relative;justify-content:center}.maps-ui .device-button>span{display:none}.maps-ui .device-button svg{color:#1a73e8}.maps-ui .bottom-panel{left:16px;bottom:22px;width:390px;border:0;border-radius:16px;padding:20px;box-shadow:0 2px 8px #0003;background:#fff}.maps-ui .explore-panel{padding:17px 20px 12px}.maps-ui .destinations-heading{font-size:18px;font-weight:500;margin-bottom:12px}.maps-ui .quick-destinations{display:flex;flex-direction:column;gap:0;margin-bottom:0}.maps-ui .quick-destinations>button{display:grid;grid-template-columns:38px 1fr 18px;grid-template-rows:auto auto;column-gap:12px;align-items:center;width:100%;background:transparent;border:0;border-radius:0;padding:12px 0;text-align:left;border-bottom:1px solid #f1f3f4}.maps-ui .quick-icon{grid-row:1/3;grid-column:1;margin:0;border-radius:50%;width:37px;height:37px;background:#f1f3f4;color:#5f6368}.maps-ui .quick-destinations strong{grid-column:2;grid-row:1;font-size:13px;font-weight:500;margin:0 0 5px}.maps-ui .quick-destinations button>span:last-of-type{grid-column:2;grid-row:2;font-size:11px;color:#70757a}.maps-ui .quick-destinations button>svg{position:static;grid-column:3;grid-row:1/3;color:#70757a}.maps-ui .independent-note{display:none}.maps-ui .map-controls{right:20px;bottom:66px;gap:10px}.maps-ui .map-control{width:44px;height:44px;border-radius:50%;border:0;box-shadow:0 1px 6px #0004;background:white;color:#5f6368}.maps-ui .map-control.active{color:#1a73e8}.maps-ui .map-attribution{font-family:Arial,sans-serif;font-size:9px;bottom:3px;color:#333}.maps-ui .destination-marker>span{background:#ea4335;border-color:white}.maps-ui .origin-dot{border-color:#1a73e8}.maps-ui .button{min-height:43px;border-radius:24px;font-size:12px;font-weight:500;padding:10px 16px;white-space:nowrap}.maps-ui .button.primary{background:#1a73e8;box-shadow:none;color:white}.maps-ui .button.primary:hover{background:#1765cc}.maps-ui .button.primary>svg{margin:0!important}.maps-ui .button.outlined{border:1px solid #dadce0;color:#1967d2;background:white}.maps-ui .origin-warning{font-size:10px;color:#785a15;background:#fef7e0;border-radius:8px;line-height:1.6;padding:9px 10px;margin:12px 0}.maps-ui .road-entry{font-size:11px;color:#5f6368;line-height:1.6;padding-top:13px}.maps-ui .icon-button{border-radius:50%;background:#f1f3f4;color:#5f6368}.place-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.place-title-row h1{font-size:23px;font-weight:500;line-height:1.4;letter-spacing:0}.place-address{font-size:12px;line-height:1.8;color:#5f6368;margin:11px 0 21px;display:flex;align-items:flex-start;gap:6px}.place-address svg{flex-shrink:0;margin-top:2px}.place-actions{display:flex;gap:8px;flex-wrap:wrap}.route-editor{position:absolute;z-index:21;top:calc(16px + var(--safe-top));left:16px;width:390px;background:white;box-shadow:0 2px 7px #0003;border-radius:14px;display:flex;align-items:center;gap:10px;padding:14px 12px}.route-editor-back,.swap-endpoints{width:30px;height:35px;display:grid;place-items:center;background:none;color:#5f6368;flex-shrink:0;padding:0}.route-inputs{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;gap:9px}.route-inputs>button{display:flex;align-items:center;gap:12px;border:1px solid #dadce0;border-radius:6px;background:white;height:37px;width:100%;padding:0 10px;text-align:left;font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#3c4043}.route-inputs>button svg{color:#ea4335;flex-shrink:0}.route-origin-symbol{width:12px;height:12px;border:3px solid #1a73e8;border-radius:50%;flex-shrink:0;margin:0 2px}.route-input-dots{display:none}.planner-transport{display:flex;align-items:center;gap:15px;border-bottom:1px solid #dadce0;padding-bottom:13px;margin-bottom:0}.transport-selected{display:flex;gap:7px;align-items:center;background:#e8f0fe;color:#1967d2;border-radius:22px;padding:9px 15px;font-size:12px}.planner-transport>span{font-size:9px;color:#70757a;line-height:1.6}.route-choice{display:flex;gap:12px;align-items:center;width:100%;padding:17px 4px;background:white;border-bottom:1px solid #e8eaed;text-align:left}.route-radio{width:19px;height:19px;border:2px solid #9aa0a6;border-radius:50%;flex-shrink:0}.route-choice.selected .route-radio{border:6px solid #1a73e8}.route-choice>div{flex:1;min-width:0}.route-choice strong{font-size:18px;font-weight:500;color:#188038}.route-choice strong>small{font-size:12px;font-weight:400;color:#5f6368;margin-left:3px}.route-choice p{font-size:12px;line-height:1.5;color:#3c4043;margin-top:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.best-route{display:inline-block;font-size:10px;color:#188038;margin-top:6px}.route-choice>svg{color:#70757a}.planner-actions{display:flex;align-items:center;gap:8px;margin-top:15px;position:sticky;bottom:0;background:white;padding:6px 0}.maps-ui .preview-panel .button.primary{position:static}.planner-actions .button{font-size:11px;padding:10px 14px}.maps-ui.is-routing .topbar{justify-content:flex-end}.maps-ui.is-routing .search-wrap{z-index:30;left:0}.maps-ui .turn-banner{background:#188038;border-radius:12px;left:16px;top:calc(80px + var(--safe-top));width:390px;padding:17px;box-shadow:0 2px 7px #0003}.maps-ui .turn-banner h1{font-size:20px;font-weight:500}.maps-ui .turn-banner span,.maps-ui .turn-banner small{color:#e6f4ea}.maps-ui .speed-badge{background:white;border:2px solid #3c4043;border-radius:50%;width:58px;height:58px;color:#202124}.maps-ui .remaining-stats>strong{color:#188038}.maps-ui .trip-progress>span{background:#1a73e8}.maps-ui .stop-button{background:#f1f3f4;color:#3c4043;border-radius:20px;font-size:11px}.maps-ui .navigation-actions{gap:15px}.maps-ui .phone-status{font-size:8px}.maps-ui .text-button{font-size:11px;color:#5f6368}.maps-ui .road-limit-badge{right:20px;top:calc(90px + var(--safe-top));box-shadow:0 1px 6px #0003;border-radius:12px}.maps-ui .modal-backdrop{background:#20212466}.maps-ui .connection-panel,.maps-ui .road-panel{border-radius:20px}.maps-ui .button:focus-visible,.maps-ui input:focus-visible{outline:2px solid #1a73e8}
-@media(max-width:759px){.maps-ui .topbar{left:12px;right:12px;top:calc(12px + var(--safe-top));align-items:center;flex-wrap:nowrap}.maps-ui .search-wrap{position:relative;order:0;margin:0;left:auto;width:auto;flex:1;min-width:0}.maps-ui .search-box{height:52px;border-radius:28px;gap:10px;padding-left:16px}.maps-ui .search-box input{font-size:14px}.maps-ui .device-button{width:43px;height:43px;margin-left:0;flex-shrink:0}.maps-ui .bottom-panel{left:0;right:0;bottom:0;width:100%;border-radius:20px 20px 0 0;padding:11px 20px calc(12px + var(--safe-bottom));max-height:calc(100dvh - 170px - var(--safe-top))}.maps-ui .sheet-handle{margin-bottom:15px;width:34px;background:#dadce0}.maps-ui .explore-panel{padding:10px 20px 15px}.maps-ui .destinations-heading{font-size:19px;font-weight:500;margin-bottom:5px}.maps-ui .quick-destinations>button{padding:10px 0}.maps-ui .quick-destinations strong{font-size:13px}.maps-ui .quick-destinations button>span:last-of-type{font-size:11px}.maps-ui .map-controls{bottom:calc(300px + var(--safe-bottom));right:13px;gap:10px}.maps-ui.is-selecting .map-controls{bottom:calc(244px + var(--safe-bottom))}.maps-ui.is-routing .map-controls{bottom:calc(410px + var(--safe-bottom))}.maps-ui .map-control{width:42px;height:42px}.maps-ui .map-attribution{bottom:1px;font-size:7px}.maps-ui .place-panel{padding:12px 20px 22px}.place-title-row h1{font-size:23px}.place-address{font-size:12px;margin:12px 0 18px}.place-actions{gap:8px}.place-actions .button{font-size:12px;padding:10px 14px}.route-editor{top:calc(12px + var(--safe-top));left:12px;width:calc(100% - 74px);gap:6px;padding:11px 8px;border-radius:12px}.route-inputs>button{font-size:11px;height:36px;padding:0 8px;gap:8px}.route-editor-back,.swap-endpoints{width:23px}.route-editor-back svg,.swap-endpoints svg{width:20px}.maps-ui.is-routing .search-wrap{position:fixed;top:calc(12px + var(--safe-top));left:12px;right:12px;width:auto}.maps-ui .preview-panel{max-height:55dvh;padding:10px 16px 15px}.planner-transport{padding-bottom:10px;gap:12px}.transport-selected{font-size:12px;padding:8px 13px}.planner-transport>span{font-size:8px}.route-choice{padding:13px 2px;gap:12px}.route-choice strong{font-size:19px}.route-choice p{font-size:12px}.maps-ui .origin-warning{font-size:9px;line-height:1.6;margin:10px 0}.planner-actions .button{font-size:11px;padding:10px 13px}.maps-ui .road-entry{font-size:10px}.maps-ui .turn-banner{left:10px;right:10px;top:calc(72px + var(--safe-top));width:auto;padding:16px 13px}.maps-ui .turn-banner h1{font-size:19px}.maps-ui .turn-banner small{font-size:7px}.maps-ui.is-navigating .map-controls{bottom:calc(265px + var(--safe-bottom))}.maps-ui.is-navigating .bottom-panel{padding:12px 18px 17px}.maps-ui .road-limit-badge{top:calc(206px + var(--safe-top));right:12px;padding:7px}.maps-ui .speed-badge{width:52px;height:52px}.maps-ui .phone-status{font-size:7px}.maps-ui .text-button{font-size:10px}.maps-ui .navigation-actions{gap:12px}}
+/* Google Maps Pixel-Perfect Design System */
+.maps-ui {
+  --teal: #1a73e8;
+  --gmaps-blue: #1a73e8;
+  --gmaps-blue-hover: #1765cc;
+  --gmaps-blue-light: #e8f0fe;
+  --gmaps-green: #188038;
+  --gmaps-green-light: #e6f4ea;
+  --gmaps-red: #ea4335;
+  --gmaps-yellow: #f9ab00;
+  --ink: #202124;
+  --muted: #5f6368;
+  --line: #dadce0;
+  --surface: #ffffff;
+  color: #202124;
+  font-family: -apple-system, BlinkMacSystemFont, 'Google Sans', Roboto, 'Be Vietnam Pro', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.maps-ui .map-shade {
+  display: none;
+}
+
+.maps-ui .map-canvas {
+  background: #f2efe9;
+}
+
+/* ========================================================
+   TOP BAR & SEARCH BAR (Google Maps Pill Style)
+   ======================================================== */
+.maps-ui .topbar {
+  position: absolute;
+  z-index: 30;
+  top: calc(12px + var(--safe-top));
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.maps-ui .brand {
+  display: none;
+}
+
+.maps-ui .search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.maps-ui .search-box {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 0 8px 0 16px;
+  box-shadow: 0 2px 6px rgba(60, 64, 67, 0.2), 0 1px 2px rgba(60, 64, 67, 0.15);
+  gap: 10px;
+}
+
+.maps-ui .search-glass-icon {
+  color: #5f6368;
+  flex-shrink: 0;
+}
+
+.maps-ui .search-box input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 16px !important;
+  color: #202124;
+  font-family: inherit;
+}
+
+.maps-ui .search-box input::placeholder {
+  color: #70757a;
+}
+
+.maps-ui .search-clear-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  color: #5f6368;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.maps-ui .search-submit-btn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e8f0fe;
+  color: #1a73e8;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.maps-ui .search-submit-btn:disabled {
+  background: transparent;
+  color: #bdc1c6;
+}
+
+/* Quick Categories Strip */
+.maps-ui .gmaps-quick-categories {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.maps-ui .gmaps-quick-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.maps-ui .gmaps-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 18px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3c4043;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+  flex-shrink: 0;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.maps-ui .gmaps-cat-pill:hover,
+.maps-ui .gmaps-cat-pill:active {
+  background: #f1f3f4;
+}
+
+/* Circular Profile / Device Button */
+.maps-ui .device-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 0;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(60, 64, 67, 0.2), 0 1px 2px rgba(60, 64, 67, 0.15);
+  color: #1a73e8;
+  flex-shrink: 0;
+  position: relative;
+  padding: 0;
+}
+
+.maps-ui .device-button>span:not(.device-dot) {
+  display: none;
+}
+
+.maps-ui .device-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #dadce0;
+  border: 2px solid #ffffff;
+}
+
+.maps-ui .device-button.connected .device-dot {
+  background: #188038;
+}
+
+/* Search Results Dropdown */
+.maps-ui .search-results {
+  position: absolute;
+  top: 54px;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(60, 64, 67, 0.25);
+  max-height: 55dvh;
+  overflow-y: auto;
+  padding: 8px;
+  z-index: 40;
+}
+
+.maps-ui .section-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: #5f6368;
+}
+
+.maps-ui .place-result {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  gap: 12px;
+}
+
+.maps-ui .place-result:hover,
+.maps-ui .place-result:active {
+  background: #f1f3f4;
+}
+
+.maps-ui .place-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f1f3f4;
+  color: #5f6368;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.maps-ui .place-result strong {
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+  display: block;
+}
+
+.maps-ui .place-result small {
+  font-size: 12px;
+  color: #70757a;
+  display: block;
+  margin-top: 2px;
+}
+
+/* ========================================================
+   ROUTE EDITOR HEADER (Google Maps Origin - Destination)
+   ======================================================== */
+.maps-ui .route-editor {
+  position: absolute;
+  z-index: 35;
+  top: calc(12px + var(--safe-top));
+  left: 12px;
+  right: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(60, 64, 67, 0.25);
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 10px;
+}
+
+.maps-ui .route-editor-back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  color: #5f6368;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.maps-ui .route-inputs-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.maps-ui .route-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.maps-ui .route-origin-circle {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #1a73e8;
+  border-radius: 50%;
+  background: #ffffff;
+  flex-shrink: 0;
+  margin: 0 3px;
+}
+
+.maps-ui .route-dots-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-left: 6px;
+  padding: 1px 0;
+}
+
+.maps-ui .route-dots-line .dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #dadce0;
+}
+
+.maps-ui .route-dest-pin {
+  color: #ea4335;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.maps-ui .route-input-field {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  background: #f1f3f4;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 10px;
+  text-align: left;
+  font-size: 13px;
+  color: #202124;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.maps-ui .swap-endpoints {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  color: #5f6368;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Transport Mode Tabs */
+.maps-ui .planner-transport-modes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 12px;
+  border-bottom: 1px solid #dadce0;
+}
+
+.maps-ui .transport-mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #5f6368;
+}
+
+.maps-ui .transport-mode-tab.active {
+  background: #e8f0fe;
+  color: #1967d2;
+}
+
+/* ========================================================
+   ROUTE CHOICES & PLANNER (Google Maps Card)
+   ======================================================== */
+.maps-ui .route-choices {
+  display: flex;
+  flex-direction: column;
+}
+
+.maps-ui .route-choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid #e8eaed;
+  background: transparent;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.maps-ui .route-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #9aa0a6;
+  flex-shrink: 0;
+}
+
+.maps-ui .route-choice.selected .route-radio {
+  border: 5px solid #1a73e8;
+}
+
+.maps-ui .route-choice-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.maps-ui .route-time-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.maps-ui .eta-green {
+  font-size: 20px;
+  font-weight: 700;
+  color: #188038;
+}
+
+.maps-ui .route-dist {
+  font-size: 13px;
+  color: #5f6368;
+}
+
+.maps-ui .route-summary-text {
+  font-size: 12px;
+  color: #3c4043;
+  margin-top: 3px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.maps-ui .best-route-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #188038;
+  margin-top: 3px;
+}
+
+/* Action Buttons (Google Pill Buttons) */
+.maps-ui .planner-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.maps-ui .gmaps-start-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  background: #1a73e8;
+  color: #ffffff;
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 0;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+}
+
+.maps-ui .gmaps-start-btn:hover,
+.maps-ui .gmaps-start-btn:active {
+  background: #1765cc;
+}
+
+.maps-ui .gmaps-steps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 16px;
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 22px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1967d2;
+}
+
+.maps-ui .gmaps-pill-btn {
+  border-radius: 22px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  height: 40px !important;
+  padding: 0 18px !important;
+}
+
+/* ========================================================
+   TURN-BY-TURN NAVIGATION BANNER (Google Green #188038)
+   ======================================================== */
+.maps-ui .turn-banner {
+  position: absolute;
+  z-index: 35;
+  top: calc(14px + var(--safe-top));
+  left: 12px;
+  right: 12px;
+  background: #188038;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+}
+
+.maps-ui .turn-symbol {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.maps-ui .turn-symbol svg {
+  width: 36px;
+  height: 36px;
+  color: #ffffff;
+}
+
+.maps-ui .turn-banner>div:last-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.maps-ui .turn-banner span {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: #e6f4ea;
+}
+
+.maps-ui .turn-banner h1 {
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-top: 2px;
+  color: #ffffff;
+}
+
+.maps-ui .turn-banner small {
+  display: block;
+  font-size: 9px;
+  color: #c0ebd2;
+  margin-top: 4px;
+}
+
+/* ========================================================
+   BOTTOM NAVIGATION BAR (Active Guidance)
+   ======================================================== */
+.maps-ui .gmaps-nav-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 14px;
+}
+
+.maps-ui .arrival-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.maps-ui .eta-main {
+  font-size: 26px;
+  font-weight: 700;
+  color: #188038;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.maps-ui .eta-sub {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #5f6368;
+  margin-top: 4px;
+}
+
+.maps-ui .speed-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.maps-ui .speed-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #3c4043;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  color: #202124;
+}
+
+.maps-ui .speed-badge strong {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.maps-ui .speed-badge span {
+  font-size: 9px;
+  font-weight: 500;
+  color: #5f6368;
+}
+
+.maps-ui .speed-badge.overspeed-alert {
+  border-color: #d93025;
+  color: #d93025;
+}
+
+.maps-ui .nav-stop-round-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f1f3f4;
+  border: 0;
+  display: grid;
+  place-items: center;
+  color: #5f6368;
+  flex-shrink: 0;
+}
+
+.maps-ui .nav-stop-round-btn:hover,
+.maps-ui .nav-stop-round-btn:active {
+  background: #e8eaed;
+  color: #d93025;
+}
+
+.maps-ui .trip-progress {
+  height: 3px;
+  background: #e8eaed;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.maps-ui .trip-progress>span {
+  display: block;
+  height: 100%;
+  background: #1a73e8;
+  transition: width 0.4s ease;
+}
+
+.maps-ui .navigation-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.maps-ui .navigation-actions .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5f6368;
+  background: transparent;
+  border: 0;
+  padding: 4px 0;
+}
+
+.maps-ui .phone-status {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #80868b;
+}
+
+/* ========================================================
+   FLOATING ACTION BUTTONS (Circular FABs)
+   ======================================================== */
+.maps-ui .map-controls {
+  position: absolute;
+  z-index: 25;
+  right: 14px;
+  bottom: calc(var(--panel-height, 220px) + 12px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: bottom 0.25s ease-out;
+}
+
+.maps-ui .map-control {
+  width: 44px;
+  height: 44px;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: 0 !important;
+  box-shadow: 0 2px 6px rgba(60, 64, 67, 0.25), 0 1px 2px rgba(60, 64, 67, 0.15) !important;
+  display: grid;
+  place-items: center;
+  color: #5f6368;
+  padding: 0;
+}
+
+.maps-ui .map-control.active {
+  color: #1a73e8 !important;
+}
+
+.maps-ui .map-control:active {
+  background: #f1f3f4 !important;
+}
+
+.maps-ui .compass-control small {
+  display: none;
+}
+
+.maps-ui .mode3d-control {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+/* ========================================================
+   BOTTOM SHEET (Flush to edge)
+   ======================================================== */
+.maps-ui .bottom-panel {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -2px 10px rgba(60, 64, 67, 0.15);
+  padding: 10px 20px calc(14px + var(--safe-bottom));
+  max-height: calc(100dvh - 160px - var(--safe-top));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.maps-ui .sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: #dadce0;
+  margin: 0 auto 12px;
+}
+
+.maps-ui .destinations-heading {
+  font-size: 18px;
+  font-weight: 500;
+  color: #202124;
+  margin: 0 0 12px;
+}
+
+.maps-ui .quick-destinations {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.maps-ui .quick-destinations>button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #f1f3f4;
+  text-align: left;
+}
+
+.maps-ui .quick-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f1f3f4;
+  color: #5f6368;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.maps-ui .quick-destinations strong {
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+  display: block;
+}
+
+.maps-ui .quick-destinations button>span:last-of-type {
+  font-size: 12px;
+  color: #70757a;
+  display: block;
+  margin-top: 2px;
+}
+
+.maps-ui .map-attribution {
+  position: absolute;
+  z-index: 10;
+  bottom: 2px;
+  left: 8px;
+  font-size: 8px;
+  color: #5f6368;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* ========================================================
+   LOCATION PUCK (Google Maps Blue Dot & Beam)
+   ======================================================== */
+.maplibregl-marker.position-marker {
+  width: 48px;
+  height: 48px;
+  z-index: 22;
+}
+
+.position-halo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: rgba(66, 133, 244, 0.18);
+  animation: pulse-halo 2s infinite ease-out;
+}
+
+@keyframes pulse-halo {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.position-arrow {
+  position: absolute;
+  inset: 0;
+  width: 48px;
+  height: 48px;
+  transform: rotate(var(--heading, 0deg));
+  transform-origin: 50% 50%;
+  transition: transform 0.2s linear;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
+.position-arrow path {
+  fill: #1a73e8;
+  stroke: #ffffff;
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+}
+
+.direction-unknown .position-arrow path {
+  fill: #4285f4;
+}
