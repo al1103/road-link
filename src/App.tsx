@@ -4,9 +4,10 @@ import MapView from './components/MapView';
 import ManeuverIcon from './components/ManeuverIcon';
 import BluetoothPanel from './components/BluetoothPanel';
 import RoadDataPanel, { groupFor, type RoadFilters } from './components/RoadDataPanel';
-import { currentLimit, UNKNOWN_LIMIT } from './domain/roadData';
+import { currentLimit, UNKNOWN_LIMIT, type RoadFeature } from './domain/roadData';
 import { useRoadData } from './hooks/useRoadData';
 import { RoadAlertEngine,type RoadAlert } from './domain/roadAlerts';
+import { applyUserEdits, isUserRoadEdit, pruneUserRoadEdits, type AddableFeatureKind, type UserRoadEdit } from './domain/userRoadEdits';
 import {PlaceCard,RouteInputs,RoutePlannerCard} from './components/PlaceAndRouteCards';
 import SpeedLimitImage from './components/SpeedLimitImage';
 import {roadSymbol} from './domain/roadSymbols';
@@ -90,6 +91,7 @@ export default function App() {
   const [showBLE, setShowBLE] = useState(false);
   const [showRoadData,setShowRoadData]=useState(false);
   const [roadFilters,setRoadFilters]=useState<RoadFilters>(()=>{const v=stored<Partial<RoadFilters>>('roadlink.roadFilters',{});return{speed:v.speed!==false,cameras:v.cameras!==false,signs:v.signs!==false,signals:v.signals!==false};});
+  const [userRoadEdits,setUserRoadEdits]=useState<UserRoadEdit[]>(()=>{const v=stored<unknown>('roadlink.userRoadEdits',[]);return Array.isArray(v)?v.filter(isUserRoadEdit):[];});
   const [roadLayerEnabled,setRoadLayerEnabled]=useState(()=>stored<unknown>('roadlink.roadData',true)!==false);
   const [showScale,setShowScale]=useState(()=>stored<unknown>('roadlink.showScale',true)!==false);
   const [warnDistance,setWarnDistance]=useState(()=>{const value=stored<unknown>('roadlink.warnDistance',500);return value===200||value===500||value===900?value:500;});
@@ -139,7 +141,8 @@ export default function App() {
   const previewGPS=canPreviewFrom(location.fix,now);
   const staleGPS = navigating && !!location.fix && now - location.fix.timestamp > 15000;
   const road=useRoadData(route,progress?.along??0,roadLayerEnabled);
-  const displayRoadData=road.overview??road.data;
+  const narrowRoadData=useMemo(()=>applyUserEdits(road.data,userRoadEdits,route),[road.data,userRoadEdits,route]);
+  const displayRoadData=useMemo(()=>applyUserEdits(road.overview??road.data,userRoadEdits,route),[road.overview,road.data,userRoadEdits,route]);
   const limit=navigating?currentLimit(road.data,route,fix,progress?.along??0,progress?.offRoute):UNKNOWN_LIMIT;
   const mapRoadData=useMemo(()=>roadLayerEnabled&&displayRoadData?{...displayRoadData,sections:roadFilters.speed?displayRoadData.sections:[],features:displayRoadData.features.filter(f=>roadFilters[groupFor(f.kind)])}:null,[displayRoadData,roadFilters,roadLayerEnabled]);
   useEffect(()=>{
@@ -184,17 +187,17 @@ export default function App() {
   useEffect(()=>{
     if(roadAlert&&now>roadAlert.expiresAt)setRoadAlert(null);
     if(!navigating||!route||!progress||!fix||progress.nextTurn<100||(voice&&Date.now()-lastVoiceAt.current<4000))return;
-    const next=roadAlertEngine.current.update(route,road.data,fix,progress,limit);
+    const next=roadAlertEngine.current.update(route,narrowRoadData,fix,progress,limit);
     if(next){setRoadAlert(next);if(voice){lastVoiceAt.current=Date.now();void say(next.speech).then(ok=>setVoiceUnavailable(!ok));}}
-  },[progress,fix,route,road.data,navigating,voice,now]);
+  },[progress,fix,route,narrowRoadData,navigating,voice,now]);
   useEffect(() => { if (ble.status === 'connected' && route && navigating) link.enqueue(routeMessages(route), 'route'); }, [ble.status, route, navigating]);
   useEffect(() => {
     if (ble.status !== 'connected' || !route || !fix || !progress || Date.now()-fix.timestamp>15000 || (!navigating && mode !== 'arrived')) return;
     if (Date.now() - lastSent.current < 250 && !progress.arrived) return;
     lastSent.current = Date.now();
-    const feature=road.data?.features.find(f=>f.along>=progress.along);
+    const feature=narrowRoadData?.features.find(f=>f.along>=progress.along);
     link.enqueue([navMessage(route, progress, fix, ++sequence.current,{enabled:road.enabled,limit,feature})], 'nav');
-  }, [progress, fix, route, navigating, mode, ble.status,road.data,road.enabled]);
+  }, [progress, fix, route, navigating, mode, ble.status,narrowRoadData,road.enabled]);
   const plan = useCallback(async (place: Place, start = false, origin = originOverride??(canPreviewFrom(location.fix)?location.fix:null), profile: TransportProfile = transportMode, viaStops: Place[] = stops) => {
     routeAbort.current?.abort();
     if(!origin){setSelected(place);setMode('preview');setRoute(null);setAlternatives([]);setLoading(false);setRouteError(null);setPendingGPS(start?'navigation':'preview');setSearchOpen(false);void location.start();return;}
@@ -361,13 +364,20 @@ export default function App() {
   function toggleFavorite() { if (!selected) return; const next = favorites.includes(selected.id) ? favorites.filter(x => x !== selected.id) : [...favorites, selected.id]; setFavorites(next); save('roadlink.favorites', next); const places=next.includes(selected.id)?[...savedPlaces.filter(p=>p.id!==selected.id),selected]:savedPlaces.filter(p=>p.id!==selected.id);setSavedPlaces(places);save('roadlink.savedPlaces',places); }
   function exportFavorites(){const blob=new Blob([JSON.stringify(savedPlaces,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='roadlink-favorites.json';link.click();URL.revokeObjectURL(url);}
   function importFavorites(file:File){const reader=new FileReader();reader.onload=()=>{try{const value:unknown=JSON.parse(String(reader.result));if(!Array.isArray(value))return;const places=value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.detail==='string'&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lng)&&Math.abs(p.lng)<=180);setSavedPlaces(places);setFavorites(places.map(p=>p.id));save('roadlink.savedPlaces',places);save('roadlink.favorites',places.map(p=>p.id));}catch{/* ignore invalid file */}};reader.readAsText(file);}
+  function commitUserRoadEdits(next:UserRoadEdit[]){const pruned=pruneUserRoadEdits(next);setUserRoadEdits(pruned);save('roadlink.userRoadEdits',pruned);}
+  function reportRoadFeature(feature:RoadFeature){commitUserRoadEdits([...userRoadEdits,{id:`edit-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,kind:'suppress',targetId:feature.id,label:feature.label,createdAt:Date.now()}]);}
+  function undoRoadEdit(editId:string){commitUserRoadEdits(userRoadEdits.filter(e=>e.id!==editId));}
+  function addUserRoadSign(input:{featureKind:AddableFeatureKind;label:string;speedKmh?:number;note?:string}){
+    if(!fix)return;
+    commitUserRoadEdits([...userRoadEdits,{id:`edit-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,kind:'addition',lat:fix.lat,lng:fix.lng,featureKind:input.featureKind,label:input.label,speedKmh:input.speedKmh,note:input.note,createdAt:Date.now()}]);
+  }
   const activeStep = progress?.step ?? route?.steps.find(s => s.maneuver !== 'depart') ?? route?.steps[0];
   const saved = !!selected && favorites.includes(selected.id);
   const baseSeconds = progress?.etaSeconds ?? route?.duration ?? 0;
   const remainingSeconds = baseSeconds;
   const eta = new Date(Date.now() + remainingSeconds * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   return <main ref={appElement} className={`app maps-ui ${searchOpen?'is-searching':''} ${navigating ? 'is-navigating' : ''} ${mode === 'explore' ? 'is-exploring' : ''} ${mode==='preview'?'is-routing':''} ${mode==='place'?'is-selecting':''}`}>
-    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} stops={stops} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} focusPoint={focusPoint} showScale={showScale} onBearing={setMapBearing}/>
+    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} stops={stops} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} onReportFeature={reportRoadFeature} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} focusPoint={focusPoint} showScale={showScale} onBearing={setMapBearing}/>
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
@@ -580,7 +590,7 @@ export default function App() {
         <RoutePlannerCard route={route} alternatives={alternatives} selected={selected} loading={loading} error={routeError} customOrigin={!!originOverride} awaitingGPS={awaitingGPS} locationError={location.error} details={details} transportMode={transportMode} onSelectTransportMode={setTransportMode} back={stop} retry={()=>selected&&void plan(selected)} start={startReal} select={r=>{setRoute(r);setProgress(null);}} toggleDetails={()=>setDetails(!details)} roadData={()=>setShowRoadData(true)}/>
       </>}
       {navigating && route && <>
-        {navigating&&roadAlert&&!staleGPS&&!progress?.offRoute&&<aside className="navigation-road-alert" role="status" aria-label="Cảnh báo trên tuyến">{roadAlert.kind==='camera'?<img className="road-feature-image" src="/signs/camera.svg" alt="Biểu tượng camera"/>:roadAlert.kind==='limit'||roadAlert.kind==='overspeed'?<SpeedLimitImage kmh={limit.kmh} small/>:<img className="road-feature-image" src={roadAlert.feature?roadSymbol(roadAlert.feature).src:'/signs/unknown.svg'} alt={roadAlert.feature?.label??'Điểm cảnh báo'}/>}<div><strong>{roadAlert.title}</strong><p>{roadAlert.text}</p><small>OSM · CHƯA XÁC MINH THỰC ĐỊA</small></div></aside>}
+        {navigating&&roadAlert&&!staleGPS&&!progress?.offRoute&&<aside className="navigation-road-alert" role="status" aria-label="Cảnh báo trên tuyến">{roadAlert.kind==='camera'?<img className="road-feature-image" src="/signs/camera.svg" alt="Biểu tượng camera"/>:roadAlert.kind==='limit'||roadAlert.kind==='overspeed'?<SpeedLimitImage kmh={limit.kmh} small/>:<img className="road-feature-image" src={roadAlert.feature?roadSymbol(roadAlert.feature).src:'/signs/unknown.svg'} alt={roadAlert.feature?.label??'Điểm cảnh báo'}/>}<div><strong>{roadAlert.title}</strong><p>{roadAlert.text}</p><small>{roadAlert.source==='user'?'DO BẠN THÊM · TỰ CHỊU TRÁCH NHIỆM ĐỐI CHIẾU':'OSM · CHƯA XÁC MINH THỰC ĐỊA'}</small></div></aside>}
         {navigationError&&<p className="inline-feedback">{navigationError}</p>}
         {voice&&voiceUnavailable&&<p className="inline-feedback">Thiết bị chưa có giọng tiếng Việt. Hãy tải giọng tiếng Việt trong cài đặt giọng nói.</p>}
         <div className="navigation-summary gmaps-nav-summary">
@@ -619,6 +629,6 @@ export default function App() {
     </section>
     <footer className="map-attribution"><a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a><span>·</span><a href="https://openmaptiles.org/" target="_blank" rel="noreferrer">OpenMapTiles</a><span>·</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OSM contributors</a><span>· OSRM</span></footer>
     {showBLE && <BluetoothPanel state={ble} preferred={preferredEsp} close={() => setShowBLE(false)} connect={() => void link.connect()} disconnect={() => void link.disconnect()} />}
-    {showRoadData&&<RoadDataPanel route={route} data={displayRoadData} loading={road.overviewLoading} error={road.overviewError??road.error} retry={road.retry} close={()=>setShowRoadData(false)} filters={roadFilters} setFilters={setRoadFilters} limit={limit} along={progress?.along??0} navigating={navigating} enabled={roadLayerEnabled} setEnabled={setRoadLayerEnabled} showScale={showScale} setShowScale={setShowScale} warnDistance={warnDistance} setWarnDistance={setWarnDistance} termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} resetSettings={()=>{localStorage.clear();window.location.reload();}}/>}
+    {showRoadData&&<RoadDataPanel route={route} data={displayRoadData} loading={road.overviewLoading} error={road.overviewError??road.error} retry={road.retry} close={()=>setShowRoadData(false)} filters={roadFilters} setFilters={setRoadFilters} limit={limit} along={progress?.along??0} navigating={navigating} enabled={roadLayerEnabled} setEnabled={setRoadLayerEnabled} showScale={showScale} setShowScale={setShowScale} warnDistance={warnDistance} setWarnDistance={setWarnDistance} termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} resetSettings={()=>{localStorage.clear();window.location.reload();}} userEdits={userRoadEdits} onReportFeature={reportRoadFeature} onUndoEdit={undoRoadEdit} onAddSign={addUserRoadSign} canAddAtCurrentLocation={!!fix}/>}
   </main>;
 }

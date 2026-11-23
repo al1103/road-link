@@ -4,7 +4,7 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import type { FeatureCollection, LineString, Polygon } from 'geojson';
 import { MAP_CENTER, MAP_ZOOM } from '../domain/places';
 import type { Coordinate, Fix, Place, Route } from '../domain/types';
-import type { RoadData } from '../domain/roadData';
+import type { RoadData, RoadFeature } from '../domain/roadData';
 import { roadSymbol } from '../domain/roadSymbols';
 import { compassHeading, locationZoom } from '../domain/location';
 import { requestOrientationPermission } from '../hooks/useLocation';
@@ -13,7 +13,7 @@ setWorkerUrl(workerUrl);
 setWorkerCount(1);
 const STYLE = import.meta.env.VITE_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/positron';
 const empty = (): FeatureCollection => ({ type: 'FeatureCollection', features: [] });
-type Props = { route: Route | null; alternatives: Route[]; destination: Place | null; stops: Place[]; onSelectRoute: (route: Route) => void; onPick: (point: Coordinate) => void; roadData: RoadData | null; position: Fix | null; focusPosition: boolean; positionStale: boolean; navigating: boolean; follow: boolean; onDrag: () => void; onTileError: () => void; recenter: number; mode3D: boolean; northReset: number; headingUp: number; focusPoint: Coordinate | null; showScale: boolean; onBearing: (bearing: number) => void };
+type Props = { route: Route | null; alternatives: Route[]; destination: Place | null; stops: Place[]; onSelectRoute: (route: Route) => void; onPick: (point: Coordinate) => void; roadData: RoadData | null; onReportFeature: (feature: RoadFeature) => void; position: Fix | null; focusPosition: boolean; positionStale: boolean; navigating: boolean; follow: boolean; onDrag: () => void; onTileError: () => void; recenter: number; mode3D: boolean; northReset: number; headingUp: number; focusPoint: Coordinate | null; showScale: boolean; onBearing: (bearing: number) => void };
 function padding(instance: LibreMap) {
   const view = instance.getContainer().getBoundingClientRect(), sheet = document.querySelector('.bottom-panel')?.getBoundingClientRect();
   const header = document.querySelector('.topbar')?.getBoundingClientRect(), turn = document.querySelector('.turn-banner')?.getBoundingClientRect(), editor = document.querySelector('.route-editor')?.getBoundingClientRect();
@@ -36,9 +36,9 @@ function uncertainty(position: Fix): FeatureCollection<Polygon> {
   }
   return { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [coordinates] } }] };
 }
-export default function MapView({ route, alternatives, destination, stops, onSelectRoute, onPick, roadData, position, focusPosition, positionStale, navigating, follow, onDrag, onTileError, recenter, mode3D, northReset, headingUp, focusPoint, showScale, onBearing }: Props) {
+export default function MapView({ route, alternatives, destination, stops, onSelectRoute, onPick, roadData, onReportFeature, position, focusPosition, positionStale, navigating, follow, onDrag, onTileError, recenter, mode3D, northReset, headingUp, focusPoint, showScale, onBearing }: Props) {
   const element = useRef<HTMLDivElement>(null), map = useRef<LibreMap | null>(null), [ready, setReady] = useState(false);
-  const callbacks = useRef({ onPick, onSelectRoute, onDrag, onTileError, onBearing, alternatives, mode3D }); callbacks.current = { onPick, onSelectRoute, onDrag, onTileError, onBearing, alternatives, mode3D };
+  const callbacks = useRef({ onPick, onSelectRoute, onDrag, onTileError, onBearing, onReportFeature, alternatives, mode3D }); callbacks.current = { onPick, onSelectRoute, onDrag, onTileError, onBearing, onReportFeature, alternatives, mode3D };
   const positionRef = useRef(position); positionRef.current = position;
   const routePins = useRef<Marker[]>([]), roadMarkers = useRef<Marker[]>([]), placeMarker = useRef<Marker | null>(null), positionMarker = useRef<Marker | null>(null);
   const displayHeading = useRef(0), course = useRef<number | null>(null), lastCentered = useRef(0), initialPositionCentered = useRef(false);
@@ -164,14 +164,23 @@ export default function MapView({ route, alternatives, destination, stops, onSel
     const speeds: FeatureCollection<LineString> = { type: 'FeatureCollection', features: (roadData?.sections ?? []).filter(s => s.kmh !== null).map(s => ({ type: 'Feature', properties: { kmh: s.kmh }, geometry: { type: 'LineString', coordinates: [[s.from.lng, s.from.lat], [s.to.lng, s.to.lat]] } })) };
     updateSource(instance, 'roadlink-speed', speeds);
     for (const feature of roadData?.features ?? []) {
-      const el = document.createElement('button'); el.type = 'button'; el.className = `road-poi-marker image-marker ${feature.kind.includes('camera') ? 'camera' : feature.kind}`; el.setAttribute('aria-label', feature.label); el.dataset.roadDetail = 'false';
+      const el = document.createElement('button'); el.type = 'button'; el.className = `road-poi-marker image-marker ${feature.kind.includes('camera') ? 'camera' : feature.kind} ${feature.userAdded ? 'user-added' : ''}`; el.setAttribute('aria-label', feature.label); el.dataset.roadDetail = 'false';
       const image = document.createElement('img'); image.src = roadSymbol(feature).src; image.alt = feature.label; image.className = 'road-marker-image'; image.width = image.height = 32; el.appendChild(image);
       el.addEventListener('click', event => event.stopPropagation());
       const content = document.createElement('div'); content.className = 'road-popup';
       const title = document.createElement('strong'); title.textContent = feature.label; content.appendChild(title);
-      const note = document.createElement('small'); note.textContent = feature.kind === 'signals' ? 'Đèn giao thông ghi nhận trên OSM; không có trạng thái đèn trực tiếp.' : 'Nguồn OSM · gần tuyến · chưa xác nhận chiều áp dụng/chức năng xử phạt.'; content.appendChild(note);
-      if (feature.code) { const code = document.createElement('small'); code.textContent = `Mã ghi nhận: ${feature.code}`; content.appendChild(code); }
-      const anchor = document.createElement('a'); anchor.href = `https://www.openstreetmap.org/node/${feature.osmId}`; anchor.target = '_blank'; anchor.rel = 'noopener noreferrer'; anchor.textContent = 'Xem đối tượng nguồn OSM'; content.appendChild(anchor);
+      const note = document.createElement('small'); note.textContent = feature.userAdded ? 'Do bạn tự thêm trên thiết bị này; chưa được xác minh hay chia sẻ với ai khác.' : feature.kind === 'signals' ? 'Đèn giao thông ghi nhận trên OSM; không có trạng thái đèn trực tiếp.' : 'Nguồn OSM · gần tuyến · chưa xác nhận chiều áp dụng/chức năng xử phạt.'; content.appendChild(note);
+      if (feature.code && !feature.userAdded) { const code = document.createElement('small'); code.textContent = `Mã ghi nhận: ${feature.code}`; content.appendChild(code); }
+      if (feature.userAdded) {
+        const removeBtn = document.createElement('button'); removeBtn.type = 'button'; removeBtn.className = 'road-popup-report'; removeBtn.textContent = 'Xóa biển bạn đã thêm';
+        removeBtn.addEventListener('click', event => { event.stopPropagation(); callbacks.current.onReportFeature(feature); });
+        content.appendChild(removeBtn);
+      } else {
+        const anchor = document.createElement('a'); anchor.href = `https://www.openstreetmap.org/node/${feature.osmId}`; anchor.target = '_blank'; anchor.rel = 'noopener noreferrer'; anchor.textContent = 'Xem đối tượng nguồn OSM'; content.appendChild(anchor);
+        const reportBtn = document.createElement('button'); reportBtn.type = 'button'; reportBtn.className = 'road-popup-report'; reportBtn.textContent = 'Báo sai, ẩn biển này';
+        reportBtn.addEventListener('click', event => { event.stopPropagation(); callbacks.current.onReportFeature(feature); });
+        content.appendChild(reportBtn);
+      }
       roadMarkers.current.push(new Marker({ element: el }).setLngLat([feature.lng, feature.lat]).setPopup(new Popup({ offset: 18, maxWidth: '280px' }).setDOMContent(content)).addTo(instance));
     }
     detailVisibility();
