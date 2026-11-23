@@ -194,6 +194,17 @@ uint16_t pointAhead(const State& s, float ahead, int32_t& outLat, int32_t& outLn
   outLng = (int32_t)lround(s.points[i - 1].lng + (double(s.points[i].lng) - s.points[i - 1].lng) * t);
   return i;
 }
+const char* maneuverLabel(const String& m) {
+  if (m == "left") return "LEFT";
+  if (m == "right") return "RIGHT";
+  if (m == "slight-left") return "SLGT-L";
+  if (m == "slight-right") return "SLGT-R";
+  if (m == "uturn") return "U-TURN";
+  if (m == "roundabout") return "R-ABOUT";
+  if (m == "arrive") return "ARRIVE";
+  if (m == "depart") return "START";
+  return "AHEAD";
+}
 const char* featureLabel(const String& kind) {
   if (kind == "speed-camera" || kind == "traffic-camera" || kind == "camera") return "CAM";
   if (kind == "signals") return "LIGHT";
@@ -208,9 +219,9 @@ const char* featureLabel(const String& kind) {
   return "WARN";
 }
 void drawMap(const State& s) {
-  display.drawFrame(0, 11, 128, 53);
+  display.drawFrame(0, 24, 128, 40);
   if (s.count < 2) return;
-  const int left = 3, right = 124, top = 14, bottom = 61;
+  const int left = 3, right = 124, top = 27, bottom = 61;
   const bool live = s.lastNav != 0;
   float fromStart = live ? s.total - float(s.remaining) : 0;
   if (fromStart < 0) fromStart = 0;
@@ -323,11 +334,20 @@ void render(const State& s) {
   }
   display.setFont(u8g2_font_5x7_tf);
   display.drawStr(0, 7, (String(s.speed) + "km/h").c_str());
+  const bool overLimit = s.speedLimit > 0 && s.speed >= s.speedLimit + 3;
+  const bool overFlash = overLimit && (millis() / 350) % 2 == 0;
   if (s.speedLimit > 0) {
-    display.drawFrame(110, 0, 18, 10);
     char limit[4];
     snprintf(limit, sizeof(limit), "%d", s.speedLimit);
-    display.drawStr(112, 7, limit);
+    if (overFlash) {
+      display.drawBox(109, 0, 19, 11);
+      display.setDrawColor(0);
+      display.drawStr(112, 7, limit);
+      display.setDrawColor(1);
+    } else {
+      display.drawFrame(110, 0, 18, 10);
+      display.drawStr(112, 7, limit);
+    }
   } else {
     display.drawStr(113, 7, "--");
   }
@@ -336,14 +356,22 @@ void render(const State& s) {
     snprintf(warning, sizeof(warning), "%s %dm", featureLabel(s.featureKind), s.featureM);
     display.drawStr(44, 7, warning);
   }
+  if (s.lastNav && !s.arrived) {
+    display.setFont(u8g2_font_7x13B_tf);
+    char instruction[24];
+    if (s.turn >= 1000) snprintf(instruction, sizeof(instruction), "%s %.1fkm", maneuverLabel(s.maneuver), float(s.turn) / 1000.0f);
+    else snprintf(instruction, sizeof(instruction), "%s %dm", maneuverLabel(s.maneuver), s.turn);
+    display.drawStr(2, 22, instruction);
+  }
   drawMap(s);
   if (s.arrived) {
-    display.drawBox(36, 24, 56, 13);
+    display.drawBox(36, 38, 56, 13);
     display.setDrawColor(0);
     display.setFont(u8g2_font_6x12_tf);
-    display.drawStr(42, 34, "ARRIVED");
+    display.drawStr(42, 48, "ARRIVED");
     display.setDrawColor(1);
   }
+  if (overFlash) display.drawFrame(0, 0, 128, 64);
   display.sendBuffer();
 #else
   // Serial-only by default; no screen hardware is assumed.

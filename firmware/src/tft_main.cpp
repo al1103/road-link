@@ -540,9 +540,12 @@ void render(const State& s) {
   ensureMap(cLat, cLng);
   drawMap(s, cLat, cLng, smoothMapHeading, extra);
   if (!sdReady || !mapBuf) {
-    canvas.setTextColor(GRAY);
+    const char* msg = !sdReady ? "NO SD CARD" : "NO MAP DATA";
     canvas.setFont(&fonts::Font2);
-    canvas.drawString(!sdReady ? "NO SD CARD" : "NO MAP DATA", 62, MAP_TOP + 6);
+    const int w = canvas.textWidth(msg);
+    canvas.fillRoundRect(62 - 4, MAP_TOP + 6 - 4, w + 8, 24, 6, DARK);
+    canvas.setTextColor(GRAY);
+    canvas.drawString(msg, 62, MAP_TOP + 6);
   }
   const bool over = s.speedLimit > 0 && s.speed >= s.speedLimit + 3;
 #if ROADLINK_ROUND
