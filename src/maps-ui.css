@@ -1548,31 +1548,3 @@
 
 .maps-ui .sheet-handle:hover::after,
 .maps-ui .sheet-handle:active::after { background: #bdc1c6; }
-
-@media (prefers-color-scheme: dark) {
-  .maps-ui .bottom-panel,
-  .maps-ui .route-editor,
-  .maps-ui .connection-panel,
-  .maps-ui .road-panel,
-  .maps-ui .search-results {
-    background: #1f2326;
-    color: #e8eaed;
-  }
-
-  .maps-ui .place-title-row h1,
-  .maps-ui .destinations-heading,
-  .maps-ui .section-label { color: #e8eaed; }
-
-  .maps-ui .explore-category,
-  .maps-ui .quick-destinations button,
-  .maps-ui .gmaps-cat-pill { background: #2a2f33; border-color: #3c4043; color: #e8eaed; }
-
-  .maps-ui .explore-category-icon { background: #3c4043; }
-  .maps-ui .search-box { background: #2a2f33; }
-  .maps-ui .search-box input { color: #e8eaed; }
-  .maps-ui .route-input-field { background: #2a2f33; color: #e8eaed; }
-  .maps-ui .place-address,
-  .maps-ui .quick-detail,
-  .maps-ui .explore-help { color: #bdc1c6; }
-  .maps-ui .place-actions .button.outlined { background: #2a2f33; border-color: #5f6368; color: #e8eaed; }
-}
