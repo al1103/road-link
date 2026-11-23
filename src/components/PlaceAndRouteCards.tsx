@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ArrowUpDown, Bike, CarFront, ChevronRight, Footprints, Heart, Layers2, LoaderCircle, LocateFixed, MapPin, Navigation2, Route as RouteIcon, Share2, TriangleAlert, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpDown, Bike, CarFront, ChevronRight, Footprints, Heart, Layers2, LoaderCircle, LocateFixed, MapPin, Navigation2, Plus, Route as RouteIcon, Share2, TriangleAlert, X } from 'lucide-react';
 import { formatDistance, formatDuration } from '../domain/geometry';
 import type { Place, Route } from '../domain/types';
 
@@ -24,14 +24,18 @@ export function PlaceCard({ place, saved, shareStatus, onRoute, onSave, onShare,
   </>;
 }
 
+const MAX_STOPS = 3;
 export function RouteInputs({
   origin,
   destination,
+  stops,
   editingTarget,
   query,
   onQueryChange,
   onStartEdit,
   onClearTarget,
+  onAddStop,
+  onRemoveStop,
   back,
   swap,
   searchOpen,
@@ -46,11 +50,14 @@ export function RouteInputs({
 }: {
   origin: string;
   destination: string;
-  editingTarget: 'origin' | 'destination' | null;
+  stops: Place[];
+  editingTarget: string | null;
   query: string;
   onQueryChange: (val: string) => void;
-  onStartEdit: (target: 'origin' | 'destination') => void;
+  onStartEdit: (target: string) => void;
   onClearTarget: (target: 'origin' | 'destination') => void;
+  onAddStop: () => void;
+  onRemoveStop: (index: number) => void;
   back: () => void;
   swap: () => void;
   searchOpen: boolean;
@@ -65,6 +72,8 @@ export function RouteInputs({
 }) {
   const isEditingOrigin = searchOpen && editingTarget === 'origin';
   const isEditingDest = searchOpen && editingTarget === 'destination';
+  const editingStopIndex = searchOpen && editingTarget?.startsWith('stop:') ? Number(editingTarget.slice(5)) : -1;
+  const addingNewStop = editingStopIndex === stops.length;
 
   return (
     <section className="route-editor-wrap" aria-label="Khung tìm tuyến đường">
@@ -137,6 +146,42 @@ export function RouteInputs({
             <span className="dot" /><span className="dot" /><span className="dot" />
           </div>
 
+          {/* Các điểm dừng (Stop rows) */}
+          {stops.map((stop, index) => {
+            const isEditingStop = editingStopIndex === index;
+            return (
+              <div key={index}>
+                <div className={`route-input-row ${isEditingStop ? 'focused' : ''}`}>
+                  <span className="route-stop-marker">{index + 1}</span>
+                  {isEditingStop ? (
+                    <form className="route-inline-form" onSubmit={e => { e.preventDefault(); onSubmitSearch?.(e); }}>
+                      <input autoFocus aria-label={`Tìm điểm dừng ${index + 1}`} className="route-input-field editable" placeholder="Chọn điểm dừng hoặc nhập địa chỉ..." value={query} onChange={e => onQueryChange(e.target.value)} />
+                      <button type="submit" className="route-submit-btn" aria-label="Tìm kiếm"><ArrowRight size={18} /></button>
+                    </form>
+                  ) : (
+                    <button type="button" className="route-input-field" onClick={() => onStartEdit(`stop:${index}`)} aria-label={`Đổi điểm dừng ${index + 1}`}>
+                      <span className="route-text-truncate">{stop.name}</span>
+                    </button>
+                  )}
+                  <button type="button" className="route-row-clear" onClick={() => onRemoveStop(index)} aria-label={`Xóa điểm dừng ${index + 1}`}><X size={16} /></button>
+                </div>
+                <div className="route-dots-line"><span className="dot" /><span className="dot" /><span className="dot" /></div>
+              </div>
+            );
+          })}
+          {addingNewStop && (
+            <div>
+              <div className="route-input-row focused">
+                <span className="route-stop-marker">{stops.length + 1}</span>
+                <form className="route-inline-form" onSubmit={e => { e.preventDefault(); onSubmitSearch?.(e); }}>
+                  <input autoFocus aria-label={`Tìm điểm dừng ${stops.length + 1}`} className="route-input-field editable" placeholder="Chọn điểm dừng hoặc nhập địa chỉ..." value={query} onChange={e => onQueryChange(e.target.value)} />
+                  <button type="submit" className="route-submit-btn" aria-label="Tìm kiếm"><ArrowRight size={18} /></button>
+                </form>
+              </div>
+              <div className="route-dots-line"><span className="dot" /><span className="dot" /><span className="dot" /></div>
+            </div>
+          )}
+
           {/* Hàng Điểm đến (Destination Row) */}
           <div className={`route-input-row ${isEditingDest ? 'focused' : ''}`}>
             <span className="route-dest-pin"><MapPin size={17} /></span>
@@ -201,6 +246,11 @@ export function RouteInputs({
           <ArrowUpDown size={20} />
         </button>
       </div>
+      {!searchOpen && stops.length < MAX_STOPS && (
+        <button type="button" className="route-add-stop" onClick={onAddStop}>
+          <Plus size={16} /><span>Thêm điểm dừng</span>
+        </button>
+      )}
 
       {/* Menu gợi ý / kết quả tìm kiếm ngay dưới khung Route Editor */}
       {searchOpen && (
@@ -261,12 +311,23 @@ type CardProps = {
   roadData: () => void;
 };
 
+function routeTag(route: Route, alternatives: Route[], durationFor: (dur: number, dist: number) => number): string | null {
+  if (alternatives.length < 2) return null;
+  const durations = alternatives.map(r => durationFor(r.duration, r.distance));
+  const fastestId = alternatives[durations.indexOf(Math.min(...durations))].id;
+  const shortestId = alternatives.reduce((best, r) => r.distance < best.distance ? r : best, alternatives[0]).id;
+  if (route.id === fastestId) return 'Nhanh nhất';
+  if (route.id === shortestId) return 'Ngắn nhất';
+  return null;
+}
+
 export function RoutePlannerCard(p: CardProps) {
   const durationFor = (dur: number, dist: number) => {
     if (p.transportMode === 'bike') return Math.round(dur * 1.05);
     if (p.transportMode === 'walk') return Math.round(dist / 1.25);
     return dur;
   };
+  const fastestDuration = p.alternatives.length ? Math.min(...p.alternatives.map(r => durationFor(r.duration, r.distance))) : 0;
 
   return <>
     <div className="planner-transport-modes">
@@ -303,6 +364,8 @@ export function RoutePlannerCard(p: CardProps) {
       <div className="route-choices" role="radiogroup" aria-label="Chọn tuyến đường">
         {p.alternatives.map((r, i) => {
           const dur = durationFor(r.duration, r.distance);
+          const delta = dur - fastestDuration;
+          const tag = routeTag(r, p.alternatives, durationFor) ?? (i === 0 ? 'Tuyến đề xuất' : null);
           return (
             <button key={r.id} role="radio" aria-checked={r.id === p.route!.id} className={`route-choice ${r.id === p.route!.id ? 'selected' : ''}`} onClick={() => p.select(r)}>
               <span className="route-radio" />
@@ -311,9 +374,10 @@ export function RoutePlannerCard(p: CardProps) {
                   <strong className="eta-green">{formatDuration(dur)}</strong>
                   <span className="route-eta" title="Giờ đến dự kiến">{arrivalClock(dur)}</span>
                   <span className="route-dist">({formatDistance(r.distance)})</span>
+                  {delta > 60 && <span className="route-delta">+{formatDuration(delta)}</span>}
                 </div>
                 <p className="route-summary-text">{r.summary || `Tuyến đường ${i + 1}`}</p>
-                {i === 0 && <span className="best-route-tag">Tuyến đề xuất</span>}
+                {tag && <span className="best-route-tag">{tag}</span>}
               </div>
               <ChevronRight size={18} className="route-choice-arrow" />
             </button>

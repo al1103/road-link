@@ -13,7 +13,7 @@ setWorkerUrl(workerUrl);
 setWorkerCount(1);
 const STYLE = import.meta.env.VITE_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/positron';
 const empty = (): FeatureCollection => ({ type: 'FeatureCollection', features: [] });
-type Props = { route: Route | null; alternatives: Route[]; destination: Place | null; onSelectRoute: (route: Route) => void; onPick: (point: Coordinate) => void; roadData: RoadData | null; position: Fix | null; focusPosition: boolean; positionStale: boolean; navigating: boolean; follow: boolean; onDrag: () => void; onTileError: () => void; recenter: number; mode3D: boolean; northReset: number; headingUp: number; focusPoint: Coordinate | null; showScale: boolean; onBearing: (bearing: number) => void };
+type Props = { route: Route | null; alternatives: Route[]; destination: Place | null; stops: Place[]; onSelectRoute: (route: Route) => void; onPick: (point: Coordinate) => void; roadData: RoadData | null; position: Fix | null; focusPosition: boolean; positionStale: boolean; navigating: boolean; follow: boolean; onDrag: () => void; onTileError: () => void; recenter: number; mode3D: boolean; northReset: number; headingUp: number; focusPoint: Coordinate | null; showScale: boolean; onBearing: (bearing: number) => void };
 function padding(instance: LibreMap) {
   const view = instance.getContainer().getBoundingClientRect(), sheet = document.querySelector('.bottom-panel')?.getBoundingClientRect();
   const header = document.querySelector('.topbar')?.getBoundingClientRect(), turn = document.querySelector('.turn-banner')?.getBoundingClientRect(), editor = document.querySelector('.route-editor')?.getBoundingClientRect();
@@ -36,7 +36,7 @@ function uncertainty(position: Fix): FeatureCollection<Polygon> {
   }
   return { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [coordinates] } }] };
 }
-export default function MapView({ route, alternatives, destination, onSelectRoute, onPick, roadData, position, focusPosition, positionStale, navigating, follow, onDrag, onTileError, recenter, mode3D, northReset, headingUp, focusPoint, showScale, onBearing }: Props) {
+export default function MapView({ route, alternatives, destination, stops, onSelectRoute, onPick, roadData, position, focusPosition, positionStale, navigating, follow, onDrag, onTileError, recenter, mode3D, northReset, headingUp, focusPoint, showScale, onBearing }: Props) {
   const element = useRef<HTMLDivElement>(null), map = useRef<LibreMap | null>(null), [ready, setReady] = useState(false);
   const callbacks = useRef({ onPick, onSelectRoute, onDrag, onTileError, onBearing, alternatives, mode3D }); callbacks.current = { onPick, onSelectRoute, onDrag, onTileError, onBearing, alternatives, mode3D };
   const positionRef = useRef(position); positionRef.current = position;
@@ -143,12 +143,16 @@ export default function MapView({ route, alternatives, destination, onSelectRout
     if (route) {
       for (const candidate of [route, ...alternatives.filter(r => r.id !== route.id)]) data.features.push({ type: 'Feature', properties: { id: candidate.id, selected: candidate.id === route.id }, geometry: { type: 'LineString', coordinates: candidate.coordinates.map(p => [p.lng, p.lat]) } });
       const from = route.coordinates[0], to = route.coordinates.at(-1)!;
-      routePins.current = [new Marker({ element: pin('route-origin-marker', '<span></span>') }).setLngLat([from.lng, from.lat]).addTo(instance), new Marker({ element: pin('destination-marker', '<span></span>'), anchor: 'bottom' }).setLngLat([to.lng, to.lat]).addTo(instance)];
+      routePins.current = [
+        new Marker({ element: pin('route-origin-marker', '<span></span>') }).setLngLat([from.lng, from.lat]).addTo(instance),
+        ...stops.map((stop, index) => new Marker({ element: pin('route-stop-marker-pin', `<span>${index + 1}</span>`), anchor: 'bottom' }).setLngLat([stop.lng, stop.lat]).addTo(instance)),
+        new Marker({ element: pin('destination-marker', '<span></span>'), anchor: 'bottom' }).setLngLat([to.lng, to.lat]).addTo(instance)
+      ];
       const bounds = new LngLatBounds(); for (const point of route.coordinates) bounds.extend([point.lng, point.lat]);
       instance.fitBounds(bounds, { padding: padding(instance), maxZoom: 16, pitch: callbacks.current.mode3D ? 55 : 0, bearing: callbacks.current.mode3D ? instance.getBearing() : 0, duration: 0 });
     }
     updateSource(instance, 'roadlink-routes', data);
-  }, [route, alternatives, ready]);
+  }, [route, alternatives, stops, ready]);
   useEffect(() => {
     const instance = map.current; if (!instance || !ready) return;
     placeMarker.current?.remove(); placeMarker.current = null;
@@ -177,7 +181,7 @@ export default function MapView({ route, alternatives, destination, onSelectRout
     if (!position) { positionMarker.current?.remove(); positionMarker.current = null; course.current = null; initialPositionCentered.current = false; updateSource(instance, 'roadlink-accuracy', empty()); return; }
     updateSource(instance, 'roadlink-accuracy', uncertainty(position));
     for (const layer of ['roadlink-accuracy-fill', 'roadlink-accuracy-line']) instance.setPaintProperty(layer, layer.endsWith('fill') ? 'fill-color' : 'line-color', positionStale ? '#8d99a5' : '#1a73e8');
-    if (!positionMarker.current) positionMarker.current = new Marker({ element: pin('position-marker navigation-position', '<span class="position-halo"></span><svg class="position-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 35 20 27 5 35Z"/></svg>') }).setLngLat([position.lng, position.lat]).addTo(instance);
+    if (!positionMarker.current) positionMarker.current = new Marker({ element: pin(`position-marker navigation-position ${navigating && mode3D ? 'use-car' : ''}`, '<span class="position-halo"></span><svg class="position-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 35 20 27 5 35Z"/></svg><svg class="position-car" viewBox="0 0 40 40" aria-hidden="true"><rect class="car-body" x="11" y="5" width="18" height="29" rx="6"/><rect class="car-glass" x="14.5" y="10.5" width="11" height="7.5" rx="2.2"/><rect class="car-glass car-glass-rear" x="14.5" y="22" width="11" height="6" rx="2"/><rect class="car-mirror" x="7.5" y="12" width="3" height="6.5" rx="1.4"/><rect class="car-mirror" x="29.5" y="12" width="3" height="6.5" rx="1.4"/></svg>') }).setLngLat([position.lng, position.lat]).addTo(instance);
     else positionMarker.current.setLngLat([position.lng, position.lat]);
     const el = positionMarker.current.getElement(), known = !positionStale && position.headingAvailable !== false && Number.isFinite(position.heading);
     if (known) {
@@ -199,5 +203,8 @@ export default function MapView({ route, alternatives, destination, onSelectRout
   useEffect(() => {
     if (map.current && ready && position && recenter > lastCentered.current) { lastCentered.current = recenter; centerOn(map.current, position, locationZoom(position.accuracy)); }
   }, [recenter, position, ready]);
+  useEffect(() => {
+    positionMarker.current?.getElement().classList.toggle('use-car', navigating && mode3D);
+  }, [navigating, mode3D]);
   return <div ref={element} className="map-canvas" data-basemap="openfreemap-osm" data-map-ready="false" data-mode={mode3D ? '3d' : '2d'} aria-label="Bản đồ OpenStreetMap" role="img" />;
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, Banknote, BedDouble, Bluetooth, BluetoothConnected, CarFront, Check, ChevronRight, Clock3, Coffee, Compass, Flag, Fuel, Heart, Layers2, LocateFixed, MapPin, Navigation2, Pause, Play, Route as RouteIcon, Search, ShoppingBasket, Signal, SlidersHorizontal, Sparkles, UtensilsCrossed, Volume2, VolumeX, X, LoaderCircle, TriangleAlert } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, Banknote, BedDouble, Bluetooth, BluetoothConnected, Briefcase, CarFront, Check, ChevronRight, Clock3, Coffee, Compass, Flag, Fuel, Heart, House, Layers2, LocateFixed, MapPin, Navigation2, Pause, Pencil, Play, Route as RouteIcon, Search, ShoppingBasket, Signal, SlidersHorizontal, Sparkles, UtensilsCrossed, Volume2, VolumeX, X, LoaderCircle, TriangleAlert } from 'lucide-react';
 import MapView from './components/MapView';
 import ManeuverIcon from './components/ManeuverIcon';
 import BluetoothPanel from './components/BluetoothPanel';
@@ -51,7 +51,8 @@ export default function App() {
   const [route, setRoute] = useState<Route | null>(null);
   const [alternatives,setAlternatives]=useState<Route[]>([]);
   const [originOverride,setOriginOverride]=useState<Place|null>(null);
-  const [searchTarget,setSearchTarget]=useState<'origin'|'destination'>('destination');
+  const [stops,setStops]=useState<Place[]>([]);
+  const [searchTarget,setSearchTarget]=useState<string>('destination');
   const [roadAlert,setRoadAlert]=useState<RoadAlert|null>(null);
   const [loading, setLoading] = useState(false);
   const [searchError,setSearchError]=useState<string|null>(null);
@@ -64,6 +65,9 @@ export default function App() {
   const [navigationError,setNavigationError]=useState<string|null>(null);
   const [voiceUnavailable,setVoiceUnavailable]=useState(false);
   const [savedPlaces,setSavedPlaces]=useState<Place[]>(()=>{const value=stored<unknown>('roadlink.savedPlaces',[]);return Array.isArray(value)?value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.detail==='string'&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lng)&&Math.abs(p.lng)<=180):[];});
+  function isPlace(p:unknown):p is Place{return !!p&&typeof p==='object'&&typeof (p as Place).id==='string'&&typeof (p as Place).name==='string'&&typeof (p as Place).detail==='string'&&Number.isFinite((p as Place).lat)&&Math.abs((p as Place).lat)<=90&&Number.isFinite((p as Place).lng)&&Math.abs((p as Place).lng)<=180;}
+  const [home,setHome]=useState<Place|null>(()=>{const v=stored<unknown>('roadlink.home',null);return isPlace(v)?v:null;});
+  const [work,setWork]=useState<Place|null>(()=>{const v=stored<unknown>('roadlink.work',null);return isPlace(v)?v:null;});
   const [recentPlaces,setRecentPlaces]=useState<Place[]>(()=>{const value=stored<unknown>('roadlink.recentSearches',[]);return Array.isArray(value)?value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'):[];});
   const [routeError, setRouteError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Place | null>(null);
@@ -191,7 +195,7 @@ export default function App() {
     const feature=road.data?.features.find(f=>f.along>=progress.along);
     link.enqueue([navMessage(route, progress, fix, ++sequence.current,{enabled:road.enabled,limit,feature})], 'nav');
   }, [progress, fix, route, navigating, mode, ble.status,road.data,road.enabled]);
-  const plan = useCallback(async (place: Place, start = false, origin = originOverride??(canPreviewFrom(location.fix)?location.fix:null), profile: TransportProfile = transportMode) => {
+  const plan = useCallback(async (place: Place, start = false, origin = originOverride??(canPreviewFrom(location.fix)?location.fix:null), profile: TransportProfile = transportMode, viaStops: Place[] = stops) => {
     routeAbort.current?.abort();
     if(!origin){setSelected(place);setMode('preview');setRoute(null);setAlternatives([]);setLoading(false);setRouteError(null);setPendingGPS(start?'navigation':'preview');setSearchOpen(false);void location.start();return;}
     setPendingGPS(null);
@@ -199,12 +203,12 @@ export default function App() {
     setLoading(true); setRouteError(null); setSearchError(null);setShareStatus(null);setNavigationError(null); setSearchOpen(false); setDetails(false);
     setSelected(place);setAlternatives([]); setRoute(null); setProgress(null); setMode('preview');
     try {
-      const routes = await fetchRoutes(origin, place, controller.signal, [], profile);
+      const routes = await fetchRoutes(origin, place, controller.signal, viaStops.map(s=>({lat:s.lat,lng:s.lng})), profile);
       if (controller.signal.aborted) return;
       setAlternatives(routes);setRoute(routes[0]); setMode(start ? 'navigating' : 'preview'); setFollow(true);
     } catch (err) { if (!controller.signal.aborted) setRouteError(friendlyError(err)); }
     finally { if (!controller.signal.aborted) setLoading(false); }
-  }, [location.fix,originOverride,transportMode]);
+  }, [location.fix,originOverride,transportMode,stops]);
   const transportRef = useRef(transportMode);
   useEffect(() => {
     if (transportRef.current === transportMode) return;
@@ -311,7 +315,7 @@ export default function App() {
   function stop() {
     nearbySearch.current=false;
     routeAbort.current?.abort(); setLoading(false); setRerouting(false); setPendingGPS(null);
-    setMode('explore');setOriginOverride(null);setAlternatives([]);setRoadAlert(null);setQuery('');setSearchTarget('destination'); setRoute(null); setProgress(null); setSelected(null); setSearchError(null);setNearbyNote(null);setShareStatus(null);setNavigationError(null); setRouteError(null); setDetails(false); silence();
+    setMode('explore');setOriginOverride(null);setStops([]);setAlternatives([]);setRoadAlert(null);setQuery('');setSearchTarget('destination'); setRoute(null); setProgress(null); setSelected(null); setSearchError(null);setNearbyNote(null);setShareStatus(null);setNavigationError(null); setRouteError(null); setDetails(false); silence();
     link.enqueue([{ v: 1, type: 'stop' }], 'control');
   }
   function startReal() {
@@ -327,13 +331,32 @@ export default function App() {
     setRecentPlaces(recent);save('roadlink.recentSearches',recent);
     nearbySearch.current=false;categorySearch.current=false;setNearbyNote(null);
     setPendingGPS(null);setShareStatus(null);setSearchError(null);setSearchOpen(false);setQuery(place.name);setSearched(false);
+    if(searchTarget==='home'||searchTarget==='work'){
+      if(searchTarget==='home'){setHome(place);save('roadlink.home',place);} else {setWork(place);save('roadlink.work',place);}
+      setSearchTarget('destination');setQuery('');
+      return;
+    }
     if(searchTarget==='origin'){setOriginOverride(place);setSearchTarget('destination');if(selected)void plan(selected,false,place);return;}
+    if(searchTarget.startsWith('stop:')){
+      const index=Number(searchTarget.slice(5));
+      const nextStops=index<stops.length?stops.map((s,i)=>i===index?place:s):[...stops,place];
+      setStops(nextStops);setSearchTarget('destination');
+      if(selected)void plan(selected,false,originOverride??(canPreviewFrom(location.fix)?location.fix:null),transportMode,nextStops);
+      return;
+    }
     if(mode==='preview'){void plan(place);return;}
     routeAbort.current?.abort();setLoading(false);setRouteError(null);setSelected(place);setRoute(null);setAlternatives([]);setMode('place');
   }
-  function editEndpoint(target:'origin'|'destination'){nearbySearch.current=false;setNearbyNote(null);setSearchTarget(target);setQuery('');setSearched(false);setSearchOpen(true);}
+  function editEndpoint(target:string){nearbySearch.current=false;setNearbyNote(null);setSearchTarget(target);setQuery('');setSearched(false);setSearchOpen(true);}
+  function setHomeWorkTarget(target:'home'|'work'){editEndpoint(target);}
+  function addStop(){editEndpoint(`stop:${stops.length}`);}
+  function removeStop(index:number){
+    const nextStops=stops.filter((_,i)=>i!==index);
+    setStops(nextStops);
+    if(selected)void plan(selected,false,originOverride??(canPreviewFrom(location.fix)?location.fix:null),transportMode,nextStops);
+  }
   function useMyOrigin(){setOriginOverride(null);setSearchTarget('destination');setSearchOpen(false);if(!location.fix)void location.start();if(selected)void plan(selected,false,location.fix??null);}
-  function swapEndpoints(){if(!selected)return;const from=originOverride??location.fix;if(!from){editEndpoint('origin');return;}const destination:Place={...from,id:`coord:${from.lat},${from.lng}`,name:originOverride?.name??'Vị trí của bạn',detail:originOverride?.detail??'Điểm đã chọn trên bản đồ'};setOriginOverride(selected);void plan(destination,false,selected);}
+  function swapEndpoints(){if(!selected)return;const from=originOverride??location.fix;if(!from){editEndpoint('origin');return;}const destination:Place={...from,id:`coord:${from.lat},${from.lng}`,name:originOverride?.name??'Vị trí của bạn',detail:originOverride?.detail??'Điểm đã chọn trên bản đồ'};const reversedStops=[...stops].reverse();setOriginOverride(selected);setStops(reversedStops);void plan(destination,false,selected,transportMode,reversedStops);}
   async function sharePlace(){if(!selected)return;const text=`${selected.name}\n${selected.detail}\n${selected.lat}, ${selected.lng}`;try{if(navigator.share)await navigator.share({title:selected.name,text});else{await navigator.clipboard.writeText(text);setShareStatus('Đã sao chép địa điểm.');}}catch(error){if(!(error instanceof DOMException&&error.name==='AbortError'))setShareStatus('Chưa chia sẻ được. Bạn có thể sao chép tọa độ trên thẻ địa điểm.');}}
   function toggleFavorite() { if (!selected) return; const next = favorites.includes(selected.id) ? favorites.filter(x => x !== selected.id) : [...favorites, selected.id]; setFavorites(next); save('roadlink.favorites', next); const places=next.includes(selected.id)?[...savedPlaces.filter(p=>p.id!==selected.id),selected]:savedPlaces.filter(p=>p.id!==selected.id);setSavedPlaces(places);save('roadlink.savedPlaces',places); }
   function exportFavorites(){const blob=new Blob([JSON.stringify(savedPlaces,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='roadlink-favorites.json';link.click();URL.revokeObjectURL(url);}
@@ -344,7 +367,7 @@ export default function App() {
   const remainingSeconds = baseSeconds;
   const eta = new Date(Date.now() + remainingSeconds * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   return <main ref={appElement} className={`app maps-ui ${searchOpen?'is-searching':''} ${navigating ? 'is-navigating' : ''} ${mode === 'explore' ? 'is-exploring' : ''} ${mode==='preview'?'is-routing':''} ${mode==='place'?'is-selecting':''}`}>
-    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} focusPoint={focusPoint} showScale={showScale} onBearing={setMapBearing}/>
+    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} stops={stops} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} focusPoint={focusPoint} showScale={showScale} onBearing={setMapBearing}/>
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
@@ -415,6 +438,7 @@ export default function App() {
       <RouteInputs
         origin={originOverride?.name ?? (location.fix ? 'Vị trí của bạn' : 'Chọn điểm đi')}
         destination={selected?.name ?? 'Chọn điểm đến'}
+        stops={stops}
         editingTarget={searchTarget}
         query={query}
         onQueryChange={val => { nearbySearch.current=false; setNearbyNote(null); if(!val){searchAbort.current?.abort();setSearching(false);setResults([]);} setQuery(val); setSearched(false); }}
@@ -423,11 +447,14 @@ export default function App() {
           if (target === 'origin') useMyOrigin();
           else editEndpoint('destination');
         }}
+        onAddStop={addStop}
+        onRemoveStop={removeStop}
         back={() => {
           routeAbort.current?.abort();
           setLoading(false);
           setRoute(null);
           setAlternatives([]);
+          setStops([]);
           setMode('place');
         }}
         swap={swapEndpoints}
@@ -503,6 +530,22 @@ export default function App() {
               <span>{c.label}</span>
             </button>
           ))}
+        </div>
+        <div className="home-work-row">
+          <div className="home-work-item">
+            <button type="button" className="home-work-btn" onClick={() => home ? choosePlace(home) : setHomeWorkTarget('home')}>
+              <span className="hw-icon"><House size={20} /></span>
+              <span className="hw-text"><strong>Nhà</strong><small>{home ? home.name : 'Đặt địa chỉ nhà'}</small></span>
+            </button>
+            {home && <button type="button" className="hw-edit" aria-label="Đổi địa chỉ nhà" onClick={() => setHomeWorkTarget('home')}><Pencil size={14} /></button>}
+          </div>
+          <div className="home-work-item">
+            <button type="button" className="home-work-btn" onClick={() => work ? choosePlace(work) : setHomeWorkTarget('work')}>
+              <span className="hw-icon"><Briefcase size={20} /></span>
+              <span className="hw-text"><strong>Cơ quan</strong><small>{work ? work.name : 'Đặt địa chỉ cơ quan'}</small></span>
+            </button>
+            {work && <button type="button" className="hw-edit" aria-label="Đổi địa chỉ cơ quan" onClick={() => setHomeWorkTarget('work')}><Pencil size={14} /></button>}
+          </div>
         </div>
         <h2 className="destinations-heading saved-heading">Gần bạn</h2>
         {!location.fix ? (
