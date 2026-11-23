@@ -347,7 +347,7 @@ export default function App() {
     if(mode==='preview'){void plan(place);return;}
     routeAbort.current?.abort();setLoading(false);setRouteError(null);setSelected(place);setRoute(null);setAlternatives([]);setMode('place');
   }
-  function editEndpoint(target:string){nearbySearch.current=false;setNearbyNote(null);setSearchTarget(target);setQuery('');setSearched(false);setSearchOpen(true);}
+  function editEndpoint(target:string){nearbySearch.current=false;setNearbyNote(null);setSearchTarget(target);setQuery('');setSearched(false);setSearchOpen(true);searchInputRef.current?.focus();}
   function setHomeWorkTarget(target:'home'|'work'){editEndpoint(target);}
   function addStop(){editEndpoint(`stop:${stops.length}`);}
   function removeStop(index:number){
