@@ -284,5 +284,7 @@ export async function fetchRoutes(origin: Coordinate, destination: Place, signal
 export function friendlyError(error: unknown): string {
   if (error instanceof Error && error.name === 'AbortError') return 'Yêu cầu đã được hủy.';
   if (error instanceof Error && error.name === 'TimeoutError') return 'Dịch vụ phản hồi chậm. Hãy thử lại khi mạng ổn định hơn.';
-  return error instanceof Error && error.message && !/fetch|network|load failed/i.test(error.message) ? error.message : 'Không có kết nối mạng. Tuyến đã tải vẫn được giữ; hãy kiểm tra mạng rồi thử lại.';
+  if (error instanceof Error && error.message && !/fetch|network|load failed/i.test(error.message)) return error.message;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return 'Không có kết nối mạng. Tuyến đã tải vẫn được giữ; hãy kiểm tra mạng rồi thử lại.';
+  return 'Thiết bị vẫn có mạng nhưng chưa kết nối được dịch vụ bản đồ — dịch vụ công khai có thể đang quá tải hoặc bị mạng hiện tại chặn. Thử lại sau ít phút hoặc đổi sang mạng khác.';
 }
