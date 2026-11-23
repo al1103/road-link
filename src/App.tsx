@@ -15,7 +15,7 @@ import { bearing, cumulative, distance, formatDistance, formatDuration, pointAt 
 import { Navigator } from './domain/navigation';
 import type { Coordinate, Fix, Place, Progress, Route } from './domain/types';
 import { useLocation } from './hooks/useLocation';
-import { categoryForQuery,fetchRoute,fetchRoutes, friendlyError, nearbyCategory, nearbyPlaces, searchPlaces, type TransportProfile } from './services/api';
+import { categoryForQuery,fetchRoute,fetchRoutes, friendlyError, NEARBY_RADIUS_M, nearbyCategory, nearbyPlaces, searchPlaces, type TransportProfile } from './services/api';
 import { BluetoothLink, type BluetoothState } from './services/bluetooth';
 import { navMessage, routeMessages } from './services/protocol';
 import { say, silence } from './services/voice';
@@ -296,7 +296,7 @@ export default function App() {
       const list = await nearbyCategory(origin.lat, origin.lng, category, controller.signal);
       if (controller.signal.aborted) return;
       setResults(list);
-      if (!list.length) setNearbyNote(`Không có ${label.toLowerCase()} trong 20 km quanh vị trí này.`);
+      if (!list.length) setNearbyNote(`Không có ${label.toLowerCase()} trong ${NEARBY_RADIUS_M / 1000} km quanh vị trí này.`);
     } catch (error) {
       if (!controller.signal.aborted) setSearchError(friendlyError(error));
     } finally {

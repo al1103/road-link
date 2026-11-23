@@ -1,4 +1,5 @@
 import { cumulative, distance, projectOnRoute } from '../domain/geometry';
+import { createCache } from './cache';
 import type { Coordinate, Maneuver, OsmRouteEdge, Place, Route, RouteStep } from '../domain/types';
 const ROUTER = (import.meta.env.VITE_ROUTER_URL || 'https://router.project-osrm.org').replace(/\/$/, '');
 const ROUTER_BIKE = (import.meta.env.VITE_ROUTER_BIKE_URL || 'https://routing.openstreetmap.de/routed-bike').replace(/\/$/, '');
@@ -6,8 +7,16 @@ const ROUTER_FOOT = (import.meta.env.VITE_ROUTER_FOOT_URL || 'https://routing.op
 const GEOCODER = (import.meta.env.VITE_GEOCODER_URL || 'https://nominatim.openstreetmap.org').replace(/\/$/, '');
 const OVERPASS = (import.meta.env.VITE_OVERPASS_URL || (import.meta.env.DEV ? '/api/interpreter' : 'https://overpass-api.de/api/interpreter')).replace(/\/$/, '');
 const OVERPASS_FR = (import.meta.env.VITE_OVERPASS_FR_URL || (import.meta.env.DEV ? '/api/overpass-fr' : 'https://overpass.openstreetmap.fr/api/interpreter')).replace(/\/$/, '');
-const searchCache = new Map<string, Place[]>();
-const nearbyCache = new Map<string, Place[]>();
+const OVERPASS_TIMEOUT_MS = 3500;
+const OVERPASS_FR_TIMEOUT_MS = 14000;
+export const NEARBY_RADIUS_M = 20000;
+const NEARBY_RESULT_LIMIT = 8;
+const CATEGORY_RESULT_LIMIT = 15;
+const SEARCH_CACHE_TTL_MS = 10 * 60 * 1000;
+const NEARBY_CACHE_TTL_MS = 5 * 60 * 1000;
+const CACHE_MAX_ENTRIES = 200;
+const searchCache = createCache<Place[]>(CACHE_MAX_ENTRIES, SEARCH_CACHE_TTL_MS);
+const nearbyCache = createCache<Place[]>(CACHE_MAX_ENTRIES, NEARBY_CACHE_TTL_MS);
 let searchQueue: Promise<unknown> = Promise.resolve();
 let lastSearch = 0;
 async function getJson(url: string, signal?: AbortSignal, timeoutMs = 16000): Promise<unknown> {
@@ -74,16 +83,51 @@ export async function searchPlaces(query: string, signal?: AbortSignal, near?: S
   searchQueue = request.catch(() => undefined);
   return request;
 }
-const NEARBY_LABELS: Record<string, string> = {
-  restaurant: 'Nhà hàng', cafe: 'Cà phê', fast_food: 'Đồ ăn nhanh', fuel: 'Cây xăng',
-  hotel: 'Khách sạn', atm: 'ATM', bank: 'Ngân hàng', pharmacy: 'Nhà thuốc',
-  hospital: 'Bệnh viện', marketplace: 'Chợ', supermarket: 'Siêu thị',
-  convenience: 'Tạp hóa', bakery: 'Tiệm bánh', mall: 'Trung tâm thương mại',
-  guest_house: 'Khách sạn', motel: 'Khách sạn', hostel: 'Khách sạn'
-};
-const ALL_NEARBY_TAGS = ['["amenity"~"^(restaurant|cafe|fast_food|fuel|hotel|atm|bank|pharmacy|hospital|marketplace)$"]', '["shop"~"^(supermarket|convenience|bakery|mall)$"]', '["tourism"~"^(hotel|guest_house|motel|hostel)$"]'];
-function nearbyQuery(lat: number, lng: number, tags: string[]): string {
-  return `[out:json][timeout:15];(${tags.flatMap(tag => [`node(around:20000,${lat},${lng})${tag};`, `way(around:20000,${lat},${lng})${tag};`]).join('')});out center 60;`;
+// Single source of truth for OSM facets: each maps one (osmKey,value) pair to a
+// display label and, where searchable from the category pills, a category key.
+// ALL_NEARBY_TAGS, NEARBY_LABELS and CATEGORY_TAGS are all derived from this list
+// so the "general nearby" and "search by category" queries can't drift apart.
+type OsmKey = 'amenity' | 'shop' | 'tourism';
+type Facet = { osmKey: OsmKey; value: string; label: string; category?: string };
+const FACETS: Facet[] = [
+  { osmKey: 'amenity', value: 'restaurant', label: 'Nhà hàng', category: 'restaurant' },
+  { osmKey: 'amenity', value: 'fast_food', label: 'Đồ ăn nhanh', category: 'restaurant' },
+  { osmKey: 'amenity', value: 'cafe', label: 'Cà phê', category: 'cafe' },
+  { osmKey: 'amenity', value: 'fuel', label: 'Cây xăng', category: 'fuel' },
+  { osmKey: 'amenity', value: 'hotel', label: 'Khách sạn', category: 'hotel' },
+  { osmKey: 'amenity', value: 'atm', label: 'ATM', category: 'atm' },
+  { osmKey: 'amenity', value: 'bank', label: 'Ngân hàng', category: 'atm' },
+  { osmKey: 'amenity', value: 'pharmacy', label: 'Nhà thuốc' },
+  { osmKey: 'amenity', value: 'hospital', label: 'Bệnh viện' },
+  { osmKey: 'amenity', value: 'marketplace', label: 'Chợ' },
+  { osmKey: 'shop', value: 'supermarket', label: 'Siêu thị', category: 'shop' },
+  { osmKey: 'shop', value: 'convenience', label: 'Tạp hóa', category: 'shop' },
+  { osmKey: 'shop', value: 'grocery', label: 'Siêu thị', category: 'shop' },
+  { osmKey: 'shop', value: 'greengrocer', label: 'Siêu thị', category: 'shop' },
+  { osmKey: 'shop', value: 'bakery', label: 'Tiệm bánh' },
+  { osmKey: 'shop', value: 'mall', label: 'Trung tâm thương mại', category: 'shop' },
+  { osmKey: 'tourism', value: 'hotel', label: 'Khách sạn', category: 'hotel' },
+  { osmKey: 'tourism', value: 'guest_house', label: 'Khách sạn', category: 'hotel' },
+  { osmKey: 'tourism', value: 'motel', label: 'Khách sạn', category: 'hotel' },
+  { osmKey: 'tourism', value: 'hostel', label: 'Khách sạn', category: 'hotel' }
+];
+const NEARBY_LABELS: Record<string, string> = Object.fromEntries(FACETS.map(f => [f.value, f.label]));
+function tagFor(osmKey: OsmKey, values: string[]): string {
+  const unique = [...new Set(values)];
+  return unique.length === 1 ? `["${osmKey}"="${unique[0]}"]` : `["${osmKey}"~"^(${unique.join('|')})$"]`;
+}
+function tagsForFacets(facets: Facet[]): string[] {
+  const byKey = new Map<OsmKey, string[]>();
+  for (const f of facets) byKey.set(f.osmKey, [...(byKey.get(f.osmKey) ?? []), f.value]);
+  return [...byKey.entries()].map(([key, values]) => tagFor(key, values));
+}
+const ALL_NEARBY_TAGS = tagsForFacets(FACETS);
+const CATEGORY_KEYS = [...new Set(FACETS.map(f => f.category).filter((c): c is string => !!c))];
+const CATEGORY_TAGS: Record<string, string[]> = Object.fromEntries(
+  CATEGORY_KEYS.map(category => [category, tagsForFacets(FACETS.filter(f => f.category === category))])
+);
+function nearbyQuery(lat: number, lng: number, tags: string[], radiusM: number): string {
+  return `[out:json][timeout:15];(${tags.flatMap(tag => [`node(around:${radiusM},${lat},${lng})${tag};`, `way(around:${radiusM},${lat},${lng})${tag};`]).join('')});out center 60;`;
 }
 function mapNearby(data: unknown): Place[] {
   if (!record(data) || !Array.isArray(data.elements)) throw new Error('Không tải được địa điểm gần đây.');
@@ -100,13 +144,14 @@ function mapNearby(data: unknown): Place[] {
   });
 }
 async function fetchNearbyQuery(query: string, signal?: AbortSignal): Promise<Place[]> {
-  const hosts = [{ url: OVERPASS, timeout: 3500 }, { url: OVERPASS_FR, timeout: 14000 }];
+  const hosts = [{ name: 'primary', url: OVERPASS, timeout: OVERPASS_TIMEOUT_MS }, { name: 'fr-mirror', url: OVERPASS_FR, timeout: OVERPASS_FR_TIMEOUT_MS }];
   let lastError: unknown = null;
   for (const host of hosts) {
     try {
       return mapNearby(await getJson(`${host.url}?data=${encodeURIComponent(query)}`, signal, host.timeout));
     } catch (error) {
       if (signal?.aborted) throw error;
+      if (import.meta.env.DEV) console.warn(`[overpass] host "${host.name}" (${host.url}) failed:`, error);
       lastError = error;
     }
   }
@@ -117,41 +162,36 @@ function nearbyPlacesFrom(places: Place[], lat: number, lng: number, limit: numb
     .sort((a, b) => distance(a, { lat, lng }) - distance(b, { lat, lng }))
     .slice(0, limit);
 }
-export async function nearbyPlaces(lat: number, lng: number, signal?: AbortSignal): Promise<Place[]> {
-  const key = `${lat.toFixed(2)},${lng.toFixed(2)}`;
+export async function nearbyPlaces(lat: number, lng: number, signal?: AbortSignal, radiusM: number = NEARBY_RADIUS_M): Promise<Place[]> {
+  const key = `${lat.toFixed(2)},${lng.toFixed(2)}@${radiusM}`;
   const cached = nearbyCache.get(key);
   if (cached) return cached;
-  const unique = nearbyPlacesFrom(await fetchNearbyQuery(nearbyQuery(lat, lng, ALL_NEARBY_TAGS), signal), lat, lng, 8);
+  const unique = nearbyPlacesFrom(await fetchNearbyQuery(nearbyQuery(lat, lng, ALL_NEARBY_TAGS, radiusM), signal), lat, lng, NEARBY_RESULT_LIMIT);
   nearbyCache.set(key, unique);
   return unique;
 }
-const CATEGORY_TAGS: Record<string, string[]> = {
-  restaurant: ['["amenity"~"^(restaurant|fast_food)$"]'],
-  fuel: ['["amenity"="fuel"]'],
-  cafe: ['["amenity"="cafe"]'],
-  hotel: ['["tourism"~"^(hotel|guest_house|motel|hostel)$"]', '["amenity"="hotel"]'],
-  atm: ['["amenity"="atm"]', '["amenity"="bank"]'],
-  shop: ['["shop"~"^(convenience|supermarket|grocery|greengrocer|mall)$"]']
+const CATEGORY_ALIASES_SOURCE: Record<string, string[]> = {
+  fuel: ['cây xăng', 'cay xang', 'xăng', 'trạm xăng'],
+  restaurant: ['nhà hàng', 'nha hang', 'quán ăn', 'quan an'],
+  cafe: ['cà phê', 'ca phe', 'cafe', 'quán cà phê'],
+  hotel: ['khách sạn', 'khach san', 'hotel'],
+  atm: ['atm', 'ngân hàng', 'ngan hang'],
+  shop: ['tạp hóa', 'tap hoa', 'siêu thị', 'sieu thi', 'cửa hàng tiện lợi', 'minimart']
 };
-const CATEGORY_ALIASES: Record<string, string> = {
-  'cây xăng': 'fuel', 'cay xang': 'fuel', 'xăng': 'fuel', 'trạm xăng': 'fuel',
-  'nhà hàng': 'restaurant', 'nha hang': 'restaurant', 'quán ăn': 'restaurant', 'quan an': 'restaurant',
-  'cà phê': 'cafe', 'ca phe': 'cafe', 'cafe': 'cafe', 'quán cà phê': 'cafe',
-  'khách sạn': 'hotel', 'khach san': 'hotel', 'hotel': 'hotel',
-  'atm': 'atm', 'ngân hàng': 'atm', 'ngan hang': 'atm',
-  'tạp hóa': 'shop', 'tap hoa': 'shop', 'siêu thị': 'shop', 'sieu thi': 'shop'
-};
+const CATEGORY_ALIASES: Record<string, string> = Object.fromEntries(
+  Object.entries(CATEGORY_ALIASES_SOURCE).flatMap(([category, aliases]) => aliases.map(alias => [alias, category]))
+);
 export function categoryForQuery(text: string): string | null {
   return CATEGORY_ALIASES[text.trim().toLocaleLowerCase('vi')] ?? null;
 }
-export async function nearbyCategory(lat: number, lng: number, categoryOrLabel: string, signal?: AbortSignal): Promise<Place[]> {
+export async function nearbyCategory(lat: number, lng: number, categoryOrLabel: string, signal?: AbortSignal, radiusM: number = NEARBY_RADIUS_M): Promise<Place[]> {
   const catKey = categoryForQuery(categoryOrLabel) ?? categoryOrLabel;
   const tags = CATEGORY_TAGS[catKey];
   if (!tags) return [];
-  const key = `${catKey}:${lat.toFixed(2)},${lng.toFixed(2)}`;
+  const key = `${catKey}:${lat.toFixed(2)},${lng.toFixed(2)}@${radiusM}`;
   const cached = nearbyCache.get(key);
   if (cached) return cached;
-  const unique = nearbyPlacesFrom(await fetchNearbyQuery(nearbyQuery(lat, lng, tags), signal), lat, lng, 15);
+  const unique = nearbyPlacesFrom(await fetchNearbyQuery(nearbyQuery(lat, lng, tags, radiusM), signal), lat, lng, CATEGORY_RESULT_LIMIT);
   if (unique.length) nearbyCache.set(key, unique);
   return unique;
 }
