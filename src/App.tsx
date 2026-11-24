@@ -20,6 +20,7 @@ import { categoryForQuery,fetchRoute,fetchRoutes, friendlyError, NEARBY_RADIUS_M
 import { BluetoothLink, type BluetoothState } from './services/bluetooth';
 import { navMessage, routeMessages } from './services/protocol';
 import { say, silence } from './services/voice';
+import { putPhoto, deletePhoto } from './services/photoStore';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 type Mode = 'explore' | 'place' | 'preview' | 'navigating' | 'arrived';
 const EXPLORE_CATEGORIES = [
@@ -99,6 +100,7 @@ export default function App() {
   const [tileWarning, setTileWarning] = useState(false);
   const [mode3D,setMode3D]=useState(()=>stored<unknown>('roadlink.mode3D',false)===true),[northReset,setNorthReset]=useState(0),[headingUp,setHeadingUp]=useState(0),[mapBearing,setMapBearing]=useState(0);
   const [focusPoint,setFocusPoint]=useState<Coordinate|null>(null);
+  const [signDraft,setSignDraft]=useState<Coordinate|null>(null),[pickingSign,setPickingSign]=useState(false);
   const [transportMode, setTransportMode] = useState<'car' | 'bike' | 'walk'>(()=>{const v=stored<string>('roadlink.transport','car');return v==='bike'||v==='walk'?v:'car';});
   useEffect(()=>{save('roadlink.roadFilters',roadFilters)},[roadFilters]);
   useEffect(()=>{save('roadlink.roadData',roadLayerEnabled)},[roadLayerEnabled]);
@@ -145,6 +147,7 @@ export default function App() {
   const displayRoadData=useMemo(()=>applyUserEdits(road.overview??road.data,userRoadEdits,route),[road.overview,road.data,userRoadEdits,route]);
   const limit=navigating?currentLimit(road.data,route,fix,progress?.along??0,progress?.offRoute):UNKNOWN_LIMIT;
   const mapRoadData=useMemo(()=>roadLayerEnabled&&displayRoadData?{...displayRoadData,sections:roadFilters.speed?displayRoadData.sections:[],features:displayRoadData.features.filter(f=>roadFilters[groupFor(f.kind)])}:null,[displayRoadData,roadFilters,roadLayerEnabled]);
+  const userSigns=useMemo(()=>userRoadEdits.filter((e):e is Extract<UserRoadEdit,{kind:'addition'}>=>(e as UserRoadEdit).kind==='addition'),[userRoadEdits]);
   useEffect(()=>{
     const panel=panelElement.current;if(!panel)return;
     const update=()=>appElement.current?.style.setProperty('--panel-height',sheetCollapsed?'calc(58px + var(--safe-bottom))':`${panel.getBoundingClientRect().height}px`);
@@ -231,7 +234,7 @@ export default function App() {
     }).catch(err => { if (!controller.signal.aborted) setNavigationError(`${friendlyError(err)} Tuyến cũ vẫn được giữ.`); }).finally(() => { if (!controller.signal.aborted) setRerouting(false); });
   }, [navigating, progress, route, location.fix, goodGPS,rerouting,transportMode]);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setShowBLE(false); setShowRoadData(false); setSearchOpen(false); setDetails(false); } };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setShowBLE(false); setShowRoadData(false); setPickingSign(false); setSearchOpen(false); setDetails(false); } };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
   }, []);
   useEffect(() => {
@@ -366,10 +369,19 @@ export default function App() {
   function importFavorites(file:File){const reader=new FileReader();reader.onload=()=>{try{const value:unknown=JSON.parse(String(reader.result));if(!Array.isArray(value))return;const places=value.filter((p):p is Place=>!!p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.detail==='string'&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lng)&&Math.abs(p.lng)<=180);setSavedPlaces(places);setFavorites(places.map(p=>p.id));save('roadlink.savedPlaces',places);save('roadlink.favorites',places.map(p=>p.id));}catch{/* ignore invalid file */}};reader.readAsText(file);}
   function commitUserRoadEdits(next:UserRoadEdit[]){const pruned=pruneUserRoadEdits(next);setUserRoadEdits(pruned);save('roadlink.userRoadEdits',pruned);}
   function reportRoadFeature(feature:RoadFeature){commitUserRoadEdits([...userRoadEdits,{id:`edit-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,kind:'suppress',targetId:feature.id,label:feature.label,createdAt:Date.now()}]);}
-  function undoRoadEdit(editId:string){commitUserRoadEdits(userRoadEdits.filter(e=>e.id!==editId));}
-  function addUserRoadSign(input:{featureKind:AddableFeatureKind;label:string;speedKmh?:number;note?:string}){
-    if(!fix)return;
-    commitUserRoadEdits([...userRoadEdits,{id:`edit-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,kind:'addition',lat:fix.lat,lng:fix.lng,featureKind:input.featureKind,label:input.label,speedKmh:input.speedKmh,note:input.note,createdAt:Date.now()}]);
+  function undoRoadEdit(editId:string){const target=userRoadEdits.find(e=>e.id===editId);if(target&&target.kind==='addition'&&target.photoKey)void deletePhoto(target.photoKey);commitUserRoadEdits(userRoadEdits.filter(e=>e.id!==editId));}
+  function addUserRoadSign(input:{featureKind:AddableFeatureKind;label:string;speedKmh?:number;note?:string;photo?:string;at?:Coordinate}){
+    const at=input.at??signDraft??fix;
+    if(!at)return;
+    const id=`edit-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+    commitUserRoadEdits([...userRoadEdits,{id,kind:'addition',lat:at.lat,lng:at.lng,featureKind:input.featureKind,label:input.label,speedKmh:input.speedKmh,note:input.note,photoKey:input.photo?id:undefined,createdAt:Date.now()}]);
+    if(input.photo)void putPhoto(id,input.photo);
+    setSignDraft(null);setPickingSign(false);
+  }
+  function addUserRoadSigns(items:{featureKind:AddableFeatureKind;label:string;speedKmh?:number;note?:string;lat:number;lng:number}[]){
+    if(!items.length)return;
+    const stamp=Date.now();
+    commitUserRoadEdits([...userRoadEdits,...items.map((item,index)=>({id:`edit-${stamp}-${index}-${Math.random().toString(36).slice(2,6)}`,kind:'addition' as const,lat:item.lat,lng:item.lng,featureKind:item.featureKind,label:item.label,speedKmh:item.speedKmh,note:item.note,createdAt:stamp+index}))]);
   }
   const activeStep = progress?.step ?? route?.steps.find(s => s.maneuver !== 'depart') ?? route?.steps[0];
   const saved = !!selected && favorites.includes(selected.id);
@@ -377,7 +389,7 @@ export default function App() {
   const remainingSeconds = baseSeconds;
   const eta = new Date(Date.now() + remainingSeconds * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   return <main ref={appElement} className={`app maps-ui ${searchOpen?'is-searching':''} ${navigating ? 'is-navigating' : ''} ${mode === 'explore' ? 'is-exploring' : ''} ${mode==='preview'?'is-routing':''} ${mode==='place'?'is-selecting':''}`}>
-    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} stops={stops} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} onReportFeature={reportRoadFeature} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} focusPoint={focusPoint} showScale={showScale} onBearing={setMapBearing}/>
+    <MapView route={route} alternatives={alternatives} destination={mode==='place'?selected:null} stops={stops} onSelectRoute={r=>{setRoute(r);setProgress(null);}} onPick={at=>{if(pickingSign){setSignDraft(at);setPickingSign(false);setShowRoadData(true);return;}setSearchOpen(false);if(!navigating)choosePlace({...at,id:`pin:${at.lat},${at.lng}`,name:'Địa điểm đã ghim',detail:`${at.lat.toFixed(5)}, ${at.lng.toFixed(5)}`});}} roadData={mapRoadData} onReportFeature={reportRoadFeature} userSigns={userSigns} onRemoveUserSign={undoRoadEdit} picking={pickingSign} position={fix} focusPosition={mode==='explore'} positionStale={!!fix&&now-fix.timestamp>15000} navigating={navigating} follow={follow} onDrag={() => setFollow(false)} onTileError={() => setTileWarning(true)} recenter={recenter} mode3D={mode3D} northReset={northReset} headingUp={headingUp} focusPoint={focusPoint} showScale={showScale} onBearing={setMapBearing}/>
     <div className="map-shade" />
     <header className="topbar">
       <button className="brand" onClick={stop} aria-label="RoadLink — về trang chính"><span className="brand-mark"><Navigation2 size={25} fill="currentColor" /></span><span>road<span className="brand-light">link</span></span></button>
@@ -629,6 +641,6 @@ export default function App() {
     </section>
     <footer className="map-attribution"><a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a><span>·</span><a href="https://openmaptiles.org/" target="_blank" rel="noreferrer">OpenMapTiles</a><span>·</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OSM contributors</a><span>· OSRM</span></footer>
     {showBLE && <BluetoothPanel state={ble} preferred={preferredEsp} close={() => setShowBLE(false)} connect={() => void link.connect()} disconnect={() => void link.disconnect()} />}
-    {showRoadData&&<RoadDataPanel route={route} data={displayRoadData} loading={road.overviewLoading} error={road.overviewError??road.error} retry={road.retry} close={()=>setShowRoadData(false)} filters={roadFilters} setFilters={setRoadFilters} limit={limit} along={progress?.along??0} navigating={navigating} enabled={roadLayerEnabled} setEnabled={setRoadLayerEnabled} showScale={showScale} setShowScale={setShowScale} warnDistance={warnDistance} setWarnDistance={setWarnDistance} termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} resetSettings={()=>{localStorage.clear();window.location.reload();}} userEdits={userRoadEdits} onReportFeature={reportRoadFeature} onUndoEdit={undoRoadEdit} onAddSign={addUserRoadSign} canAddAtCurrentLocation={!!fix}/>}
+{(showRoadData||pickingSign)&&<RoadDataPanel route={route} data={displayRoadData} loading={road.overviewLoading} error={road.overviewError??road.error} retry={road.retry} close={()=>setShowRoadData(false)} filters={roadFilters} setFilters={setRoadFilters} limit={limit} along={progress?.along??0} navigating={navigating} enabled={roadLayerEnabled} setEnabled={setRoadLayerEnabled} showScale={showScale} setShowScale={setShowScale} warnDistance={warnDistance} setWarnDistance={setWarnDistance} termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} resetSettings={()=>{localStorage.clear();window.location.reload();}} userEdits={userRoadEdits} onReportFeature={reportRoadFeature} onUndoEdit={undoRoadEdit} onAddSign={addUserRoadSign} onAddSigns={addUserRoadSigns} canAddAtCurrentLocation={!!fix} draftPoint={signDraft} picking={pickingSign} onPickPoint={()=>{setPickingSign(true);setShowRoadData(false);}} onClearDraft={()=>setSignDraft(null)}/>}
   </main>;
 }

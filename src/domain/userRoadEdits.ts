@@ -6,7 +6,7 @@ export type AddableFeatureKind = Extract<FeatureKind, 'stop' | 'give-way' | 'spe
 
 export type UserRoadEdit =
   | { id: string; kind: 'suppress'; targetId: string; label: string; createdAt: number }
-  | { id: string; kind: 'addition'; lat: number; lng: number; featureKind: AddableFeatureKind; label: string; speedKmh?: number; note?: string; createdAt: number };
+  | { id: string; kind: 'addition'; lat: number; lng: number; featureKind: AddableFeatureKind; label: string; speedKmh?: number; note?: string; photoKey?: string; createdAt: number };
 
 const MAX_USER_ROAD_EDITS = 300;
 
@@ -15,7 +15,7 @@ export function isUserRoadEdit(value: unknown): value is UserRoadEdit {
   const v = value as Record<string, unknown>;
   if (typeof v.id !== 'string' || typeof v.createdAt !== 'number') return false;
   if (v.kind === 'suppress') return typeof v.targetId === 'string' && typeof v.label === 'string';
-  if (v.kind === 'addition') return typeof v.lat === 'number' && typeof v.lng === 'number' && typeof v.featureKind === 'string' && typeof v.label === 'string';
+  if (v.kind === 'addition') return typeof v.lat === 'number' && typeof v.lng === 'number' && typeof v.featureKind === 'string' && typeof v.label === 'string' && (v.photoKey === undefined || typeof v.photoKey === 'string');
   return false;
 }
 
@@ -56,3 +56,35 @@ export const ADDABLE_FEATURE_LABELS: Record<AddableFeatureKind, string> = {
   'speed-camera': 'Camera tốc độ',
   prohibition: 'Biển cấm khác'
 };
+
+export type SignImport = { lat: number; lng: number; featureKind: AddableFeatureKind; label: string; speedKmh?: number; note?: string };
+
+/** Accepts a JSON array of {lat,lng,kind,speed?,label?,note?} or CSV lines "lat,lng,kind[,speed][,label]". Invalid rows are dropped. */
+export function parseSignImport(text: string): SignImport[] {
+  const trimmed = text.trim(), rows: unknown[] = [];
+  if (!trimmed) return [];
+  if (trimmed.startsWith('[')) {
+    try { const value: unknown = JSON.parse(trimmed); if (Array.isArray(value)) rows.push(...value); } catch { return []; }
+  } else {
+    for (const line of trimmed.split(/\r?\n/)) {
+      const parts = line.split(',').map(part => part.trim());
+      if (parts.length < 3) continue;
+      rows.push({ lat: Number(parts[0]), lng: Number(parts[1]), kind: parts[2], speed: Number(parts[3]), label: parts[4] });
+    }
+  }
+  const result: SignImport[] = [];
+  for (const row of rows) {
+    if (!row || typeof row !== 'object') continue;
+    const value = row as Record<string, unknown>;
+    const lat = Number(value.lat), lng = Number(value.lng), kind = String(value.kind ?? value.featureKind ?? '');
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) continue;
+    if (!(kind in ADDABLE_FEATURE_LABELS)) continue;
+    const featureKind = kind as AddableFeatureKind;
+    const speedRaw = Number(value.speed ?? value.speedKmh);
+    const speedKmh = featureKind === 'speed-sign' && Number.isFinite(speedRaw) && speedRaw > 0 && speedRaw <= 200 ? speedRaw : undefined;
+    const label = typeof value.label === 'string' && value.label.trim() ? value.label.trim() : speedKmh ? `${ADDABLE_FEATURE_LABELS[featureKind]} ${speedKmh} km/h` : ADDABLE_FEATURE_LABELS[featureKind];
+    const note = typeof value.note === 'string' && value.note.trim() ? value.note.trim() : undefined;
+    result.push({ lat, lng, featureKind, label, speedKmh, note });
+  }
+  return result;
+}

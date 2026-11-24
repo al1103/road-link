@@ -1,7 +1,9 @@
 import { Camera, CircleHelp, Flag, Layers2, LoaderCircle, Plus, RefreshCw, TrafficCone, Undo2, X } from 'lucide-react';
 import type { CurrentLimit, FeatureKind, RoadData, RoadFeature } from '../domain/roadData';
-import { ADDABLE_FEATURE_LABELS, type AddableFeatureKind, type UserRoadEdit } from '../domain/userRoadEdits';
+import { ADDABLE_FEATURE_LABELS, parseSignImport, type AddableFeatureKind, type SignImport, type UserRoadEdit } from '../domain/userRoadEdits';
 import type { Route } from '../domain/types';
+import { readPhotoGeo, type PhotoGeo } from '../domain/exif';
+import { downscalePhoto } from '../domain/photo';
 import { formatDistance } from '../domain/geometry';
 import {roadSymbol} from '../domain/roadSymbols';
 import SpeedLimitImage from './SpeedLimitImage';
@@ -9,14 +11,34 @@ import {useEffect,useState} from 'react';
 export type RoadFilters={speed:boolean;cameras:boolean;signs:boolean;signals:boolean};
 export function groupFor(kind:FeatureKind):keyof RoadFilters { return kind.includes('camera')?'cameras':kind==='signals'?'signals':'signs'; }
 const SPEED_SIGN_VALUES=[20,30,40,50,60,70,80,90,100,110,120] as const;
-type Props={route:Route|null;data:RoadData|null;loading:boolean;error:string|null;retry:()=>void;close:()=>void;filters:RoadFilters;setFilters:(next:RoadFilters)=>void;limit:CurrentLimit;along:number;navigating:boolean;enabled:boolean;setEnabled:(value:boolean)=>void;showScale:boolean;setShowScale:(value:boolean)=>void;warnDistance:number;setWarnDistance:(value:number)=>void;termsAccepted:boolean;setTermsAccepted:(value:boolean)=>void;resetSettings:()=>void;userEdits:UserRoadEdit[];onReportFeature:(feature:RoadFeature)=>void;onUndoEdit:(editId:string)=>void;onAddSign:(input:{featureKind:AddableFeatureKind;label:string;speedKmh?:number;note?:string})=>void;canAddAtCurrentLocation:boolean};
-export default function RoadDataPanel({route,data,loading,error,retry,close,filters,setFilters,limit,along,navigating,enabled,setEnabled,showScale,setShowScale,warnDistance,setWarnDistance,termsAccepted,setTermsAccepted,resetSettings,userEdits,onReportFeature,onUndoEdit,onAddSign,canAddAtCurrentLocation}:Props) {
+type Props={route:Route|null;data:RoadData|null;loading:boolean;error:string|null;retry:()=>void;close:()=>void;filters:RoadFilters;setFilters:(next:RoadFilters)=>void;limit:CurrentLimit;along:number;navigating:boolean;enabled:boolean;setEnabled:(value:boolean)=>void;showScale:boolean;setShowScale:(value:boolean)=>void;warnDistance:number;setWarnDistance:(value:number)=>void;termsAccepted:boolean;setTermsAccepted:(value:boolean)=>void;resetSettings:()=>void;userEdits:UserRoadEdit[];onReportFeature:(feature:RoadFeature)=>void;onUndoEdit:(editId:string)=>void;onAddSign:(input:{featureKind:AddableFeatureKind;label:string;speedKmh?:number;note?:string;photo?:string;at?:{lat:number;lng:number}})=>void;onAddSigns:(items:SignImport[])=>void;canAddAtCurrentLocation:boolean;draftPoint:{lat:number;lng:number}|null;picking:boolean;onPickPoint:()=>void;onClearDraft:()=>void};
+export default function RoadDataPanel({route,data,loading,error,retry,close,filters,setFilters,limit,along,navigating,enabled,setEnabled,showScale,setShowScale,warnDistance,setWarnDistance,termsAccepted,setTermsAccepted,resetSettings,userEdits,onReportFeature,onUndoEdit,onAddSign,onAddSigns,canAddAtCurrentLocation,draftPoint,picking,onPickPoint,onClearDraft}:Props) {
   const [shownPoints,setShownPoints]=useState(60),[shownSections,setShownSections]=useState(12),[signQuery,setSignQuery]=useState('');
   const [addingSign,setAddingSign]=useState(false),[newSignKind,setNewSignKind]=useState<AddableFeatureKind>('stop'),[newSignSpeed,setNewSignSpeed]=useState(50),[newSignNote,setNewSignNote]=useState('');
+  const [newSignPhoto,setNewSignPhoto]=useState<string|null>(null),[newSignGeo,setNewSignGeo]=useState<PhotoGeo|null>(null),[photoBusy,setPhotoBusy]=useState(false),[usePhotoGeo,setUsePhotoGeo]=useState(true);
+  const [bulkText,setBulkText]=useState(''),[bulkStatus,setBulkStatus]=useState('');
+  function submitBulk(){
+    const items=parseSignImport(bulkText);
+    if(!items.length){setBulkStatus('Không có dòng hợp lệ. Định dạng: lat,lng,kind[,tốc độ][,nhãn]');return;}
+    onAddSigns(items);setBulkStatus(`Đã thêm ${items.length} biển.`);setBulkText('');
+  }
+  function exportSigns(){
+    const additions=userEdits.filter((edit):edit is Extract<UserRoadEdit,{kind:'addition'}>=>(edit as UserRoadEdit).kind==='addition');
+    const data=additions.map(edit=>({lat:edit.lat,lng:edit.lng,kind:edit.featureKind,speed:edit.speedKmh,label:edit.label,note:edit.note}));
+    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    const link=document.createElement('a');link.href=url;link.download='roadlink-signs.json';link.click();URL.revokeObjectURL(url);
+  }
+  async function pickPhoto(file:File|null){
+    if(!file){setNewSignPhoto(null);setNewSignGeo(null);return;}
+    setPhotoBusy(true);
+    const [preview,geo]=await Promise.all([downscalePhoto(file),readPhotoGeo(file)]);
+    setNewSignPhoto(preview);setNewSignGeo(geo);setUsePhotoGeo(!!geo);setPhotoBusy(false);
+  }
   function submitNewSign(){
     const label=newSignKind==='speed-sign'?`${ADDABLE_FEATURE_LABELS[newSignKind]} ${newSignSpeed} km/h`:ADDABLE_FEATURE_LABELS[newSignKind];
-    onAddSign({featureKind:newSignKind,label,speedKmh:newSignKind==='speed-sign'?newSignSpeed:undefined,note:newSignNote.trim()||undefined});
-    setAddingSign(false);setNewSignNote('');
+    const at=usePhotoGeo&&newSignGeo?{lat:newSignGeo.lat,lng:newSignGeo.lng}:draftPoint??undefined;
+    onAddSign({featureKind:newSignKind,label,speedKmh:newSignKind==='speed-sign'?newSignSpeed:undefined,note:newSignNote.trim()||undefined,photo:newSignPhoto??undefined,at});
+    setAddingSign(false);setNewSignNote('');setNewSignPhoto(null);setNewSignGeo(null);
   }
   useEffect(()=>{setShownPoints(60);setShownSections(12);setSignQuery('');},[route?.id]);
   const wholeRoute=data?.scope==='route',complete=wholeRoute&&data?.scan?.complete;
@@ -29,7 +51,7 @@ export default function RoadDataPanel({route,data,loading,error,retry,close,filt
   const passedCount=loadedFeatures.length-ahead.length;
   const allValues=[...new Map((data?.sections??[]).map(s=>[`${s.wayId}:${s.raw}`,s])).values()];
   const values=allValues.slice(0,shownSections);
-  return <div className="modal-backdrop" onClick={close}><section className="road-panel" role="dialog" aria-modal="true" aria-labelledby="road-data-title" onClick={e=>e.stopPropagation()}>
+  return <div className="modal-backdrop" style={picking?{display:'none'}:undefined} onClick={close}><section className="road-panel" role="dialog" aria-modal="true" aria-labelledby="road-data-title" onClick={e=>e.stopPropagation()}>
     <button className="icon-button modal-close" aria-label="Đóng dữ liệu đường" onClick={close} autoFocus><X size={20}/></button>
     <span className="road-panel-icon"><Layers2 size={25}/></span><h2 id="road-data-title">Dữ liệu đường</h2><p className="road-subtitle">Giới hạn tốc độ, camera và biển cấm có thể bị xử phạt được ghi nhận trên OpenStreetMap. Không hiển thị gờ giảm tốc, đường ngang hay lối đi bộ.</p>
     <label className="road-master-toggle"><input type="checkbox" checked={enabled} onChange={e=>setEnabled(e.target.checked)}/> Bật lớp dữ liệu đường</label>
@@ -47,15 +69,33 @@ export default function RoadDataPanel({route,data,loading,error,retry,close,filt
       {error&&<div className="road-error" role="alert"><p>{error}</p><button className="text-button" onClick={retry}><RefreshCw size={15}/>Thử tải lại</button></div>}
       {navigating&&<div className="current-limit"><SpeedLimitImage kmh={limit.kmh}/><div><strong>Giới hạn ghi nhận · km/h</strong><p>{limit.kmh===null?limit.reason:'Nguồn OSM · chưa được RoadLink xác minh thực địa.'}</p></div></div>}
       <div className="road-user-edits">
-        <button type="button" className="text-button road-add-sign-toggle" onClick={()=>setAddingSign(v=>!v)} disabled={!canAddAtCurrentLocation}><Plus size={16}/>{addingSign?'Hủy thêm biển':'Thêm biển tại vị trí hiện tại'}</button>
-        {!canAddAtCurrentLocation&&<small className="road-empty">Cần có vị trí GPS hiện tại để thêm biển.</small>}
+        <button type="button" className="text-button road-add-sign-toggle" onClick={()=>setAddingSign(v=>!v)}><Plus size={16}/>{addingSign?'Hủy thêm biển':'Thêm biển'}</button>
+        {!canAddAtCurrentLocation&&!draftPoint&&<small className="road-empty">Không có GPS: chọn vị trí trên bản đồ hoặc dùng toạ độ trong ảnh.</small>}
         {addingSign&&<div className="road-add-sign-form">
           <label>Loại biển<select value={newSignKind} onChange={e=>setNewSignKind(e.target.value as AddableFeatureKind)}>{Object.entries(ADDABLE_FEATURE_LABELS).map(([kind,label])=><option key={kind} value={kind}>{label}</option>)}</select></label>
           {newSignKind==='speed-sign'&&<label>Tốc độ (km/h)<select value={newSignSpeed} onChange={e=>setNewSignSpeed(Number(e.target.value))}>{SPEED_SIGN_VALUES.map(v=><option key={v} value={v}>{v}</option>)}</select></label>}
           <input type="text" placeholder="Ghi chú (tùy chọn)" value={newSignNote} onChange={e=>setNewSignNote(e.target.value)} maxLength={120}/>
-          <p className="road-empty">Biển sẽ lưu tại vị trí GPS hiện tại, chỉ trên thiết bị này — không gửi cho ai khác, không ảnh hưởng đến cảnh báo quá tốc độ tự động.</p>
-          <button type="button" className="button primary full" onClick={submitNewSign}>Lưu biển</button>
+          <div className="road-sign-target">
+            <small>{draftPoint?`Vị trí đã chọn: ${draftPoint.lat.toFixed(5)}, ${draftPoint.lng.toFixed(5)}`:newSignGeo&&usePhotoGeo?`Toạ độ từ ảnh: ${newSignGeo.lat.toFixed(5)}, ${newSignGeo.lng.toFixed(5)}`:canAddAtCurrentLocation?'Dùng vị trí GPS hiện tại':'Chưa có vị trí'}</small>
+            {draftPoint&&<button type="button" className="text-button" onClick={onClearDraft}>Bỏ chọn</button>}
+            <button type="button" className="text-button" onClick={onPickPoint}>{picking?'Đang chờ chạm bản đồ…':'Chọn trên bản đồ'}</button>
+          </div>
+          <label className="road-photo-picker"><Camera size={15}/>{photoBusy?'Đang xử lý ảnh…':newSignPhoto?'Đổi ảnh':'Chụp/chọn ảnh (tuỳ chọn)'}<input type="file" accept="image/*" capture="environment" hidden onChange={e=>void pickPhoto(e.target.files?.[0]??null)}/></label>
+          {newSignPhoto&&<img className="road-photo-preview" src={newSignPhoto} alt="Ảnh biển sẽ lưu"/>}
+          {newSignGeo&&<label className="road-master-toggle"><input type="checkbox" checked={usePhotoGeo} onChange={e=>setUsePhotoGeo(e.target.checked)}/> Dùng toạ độ trong ảnh</label>}
+          <p className="road-empty">Ảnh và biển chỉ lưu trên thiết bị này; toạ độ lấy từ ảnh (nếu có), điểm chọn trên bản đồ, hoặc GPS hiện tại.</p>
+          <button type="button" className="button primary full" onClick={submitNewSign} disabled={!canAddAtCurrentLocation&&!draftPoint&&!(newSignGeo&&usePhotoGeo)}>Lưu biển</button>
         </div>}
+      </div>
+      <div className="road-bulk-import">
+        <h3>Nhập nhanh danh sách</h3>
+        <p className="road-empty">Mỗi dòng: <code>lat,lng,kind[,tốc độ][,nhãn]</code> hoặc dán mảng JSON. kind: {Object.keys(ADDABLE_FEATURE_LABELS).join(', ')}.</p>
+        <textarea value={bulkText} onChange={e=>setBulkText(e.target.value)} rows={4} placeholder={'10.77210,106.69830,speed-sign,60\n10.77350,106.69900,stop'} aria-label="Danh sách biển để nhập"/>
+        <div className="road-bulk-actions">
+          <button type="button" className="button primary" onClick={submitBulk}>Thêm tất cả</button>
+          <button type="button" className="text-button" onClick={exportSigns}>Xuất JSON</button>
+        </div>
+        {bulkStatus&&<p className="road-empty">{bulkStatus}</p>}
       </div>
       {data&&<>
         <div className="road-data-meta" data-road-scope={data.scope??'window'} data-scan-complete={complete?'true':'false'}>{data.source?.kind==='offline'?`Dữ liệu Việt Nam trên thiết bị · bản ${data.source.version} · `:''}{complete?'Toàn tuyến':wholeRoute?'Đang quét toàn tuyến':'Phạm vi dự phòng theo vị trí'}: {formatDistance(data.windowStart)}–{formatDistance(data.windowEnd)} · OSM{data.scan&&` · Đã quét ${data.scan.completed}/${data.scan.total} phần`}</div>

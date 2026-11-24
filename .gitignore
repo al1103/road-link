@@ -14,3 +14,14 @@ ios/App/App/public/
 ios/App/Pods/
 ios/App/build/
 ios/App/DerivedData/
+
+# Crawled Street View frames & AI model weights
+*.jpg
+*.jpeg
+*.pt
+exports/hanoi_full_scan/
+exports/hanoi_streetview/
+exports/web_streetview/
+exports/batch_streetview/
+exports/streetview_signs/
+
