@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import path from 'node:path';
@@ -200,6 +200,12 @@ export async function crawlAllHanoi({
       if (existsSync(geojsonPath)) {
         console.log(`[*] Tự động nạp dữ liệu đợt ${chunkNum} vào app...`);
         await importSignsToApp(geojsonPath);
+      }
+
+      for (const item of capturedBatch) {
+        if (existsSync(item.imagePath)) {
+          await unlink(item.imagePath).catch(() => {});
+        }
       }
 
       console.log(`[+] TIẾN ĐỘ: Đã xong ${progress.completedIndices.length}/${allPoints.length} nút giao Hà Nội.\n`);
