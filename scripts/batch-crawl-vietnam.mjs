@@ -71,7 +71,14 @@ export async function runBatchCrawl({
   const browser = await chromium.launch({
     executablePath: browserPath,
     headless,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled']
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-blink-features=AutomationControlled',
+      '--use-gl=angle',
+      '--enable-webgl',
+      '--ignore-gpu-blocklist'
+    ]
   });
 
   const context = await browser.newContext({
@@ -124,9 +131,10 @@ export async function runBatchCrawl({
   await writeFile(manifestFile, JSON.stringify(allCaptured, null, 2), 'utf-8');
   console.log(`\n[+] Đã chụp thành công ${allCaptured.length} ảnh Street View.`);
 
+  const pyCmd = process.platform === 'win32' ? 'python' : 'python3';
   console.log(`\n[*] Đang chạy YOLOv8 nhận diện biển báo trên toàn bộ ảnh...`);
   try {
-    execSync(`python scripts/detect_from_captured.py --manifest "${manifestFile}" --out "${outputDir}"`, {
+    execSync(`${pyCmd} scripts/detect_from_captured.py --manifest "${manifestFile}" --out "${outputDir}"`, {
       stdio: 'inherit'
     });
   } catch (err) {

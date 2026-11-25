@@ -52,7 +52,14 @@ export async function crawlStreetViewWeb({
   const browser = await chromium.launch({
     executablePath,
     headless,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled']
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-blink-features=AutomationControlled',
+      '--use-gl=angle',
+      '--enable-webgl',
+      '--ignore-gpu-blocklist'
+    ]
   });
 
   const context = await browser.newContext({
@@ -100,9 +107,10 @@ export async function crawlStreetViewWeb({
   console.log(`\n[+] Hoàn thành chụp ảnh Web! Tổng cộng: ${capturedFrames.length} ảnh.`);
   console.log(`[+] Danh sách lưu tại: ${manifestPath}`);
 
+  const pyCmd = process.platform === 'win32' ? 'python' : 'python3';
   console.log(`[*] Bắt đầu gọi YOLO nhận diện biển báo trên các ảnh vừa chụp...`);
   try {
-    execSync(`python scripts/detect_from_captured.py --manifest "${manifestPath}" --out "${outputDir}"`, {
+    execSync(`${pyCmd} scripts/detect_from_captured.py --manifest "${manifestPath}" --out "${outputDir}"`, {
       stdio: 'inherit'
     });
   } catch (err) {

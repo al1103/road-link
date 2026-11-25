@@ -41,6 +41,9 @@
 #ifndef ROADLINK_ROUND
 #define ROADLINK_ROUND 0
 #endif
+#ifndef ROADLINK_NO_SD
+#define ROADLINK_NO_SD 0
+#endif
 #ifndef EXIT_BTN
 #define EXIT_BTN 0
 #endif
@@ -61,9 +64,9 @@ constexpr uint16_t RED = 0xE1E6;
 constexpr uint16_t AMBER = 0xFD20;
 constexpr uint16_t GRAY = 0x9CD3;
 constexpr uint16_t DARK = 0x2945;
-constexpr int VEHICLE_Y = ROADLINK_ROUND ? 138 : 158;
-constexpr int MAP_TOP = ROADLINK_ROUND ? 72 : 40;
-constexpr int MAP_BOTTOM = ROADLINK_ROUND ? 174 : 240;
+constexpr int VEHICLE_Y = ROADLINK_ROUND ? 120 : 158;
+constexpr int MAP_TOP = ROADLINK_ROUND ? 10 : 40;
+constexpr int MAP_BOTTOM = ROADLINK_ROUND ? 230 : 240;
 
 class LGFX : public lgfx::LGFX_Device {
 #if ROADLINK_ROUND
@@ -347,29 +350,35 @@ uint16_t pointAhead(const State& s, float ahead, int32_t& outLat, int32_t& outLn
   return i;
 }
 
-void drawManeuver(const String& maneuver, int x, int y) {
+void drawManeuver(const String& maneuver, int x, int y, uint16_t color = 0x135F) {
   if (maneuver == "left" || maneuver == "slight-left") {
-    canvas.drawLine(x, y + 8, x, y - 4, WHITE);
-    canvas.drawLine(x, y - 4, x - 9, y - 4, WHITE);
-    canvas.fillTriangle(x - 9, y - 10, x - 9, y + 2, x - 17, y - 4, WHITE);
+    // Rẽ trái: Thân mũi tên to dày 4px + Đầu tam giác lớn
+    canvas.drawWideLine(x + 5, y + 7, x + 5, y - 2, 4.0f, color);
+    canvas.drawWideLine(x + 5, y - 2, x - 2, y - 2, 4.0f, color);
+    canvas.fillTriangle(x - 1, y - 8, x - 10, y - 2, x - 1, y + 4, color);
   } else if (maneuver == "right" || maneuver == "slight-right") {
-    canvas.drawLine(x, y + 8, x, y - 4, WHITE);
-    canvas.drawLine(x, y - 4, x + 9, y - 4, WHITE);
-    canvas.fillTriangle(x + 9, y - 10, x + 9, y + 2, x + 17, y - 4, WHITE);
+    // Rẽ phải: Thân mũi tên to dày 4px + Đầu tam giác lớn
+    canvas.drawWideLine(x - 5, y + 7, x - 5, y - 2, 4.0f, color);
+    canvas.drawWideLine(x - 5, y - 2, x + 2, y - 2, 4.0f, color);
+    canvas.fillTriangle(x + 1, y - 8, x + 10, y - 2, x + 1, y + 4, color);
   } else if (maneuver == "uturn") {
-    canvas.drawLine(x, y + 8, x, y - 2, WHITE);
-    canvas.drawCircle(x, y - 2, 7, WHITE);
-    canvas.fillTriangle(x - 7, y - 6, x + 1, y - 10, x - 7, y - 12, WHITE);
+    // Quay đầu hình móng ngựa
+    canvas.drawWideLine(x + 5, y + 7, x + 5, y - 1, 4.0f, color);
+    canvas.drawCircle(x, y - 2, 7, color);
+    canvas.drawCircle(x, y - 2, 6, color);
+    canvas.fillTriangle(x - 7, y - 6, x + 1, y - 10, x - 7, y - 12, color);
   } else if (maneuver == "roundabout") {
-    canvas.drawLine(x, y + 8, x, y + 2, WHITE);
-    canvas.drawCircle(x, y - 2, 8, WHITE);
-    canvas.fillTriangle(x + 3, y - 12, x + 11, y - 8, x + 3, y - 4, WHITE);
+    canvas.drawWideLine(x, y + 8, x, y + 2, 4.0f, color);
+    canvas.drawCircle(x, y - 2, 8, color);
+    canvas.drawCircle(x, y - 2, 7, color);
+    canvas.fillTriangle(x + 3, y - 12, x + 11, y - 8, x + 3, y - 4, color);
   } else if (maneuver == "arrive") {
-    canvas.drawRect(x - 7, y - 12, 14, 16, WHITE);
-    canvas.fillRect(x - 5, y - 10, 4, 4, WHITE);
+    canvas.drawRect(x - 7, y - 12, 14, 16, color);
+    canvas.fillRect(x - 5, y - 10, 5, 5, color);
   } else {
-    canvas.drawLine(x, y + 8, x, y - 8, WHITE);
-    canvas.fillTriangle(x, y - 16, x - 7, y - 6, x + 7, y - 6, WHITE);
+    // Đi thẳng
+    canvas.drawWideLine(x, y + 8, x, y - 4, 4.0f, color);
+    canvas.fillTriangle(x - 6, y - 3, x, y - 13, x + 6, y - 3, color);
   }
 }
 
@@ -403,6 +412,16 @@ void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading, float ex
     return int(VEHICLE_Y - (dx * sh + dy * ch) * scale);
   };
   auto style = [](uint8_t cls, uint16_t& color, uint8_t& width) {
+#if ROADLINK_ROUND
+    switch (cls) {
+      case 0: color = 0xFD20; width = 5; break; // Orange-amber arterial
+      case 1: color = 0xFE60; width = 4; break; // Yellow primary
+      case 2: color = WHITE; width = 3; break;  // Crisp white with outline
+      case 3: color = WHITE; width = 3; break;
+      case 4: color = WHITE; width = 2; break;
+      default: color = WHITE; width = 1; break;
+    }
+#else
     switch (cls) {
       case 0: color = AMBER; width = 4; break;
       case 1: color = 0xFE60; width = 3; break;
@@ -411,6 +430,7 @@ void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading, float ex
       case 4: color = 0x8430; width = 1; break;
       default: color = 0x5AEB; width = 1; break;
     }
+#endif
   };
   for (uint16_t i = 0; i < roadCount; i++) {
     const Road& r = roads[i];
@@ -463,10 +483,15 @@ void drawMap(const State& s, int32_t cLat, int32_t cLng, float heading, float ex
       }
     }
   }
-  // Vehicle arrow fixed near the bottom, map rotates around it.
+  // Vehicle marker fixed near the center/bottom, map rotates around it.
+#if ROADLINK_ROUND
+  canvas.fillCircle(120, VEHICLE_Y, 8, WHITE);
+  canvas.fillCircle(120, VEHICLE_Y, 5, 0x1B5F);
+#else
   canvas.fillCircle(120, VEHICLE_Y, 12, 0x0A2D);
   canvas.fillCircle(120, VEHICLE_Y, 8, BLUE);
   canvas.fillTriangle(120, VEHICLE_Y - 14, 111, VEHICLE_Y + 5, 129, VEHICLE_Y + 5, WHITE);
+#endif
 }
 
 void drawLimitSign(int cx, int cy, int r, int limit, bool over) {
@@ -475,11 +500,15 @@ void drawLimitSign(int cx, int cy, int r, int limit, bool over) {
   canvas.drawCircle(cx, cy, r, RED);
   canvas.drawCircle(cx, cy, r - 1, RED);
   canvas.setTextColor(flash ? WHITE : 0x0000);
-  canvas.setFont(&fonts::Font4);
   char text[4];
   snprintf(text, sizeof text, "%d", limit);
-  const int width = limit >= 100 ? 24 : limit >= 10 ? 16 : 8;
-  canvas.drawString(text, cx - width / 2, cy - 8);
+  if (r <= 14) {
+    canvas.setFont(&fonts::Font2);
+    canvas.drawCenterString(text, cx, cy - 7);
+  } else {
+    canvas.setFont(&fonts::Font4);
+    canvas.drawCenterString(text, cx, cy - 8);
+  }
 }
 
 void drawCameraBadge(const State& s, int x, int y) {
@@ -496,7 +525,7 @@ void drawCameraBadge(const State& s, int x, int y) {
 }
 
 void render(const State& s) {
-  canvas.fillScreen(BG);
+  canvas.fillScreen(ROADLINK_ROUND ? 0xEF7D : BG);
   if (!s.connected) {
     canvas.setTextColor(WHITE);
     canvas.setFont(&fonts::Font4);
@@ -539,7 +568,8 @@ void render(const State& s) {
   }
   ensureMap(cLat, cLng);
   drawMap(s, cLat, cLng, smoothMapHeading, extra);
-  if (!sdReady || !mapBuf) {
+#if !ROADLINK_NO_SD
+  if ((!sdReady || !mapBuf) && s.count < 2) {
     const char* msg = !sdReady ? "NO SD CARD" : "NO MAP DATA";
     canvas.setFont(&fonts::Font2);
     const int w = canvas.textWidth(msg);
@@ -547,6 +577,7 @@ void render(const State& s) {
     canvas.setTextColor(GRAY);
     canvas.drawString(msg, 62, MAP_TOP + 6);
   }
+#endif
   const bool over = s.speedLimit > 0 && s.speed >= s.speedLimit + 3;
 #if ROADLINK_ROUND
   if (over && (millis() / 350) % 2 == 0) {
@@ -564,29 +595,73 @@ void render(const State& s) {
   snprintf(right, sizeof right, "%d min", (s.eta_s + 59) / 60);
   String road = s.road.length() > 18 ? s.road.substring(0, 18) : s.road;
 #if ROADLINK_ROUND
-  canvas.fillRoundRect(22, 12, 196, 68, 32, GREEN);
-  drawManeuver(s.maneuver, 50, 40);
-  canvas.setTextColor(WHITE);
+  // --- BỐ CỤC MÀN TRÒN CAO CẤP DẠNG HUD THEO MẪU ĐỒNG HỒ THÔNG MINH ---
+  // 1. Phía trên: Floating Pill khoảng cách còn lại (ví dụ 7.28 km)
+  canvas.fillRoundRect(74, 10, 92, 26, 13, WHITE);
+  canvas.drawRoundRect(74, 10, 92, 26, 13, 0xD6BA);
+  canvas.setTextColor(0x135F);
   canvas.setFont(&fonts::Font4);
-  snprintf(main, sizeof main, "%dm", s.turn);
-  canvas.drawString(main, 74, 16);
-  canvas.setFont(&fonts::Font2);
-  canvas.drawString(s.arrived ? "ARRIVED" : (road.length() ? road : "next"), 74, 50);
-  if (s.speedLimit > 0) drawLimitSign(186, 34, 15, s.speedLimit, over);
-  drawCameraBadge(s, 132, 84);
+  char distTop[24];
+  if (s.remaining >= 1000) {
+    snprintf(distTop, sizeof distTop, "%.2f km", s.remaining / 1000.0f);
+  } else {
+    snprintf(distTop, sizeof distTop, "%d m", s.remaining);
+  }
+  canvas.drawCenterString(distTop, 120, 14);
 
-  canvas.fillRoundRect(20, 176, 200, 52, 26, GREEN);
-  canvas.setTextColor(over ? RED : WHITE);
+  // 2. Mũi tên chỉ dẫn hướng rẽ trên bản đồ
+  drawManeuver(s.maneuver, 84, 62);
+
+  // 3. Bên trái: Floating Card Biển giới hạn tốc độ 60 & Đồng hồ tốc độ nổi
+  const int cardX = 18, cardY = 66, cardW = 46, cardH = 88;
+  canvas.fillRoundRect(cardX, cardY, cardW, cardH, 21, over ? 0xFDEE : WHITE);
+  canvas.drawRoundRect(cardX, cardY, cardW, cardH, 21, over ? RED : 0xD6BA);
+
+  const int signX = 41, signY = 88;
+  const int limitVal = s.speedLimit > 0 ? s.speedLimit : 60;
+  drawLimitSign(signX, signY, 12, limitVal, over);
+
+  // Tốc độ hiện tại của xe
+  canvas.setTextColor(over ? RED : 0x11AB);
+  canvas.setFont(&fonts::Font4);
+  char speedText[8];
+  snprintf(speedText, sizeof speedText, "%d", s.speed);
+  canvas.drawCenterString(speedText, signX, 108);
+
+  canvas.setFont(&fonts::Font1);
+  canvas.setTextColor(over ? RED : 0x4A69);
+  canvas.drawCenterString("km/h", signX, 128);
+
+  // 4. Bên phải: Floating Badge La bàn / GPS Compass Dial
+  const int compX = 196, compY = 118;
+  canvas.fillCircle(compX, compY, 15, WHITE);
+  canvas.drawCircle(compX, compY, 15, 0xD6BA);
+  canvas.fillTriangle(compX, compY - 9, compX - 4, compY + 5, compX + 4, compY + 5, RED);
+  canvas.fillTriangle(compX, compY + 5, compX - 4, compY + 5, compX, compY + 8, 0x8CD2);
+  canvas.setFont(&fonts::Font1);
+  canvas.setTextColor(0x4A69);
+  canvas.drawCenterString("N", compX, compY - 15);
+
+  // Camera cảnh báo nếu có
+  drawCameraBadge(s, 140, 68);
+
+  // 5. Phía dưới: Floating Card Tên đường hiện tại & Mũi tên rẽ to rõ + Khoảng cách
+  canvas.fillRoundRect(24, 168, 192, 56, 16, WHITE);
+  canvas.drawRoundRect(24, 168, 192, 56, 16, 0xD6BA);
+
+  canvas.setTextColor(0x11AB);
   canvas.setFont(&fonts::Font2);
-  canvas.drawString(left, 28, 192);
-  canvas.setTextColor(WHITE);
-  canvas.drawString(mid, 94, 192);
-  canvas.drawString(right, 154, 192);
-  canvas.fillCircle(88, 200, 1, WHITE);
-  canvas.fillCircle(148, 200, 1, WHITE);
+  canvas.drawCenterString(s.arrived ? "ARRIVED" : (road.length() ? road.c_str() : "next"), 120, 174);
+
+  // Mũi tên rẽ to đậm đặt ngay cạnh số khoảng cách để tài xế liếc thấy ngay
+  drawManeuver(s.maneuver, 88, 206, 0x135F);
+
+  canvas.setTextColor(0x135F);
+  canvas.setFont(&fonts::Font4);
+  canvas.drawString(main, 114, 196);
 #else
   canvas.fillRect(0, 0, 240, 38, GREEN);
-  drawManeuver(s.maneuver, 22, 20);
+  drawManeuver(s.maneuver, 22, 20, WHITE);
   canvas.setTextColor(WHITE);
   canvas.setFont(&fonts::Font4);
   snprintf(main, sizeof main, "%dm", s.turn);
@@ -617,12 +692,17 @@ void setup() {
   pinMode(EXIT_BTN, INPUT_PULLUP);
   tft.init();
   tft.setRotation(0);
-  canvas.setPsram(true);
+  canvas.setPsram(psramFound());
   canvas.setColorDepth(16);
   canvas.createSprite(240, 240);
+#if !ROADLINK_NO_SD
   sdSPI.begin(SD_SCLK, SD_MISO, SD_MOSI, SD_CS);
   sdReady = SD.begin(SD_CS, sdSPI, 20000000);
   Serial.printf("SD %s\n", sdReady ? "ready" : "missing");
+#else
+  sdReady = false;
+  Serial.println("Running in BLE Route Mode (No SD Card required)");
+#endif
 
   NimBLEDevice::init("RoadLink ESP32");
   NimBLEDevice::setMTU(185);

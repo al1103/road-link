@@ -146,11 +146,26 @@ def scan_location(lat, lng, model_path="yolov8n.pt", save_db=True, output_dir="e
                 conf = float(box.conf[0].item())
                 label = model.names[cls_id]
                 
-                # Check target classes (traffic sign, stop sign, etc.)
-                if "sign" not in label.lower() and cls_id not in [9, 11]:
+                # Loại bỏ hoàn toàn đèn tín hiệu giao thông / đèn đỏ (Class 9 trong COCO) theo yêu cầu
+                if cls_id == 9 or "light" in label.lower() or "traffic light" in label.lower():
+                    continue
+
+                # Chỉ nhận diện biển báo giao thông hoặc stop sign (Class 11)
+                is_sign = ("sign" in label.lower()) or (cls_id == 11)
+                if not is_sign:
                     continue
                     
                 bbox = box.xyxy[0].tolist()
+                bx_center = (bbox[0] + bbox[2]) / 2.0
+                by_center = (bbox[1] + bbox[3]) / 2.0
+                img_h, img_w = img.shape[:2]
+
+                # Bắt buộc biển báo phải ở bên lề đường (không nằm sát đất và không nằm giữa tim đường ở tầm thấp)
+                if by_center > 0.62 * img_h:
+                    continue
+                if (0.38 * img_w <= bx_center <= 0.62 * img_w) and (by_center >= 0.35 * img_h):
+                    continue
+
                 sign_lat, sign_lng, bearing = calculate_sign_coordinates(
                     meta["lat"], meta["lng"], heading, bbox, img.shape[1]
                 )

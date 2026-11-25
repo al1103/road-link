@@ -1,6 +1,6 @@
-import { readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { importSignsToApp } from './import-signs-to-road-pack.mjs';
@@ -26,7 +26,9 @@ function distMeters(lat1, lon1, lat2, lon2) {
 
 async function getHanoiIntersections() {
   const hanoiTiles = ['209_1057', '209_1058', '210_1057', '210_1058', '210_1059', '211_1057', '211_1058'];
-  const raw = [];
+  const nodeWays = new Map();
+  const nodeCoords = new Map();
+  const roadSamples = [];
 
   for (const k of hanoiTiles) {
     const tilePath = path.join('public/data/vn-osm-20261120/tiles', `${k}.json`);
@@ -34,25 +36,77 @@ async function getHanoiIntersections() {
     try {
       const data = JSON.parse(await readFile(tilePath, 'utf-8'));
       for (const el of data.elements) {
-        if (el.type === 'node' && el.tags && (el.tags.highway === 'traffic_signals' || el.tags.traffic_sign || el.tags.highway === 'stop')) {
-          raw.push({
-            lat: el.lat,
-            lng: el.lon,
-            type: el.tags.highway || el.tags.traffic_sign,
-            name: el.tags.name || ''
-          });
+        // TUYỆT ĐỐI BỎ QUA đèn giao thông / đèn đỏ (traffic_signals)
+        if (el.tags?.highway === 'traffic_signals') {
+          continue;
+        }
+
+        // Trích xuất các tuyến đường xe cơ giới (bỏ đường đi bộ, bậc thang)
+        if (el.type === 'way' && el.tags?.highway) {
+          const hw = el.tags.highway;
+          if (['footway', 'cycleway', 'pedestrian', 'path', 'steps', 'service'].includes(hw)) {
+            continue;
+          }
+          const nodes = el.nodes || [];
+          const geom = el.geometry || [];
+          for (let i = 0; i < nodes.length; i++) {
+            const nid = nodes[i];
+            nodeWays.set(nid, (nodeWays.get(nid) || 0) + 1);
+            if (i < geom.length) {
+              nodeCoords.set(nid, {
+                lat: geom[i].lat,
+                lng: geom[i].lon,
+                type: 'intersection',
+                name: el.tags.name || ''
+              });
+            }
+          }
+
+          // LẤY MẪU ĐỊNH KỲ DỌC CÁC TRỤC ĐƯỜNG DÀI (mỗi ~250m một điểm)
+          // Đảm bảo không bỏ sót các biển báo tốc độ (50, 60, 80, 100 km/h) cắm trên đường thẳng, cao tốc, đại lộ, cầu vượt
+          if (geom.length >= 2) {
+            let lastPt = geom[0];
+            roadSamples.push({ lat: geom[0].lat, lng: geom[0].lon, type: 'road_speed_checkpoint', name: el.tags.name || '' });
+            for (let i = 1; i < geom.length; i++) {
+              const pt = geom[i];
+              if (distMeters(lastPt.lat, lastPt.lon, pt.lat, pt.lon) >= 250) {
+                roadSamples.push({ lat: pt.lat, lng: pt.lon, type: 'road_speed_checkpoint', name: el.tags.name || '' });
+                lastPt = pt;
+              }
+            }
+          }
         }
       }
-    } catch {}
+    } catch (err) {
+      console.error(`[!] Lỗi đọc tile ${k}:`, err.message);
+    }
   }
 
+  // 1. Thu thập các nút giao thực sự (nơi giao nhau của từ 2 đường trở lên: ngã 3, ngã 4, ngã 5)
+  const rawIntersections = [];
+  for (const [nid, count] of nodeWays.entries()) {
+    if (count >= 2 && nodeCoords.has(nid)) {
+      rawIntersections.push(nodeCoords.get(nid));
+    }
+  }
+
+  // 2. Kết hợp NÚT GIAO + ĐIỂM DỌC TRỤC ĐƯỜNG DÀI
+  const combined = [...rawIntersections, ...roadSamples];
+
+  // Khử trùng lặp không gian theo lưới 100m để phủ kín toàn thành phố và không bị chụp lặp
+  const grid = new Map();
   const clustered = [];
-  for (const p of raw) {
-    if (!clustered.some(c => distMeters(c.lat, c.lng, p.lat, p.lng) < 100)) {
+  for (const p of combined) {
+    const gx = Math.floor(p.lat * 1000);
+    const gy = Math.floor(p.lng * 1000);
+    const key = `${gx}_${gy}`;
+    if (!grid.has(key)) {
+      grid.set(key, true);
       clustered.push(p);
     }
   }
 
+  console.log(`[+] Đã tổng hợp ${clustered.length} điểm khảo sát toàn diện (bao gồm tất cả nút giao + các trục đường thẳng có cắm biển tốc độ) khắp Hà Nội.`);
   return clustered;
 }
 
@@ -74,7 +128,7 @@ async function loadProgress() {
   if (existsSync(PROGRESS_FILE)) {
     try {
       return JSON.parse(await readFile(PROGRESS_FILE, 'utf-8'));
-    } catch {}
+    } catch { }
   }
   return { completedIndices: [], totalPoints: 0, lastUpdated: new Date().toISOString() };
 }
@@ -87,9 +141,20 @@ async function saveProgress(progress) {
 export async function crawlAllHanoi({
   limit = 424,
   batchChunk = 25,
-  show = false
+  show = false,
+  reset = false
 } = {}) {
   await mkdir(OUTPUT_DIR, { recursive: true });
+
+  if (reset && existsSync(PROGRESS_FILE)) {
+    console.log('[*] Đang reset tiến trình cào về ban đầu (chạy lại từ đầu)...');
+    await unlink(PROGRESS_FILE).catch(() => { });
+  }
+
+  if (reset && existsSync(PROGRESS_FILE)) {
+    console.log('[*] Đang reset tiến trình cào về ban đầu (chạy lại từ đầu)...');
+    await unlink(PROGRESS_FILE).catch(() => { });
+  }
 
   const allPoints = await getHanoiIntersections();
   const progress = await loadProgress();
@@ -133,7 +198,14 @@ export async function crawlAllHanoi({
       browser = await chromium.launch({
         executablePath: browserPath,
         headless: !show,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled']
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-blink-features=AutomationControlled',
+          '--use-gl=angle',
+          '--enable-webgl',
+          '--ignore-gpu-blocklist'
+        ]
       });
 
       const context = await browser.newContext({
@@ -188,8 +260,9 @@ export async function crawlAllHanoi({
       await writeFile(manifestPath, JSON.stringify(capturedBatch, null, 2), 'utf-8');
 
       console.log(`\n[*] Chạy YOLOv8 nhận diện đợt con ${chunkNum}...`);
+      const pyCmd = process.platform === 'win32' ? 'python' : 'python3';
       try {
-        execSync(`python scripts/detect_from_captured.py --manifest "${manifestPath}" --out "${OUTPUT_DIR}"`, {
+        execSync(`${pyCmd} scripts/detect_from_captured.py --manifest "${manifestPath}" --out "${OUTPUT_DIR}"`, {
           stdio: 'inherit'
         });
       } catch (err) {
@@ -204,14 +277,14 @@ export async function crawlAllHanoi({
 
       for (const item of capturedBatch) {
         if (existsSync(item.imagePath)) {
-          await unlink(item.imagePath).catch(() => {});
+          await unlink(item.imagePath).catch(() => { });
         }
       }
 
       console.log(`[+] TIẾN ĐỘ: Đã xong ${progress.completedIndices.length}/${allPoints.length} nút giao Hà Nội.\n`);
     } catch (chunkErr) {
       console.error(`[!] Lỗi đợt con ${chunkNum}:`, chunkErr.message);
-      if (browser) await browser.close().catch(() => {});
+      if (browser) await browser.close().catch(() => { });
     }
   }
 
@@ -220,9 +293,9 @@ export async function crawlAllHanoi({
 
 const args = process.argv.slice(2);
 const limitArg = args.find(a => a.startsWith('--limit='))?.split('=')[1];
-const isAll = args.includes('--all') || !limitArg;
+const isAll = args.includes('--all');
 const show = args.includes('--show');
+const reset = args.includes('--reset');
+const limit = isAll ? 999999 : (limitArg ? parseInt(limitArg, 10) : 500);
 
-const limit = isAll ? 500 : parseInt(limitArg, 10);
-
-crawlAllHanoi({ limit, show, batchChunk: 25 });
+crawlAllHanoi({ limit, show, reset, batchChunk: 25 });

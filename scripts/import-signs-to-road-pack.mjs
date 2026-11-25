@@ -23,12 +23,52 @@ function distMeters(lat1, lon1, lat2, lon2) {
 
 function mapSignToOsmTags(signType, confidence) {
   const typeLower = (signType || '').toLowerCase();
+  const confVal = parseFloat(confidence || 0);
+
+  // Ngưỡng phát hiện thông minh:
+  // - Các biển đặc thù và camera phạt nguội: conf >= 0.25
+  // - Các nhãn thông thường: conf >= 0.40
+  const isSpecialSign = typeLower.includes('camera') || typeLower.includes('stopping') || typeLower.includes('parking') || typeLower.includes('130') || typeLower.includes('131') || typeLower.includes('no_entry');
+  const minConf = isSpecialSign ? 0.25 : 0.40;
+  if (confVal > 0 && confVal < minConf) {
+    return null;
+  }
   
-  // Đèn giao thông: quy định rõ lấy từ dữ liệu cũ, không lấy từ YOLO
-  if (typeLower.includes('traffic light') || typeLower.includes('signals') || typeLower.includes('đèn')) {
+  // Đèn giao thông thông thường (chỉ là đèn tín hiệu, không phải camera): bỏ qua
+  if ((typeLower.includes('traffic light') || typeLower.includes('signals') || typeLower.includes('đèn')) && !typeLower.includes('camera')) {
     return null;
   }
 
+  // Bỏ camera từ ảnh Street View (do ảnh cũ chưa cập nhật, camera chỉ lấy từ API cấp chính thống)
+  if (typeLower.includes('camera') || typeLower.includes('surveillance')) {
+    return null;
+  }
+
+  // 2. Biển cấm dừng và đỗ xe (P.130 / P.131)
+  if (typeLower.includes('stopping') || typeLower.includes('parking') || typeLower.includes('130') || typeLower.includes('131')) {
+    return {
+      kind: 'prohibition',
+      tags: {
+        traffic_sign: 'no_stopping',
+        source: 'streetview_yolo',
+        confidence: String(confidence || 1.0)
+      }
+    };
+  }
+
+  // 3. Biển cấm đi ngược chiều (P.102)
+  if (typeLower.includes('no_entry') || typeLower.includes('ngược chiều') || typeLower.includes('102')) {
+    return {
+      kind: 'no_entry',
+      tags: {
+        traffic_sign: 'no_entry',
+        source: 'streetview_yolo',
+        confidence: String(confidence || 1.0)
+      }
+    };
+  }
+
+  // 4. Biển giới hạn tốc độ (P.127)
   if (typeLower.includes('speed') || typeLower.includes('127') || typeLower.includes('tốc độ')) {
     const match = typeLower.match(/\d+/);
     const speed = match ? match[0] : '60';
@@ -43,23 +83,13 @@ function mapSignToOsmTags(signType, confidence) {
     };
   }
   
+  // 5. Biển STOP (P.122)
   if (typeLower.includes('stop')) {
     return {
       kind: 'stop',
       tags: {
         highway: 'stop',
         traffic_sign: 'stop',
-        source: 'streetview_yolo',
-        confidence: String(confidence || 1.0)
-      }
-    };
-  }
-  
-  if (typeLower.includes('camera')) {
-    return {
-      kind: 'speed_camera',
-      tags: {
-        highway: 'speed_camera',
         source: 'streetview_yolo',
         confidence: String(confidence || 1.0)
       }
