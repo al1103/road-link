@@ -1,0 +1,74 @@
+[
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.592992_106.758505_h0.jpg",
+    "lat": 10.592992,
+    "lng": 106.7585046,
+    "heading": 0,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.592992,106.7585046,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.592992_106.758505_h90.jpg",
+    "lat": 10.592992,
+    "lng": 106.7585046,
+    "heading": 90,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.592992,106.7585046,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.646742_106.482364_h0.jpg",
+    "lat": 10.6467419,
+    "lng": 106.4823637,
+    "heading": 0,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.6467419,106.4823637,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.646742_106.482364_h90.jpg",
+    "lat": 10.6467419,
+    "lng": 106.4823637,
+    "heading": 90,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.6467419,106.4823637,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.877743_106.399577_h0.jpg",
+    "lat": 10.8777433,
+    "lng": 106.3995768,
+    "heading": 0,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.8777433,106.3995768,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.877743_106.399577_h90.jpg",
+    "lat": 10.8777433,
+    "lng": 106.3995768,
+    "heading": 90,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.8777433,106.3995768,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.646631_106.482379_h0.jpg",
+    "lat": 10.6466306,
+    "lng": 106.4823791,
+    "heading": 0,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.6466306,106.4823791,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.646631_106.482379_h90.jpg",
+    "lat": 10.6466306,
+    "lng": 106.4823791,
+    "heading": 90,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.6466306,106.4823791,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  }
+]

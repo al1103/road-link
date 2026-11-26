@@ -16,7 +16,8 @@ import { bearing, cumulative, distance, formatDistance, formatDuration, pointAt 
 import { Navigator } from './domain/navigation';
 import type { Coordinate, Fix, Place, Progress, Route } from './domain/types';
 import { useLocation } from './hooks/useLocation';
-import { categoryForQuery,fetchRoute,fetchRoutes, friendlyError, NEARBY_RADIUS_M, nearbyCategory, nearbyPlaces, searchPlaces, type TransportProfile } from './services/api';
+import { categoryForQuery,fetchRoutes, friendlyError, NEARBY_RADIUS_M, nearbyCategory, nearbyPlaces, searchPlaces, type TransportProfile } from './services/api';
+import { rankRoutesByRestrictions } from './services/offlineRoadData';
 import { BluetoothLink, type BluetoothState } from './services/bluetooth';
 import { navMessage, routeMessages } from './services/protocol';
 import { say, silence } from './services/voice';
@@ -209,12 +210,13 @@ export default function App() {
     setLoading(true); setRouteError(null); setSearchError(null);setShareStatus(null);setNavigationError(null); setSearchOpen(false); setDetails(false);
     setSelected(place);setAlternatives([]); setRoute(null); setProgress(null); setMode('preview');
     try {
-      const routes = await fetchRoutes(origin, place, controller.signal, viaStops.map(s=>({lat:s.lat,lng:s.lng})), profile);
+      const rawRoutes = await fetchRoutes(origin, place, controller.signal, viaStops.map(s=>({lat:s.lat,lng:s.lng})), profile);
+      const routes = await rankRoutesByRestrictions(rawRoutes, userRoadEdits, controller.signal);
       if (controller.signal.aborted) return;
       setAlternatives(routes);setRoute(routes[0]); setMode(start ? 'navigating' : 'preview'); setFollow(true);
     } catch (err) { if (!controller.signal.aborted) setRouteError(friendlyError(err)); }
     finally { if (!controller.signal.aborted) setLoading(false); }
-  }, [location.fix,originOverride,transportMode,stops]);
+  }, [location.fix,originOverride,transportMode,stops,userRoadEdits]);
   const transportRef = useRef(transportMode);
   useEffect(() => {
     if (transportRef.current === transportMode) return;
@@ -229,10 +231,11 @@ export default function App() {
     if (!navigating || !progress?.offRoute || !route || !location.fix || !goodGPS || rerouting || Date.now() - lastReroute.current < 15000) return;
     const controller = new AbortController(); routeAbort.current?.abort(); routeAbort.current = controller;
     lastReroute.current = Date.now(); setRerouting(true); setNavigationError(null);
-    void fetchRoute(location.fix, route.destination, controller.signal, transportMode).then(next => {
-      if (!controller.signal.aborted) { setRoute(next); setProgress(null); setNavigationError(null); }
+    void fetchRoutes(location.fix, route.destination, controller.signal, [], transportMode).then(async rawRoutes => {
+      const routes = await rankRoutesByRestrictions(rawRoutes, userRoadEdits, controller.signal);
+      if (!controller.signal.aborted && routes[0]) { setAlternatives(routes); setRoute(routes[0]); setProgress(null); setNavigationError(null); }
     }).catch(err => { if (!controller.signal.aborted) setNavigationError(`${friendlyError(err)} Tuyến cũ vẫn được giữ.`); }).finally(() => { if (!controller.signal.aborted) setRerouting(false); });
-  }, [navigating, progress, route, location.fix, goodGPS,rerouting,transportMode]);
+  }, [navigating, progress, route, location.fix, goodGPS,rerouting,transportMode,userRoadEdits]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setShowBLE(false); setShowRoadData(false); setPickingSign(false); setSearchOpen(false); setDetails(false); } };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);

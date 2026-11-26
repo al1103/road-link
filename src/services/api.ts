@@ -1,5 +1,6 @@
 import { cumulative, distance, projectOnRoute } from '../domain/geometry';
 import { createCache } from './cache';
+import { loadRoadManifest, loadTile } from './offlineRoadData';
 import type { Coordinate, Maneuver, OsmRouteEdge, Place, Route, RouteStep } from '../domain/types';
 const ROUTER = (import.meta.env.VITE_ROUTER_URL || 'https://router.project-osrm.org').replace(/\/$/, '');
 const ROUTER_BIKE = (import.meta.env.VITE_ROUTER_BIKE_URL || 'https://routing.openstreetmap.de/routed-bike').replace(/\/$/, '');
@@ -268,18 +269,90 @@ export function parseRoute(data: unknown, destination: Place): Route {
   const summary=Array.isArray(raw.legs)?raw.legs.filter(record).map(leg=>typeof leg.summary==='string'?leg.summary:'').filter(Boolean).join(', '):'';
   return { id: `route-${Date.now()}`, coordinates: points, distance: raw.distance, duration: raw.duration, destination, steps, osmEdges,summary };
 }
+async function scoreProhibitedTurns(route: Route): Promise<number> {
+  let penalty = 0;
+  const turnSteps = route.steps.filter(s =>
+    s.maneuver === 'uturn' || s.maneuver.includes('left') || s.maneuver.includes('right')
+  );
+  if (!turnSteps.length) return 0;
+
+  // Phạt nhẹ bước quay đầu (U-turn) để ưu tiên tuyến đi thẳng/vòng hợp lệ khi có phương án thay thế
+  for (const step of turnSteps) {
+    if (step.maneuver === 'uturn') penalty += 180;
+  }
+
+  try {
+    const manifest = await loadRoadManifest();
+    const neededKeys = new Set<string>();
+    for (const step of turnSteps) {
+      const gx = Math.floor(step.at.lat * 10);
+      const gy = Math.floor(step.at.lng * 10);
+      const key = `${gx}_${gy}`;
+      if (manifest.tiles[key]) neededKeys.add(key);
+    }
+    if (!neededKeys.size) return penalty;
+
+    const tiles = await Promise.all([...neededKeys].map(k => loadTile(k, manifest.tiles[k]).catch(() => [])));
+    const restrictedNodes: Array<{ lat: number; lon: number; sign: string }> = [];
+    for (const elements of tiles) {
+      for (const rawEl of elements) {
+        const el = rawEl as { type?: string; lat?: number; lon?: number; tags?: Record<string, string> };
+        if (el?.type !== 'node' || typeof el.lat !== 'number' || typeof el.lon !== 'number' || !el.tags) continue;
+        const sign = `${el.tags.traffic_sign ?? ''} ${el.tags.restriction ?? ''}`.toUpperCase();
+        if (/P\.?12[34]|P\.?102|NO_ENTRY|NO_LEFT_TURN|NO_RIGHT_TURN|NO_U_TURN|ONLY_STRAIGHT/.test(sign) || el.tags.traffic_sign === 'no_entry') {
+          restrictedNodes.push({ lat: el.lat, lon: el.lon, sign });
+        }
+      }
+    }
+
+    for (const step of turnSteps) {
+      for (const node of restrictedNodes) {
+        if (distance(step.at, { lat: node.lat, lng: node.lon }) > 28) continue;
+        const isLeft = step.maneuver.includes('left');
+        const isRight = step.maneuver.includes('right');
+        const isUturn = step.maneuver === 'uturn';
+        if (
+          (/P\.?102|NO_ENTRY/.test(node.sign)) ||
+          (isLeft && /P\.?123A?|NO_LEFT_TURN|ONLY_STRAIGHT/.test(node.sign)) ||
+          (isRight && /P\.?123B?|NO_RIGHT_TURN|ONLY_STRAIGHT/.test(node.sign)) ||
+          (isUturn && /P\.?124|NO_U_TURN|ONLY_STRAIGHT/.test(node.sign))
+        ) {
+          penalty += 100000;
+        }
+      }
+    }
+  } catch {
+    // Bỏ qua nếu chưa có gói offline hoặc đang chạy ở môi trường test
+  }
+
+  return penalty;
+}
+
 export type TransportProfile = 'car' | 'bike' | 'walk';
-export async function fetchRoute(origin: Coordinate, destination: Place, signal?: AbortSignal, profile: TransportProfile = 'car'): Promise<Route> {
+export type RouteOrigin = Coordinate & { heading?: number; headingAvailable?: boolean; speed?: number };
+export async function fetchRoute(origin: RouteOrigin, destination: Place, signal?: AbortSignal, profile: TransportProfile = 'car'): Promise<Route> {
   return (await fetchRoutes(origin,destination,signal,[],profile))[0];
 }
-export async function fetchRoutes(origin: Coordinate, destination: Place, signal?: AbortSignal,via:Coordinate[]=[],profile:TransportProfile='car'): Promise<Route[]> {
-  const coordinates = [origin,...via,destination].map(point=>`${point.lng},${point.lat}`).join(';');
+export async function fetchRoutes(origin: RouteOrigin, destination: Place, signal?: AbortSignal,via:Coordinate[]=[],profile:TransportProfile='car'): Promise<Route[]> {
+  const allPoints = [origin, ...via, destination];
+  const coordinates = allPoints.map(point=>`${point.lng},${point.lat}`).join(';');
   const base = profile === 'bike' ? ROUTER_BIKE : profile === 'walk' ? ROUTER_FOOT : ROUTER;
-  const alternatives = profile === 'car' ? '&alternatives=true' : '';
-  const data = await getJson(`${base}/route/v1/driving/${coordinates}?overview=full&geometries=geojson&steps=true${alternatives}&annotations=nodes,distance`, signal);
+  const alternatives = profile === 'walk' ? '' : '&alternatives=true';
+  const continueStraight = profile === 'walk' ? '' : '&continue_straight=true';
+  const hasHeading = origin.headingAvailable !== false && typeof origin.heading === 'number' && Number.isFinite(origin.heading) && (origin.speed === undefined || origin.speed > 1.5);
+  const bearingsParam = hasHeading ? `&bearings=${Math.round(((origin.heading! % 360) + 360) % 360)},45${';'.repeat(allPoints.length - 1)}` : '';
+  const data = await getJson(`${base}/route/v1/driving/${coordinates}?overview=full&geometries=geojson&steps=true${alternatives}${continueStraight}${bearingsParam}&annotations=nodes,distance`, signal);
   if(!record(data)||data.code!=='Ok'||!Array.isArray(data.routes)||!data.routes.length)return [parseRoute(data,destination)];
-  const routes = profile === 'car' ? data.routes.slice(0,3) : data.routes.slice(0,1);
-  return routes.map((raw,i)=>({...parseRoute({...data,routes:[raw]},destination),id:`route-${Date.now()}-${i}`}));
+  const rawRoutes = profile === 'walk' ? data.routes.slice(0,1) : data.routes.slice(0,3);
+  const parsed = rawRoutes.map((raw,i)=>({...parseRoute({...data,routes:[raw]},destination),id:`route-${Date.now()}-${i}`}));
+  if (parsed.length <= 1) return parsed;
+  const scored = await Promise.all(parsed.map(async (r, index) => ({
+    route: r,
+    index,
+    score: r.duration + await scoreProhibitedTurns(r)
+  })));
+  scored.sort((a, b) => a.score - b.score || a.index - b.index);
+  return scored.map(item => item.route);
 }
 export function friendlyError(error: unknown): string {
   if (error instanceof Error && error.name === 'AbortError') return 'Yêu cầu đã được hủy.';

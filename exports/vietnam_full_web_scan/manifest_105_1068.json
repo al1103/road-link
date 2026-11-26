@@ -1,0 +1,20 @@
+[
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.571290_106.825780_h0.jpg",
+    "lat": 10.5712895,
+    "lng": 106.8257803,
+    "heading": 0,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.5712895,106.8257803,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  },
+  {
+    "imagePath": "exports/vietnam_full_web_scan/sv_10.571290_106.825780_h90.jpg",
+    "lat": 10.5712895,
+    "lng": 106.8257803,
+    "heading": 90,
+    "fov": 75,
+    "panoId": null,
+    "url": "https://www.google.com/maps/@10.5712895,106.8257803,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+  }
+]

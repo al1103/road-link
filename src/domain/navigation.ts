@@ -1,4 +1,5 @@
-import { cumulative, distance, projectOnRoute } from './geometry';
+import { bearing, cumulative, distance, projectOnRoute } from './geometry';
+import { shortestAngleDelta } from './location';
 import type { Fix, Progress, Route } from './types';
 const OBSERVED_WINDOW_MS = 120000, MIN_OBSERVED_SPAN_MS = 20000;
 /** Stateful matcher: ignores stale/poor fixes, confirms deviations, limits GPS jitter. */
@@ -42,9 +43,14 @@ export class Navigator {
     const maxAdvance = Math.max(90, Math.max(0, fix.speed) * seconds * 2 + fix.accuracy * 2);
     const hit = projectOnRoute(fix, this.route.coordinates, this.lengths, Math.max(0, this.lastAlong - 60), this.lastAlong + maxAdvance);
     const tolerance = Math.max(35, Math.min(60, fix.accuracy * 1.5));
-    this.offCount = hit.distance > tolerance ? this.offCount + 1 : 0;
+    const segFrom = this.route.coordinates[hit.segment];
+    const segTo = this.route.coordinates[Math.min(this.route.coordinates.length - 1, hit.segment + 1)];
+    const segBearing = segFrom && segTo && (segFrom.lat !== segTo.lat || segFrom.lng !== segTo.lng) ? bearing(segFrom, segTo) : null;
+    const wrongDirection = segBearing !== null && fix.headingAvailable && fix.speed > 2.5 && Math.abs(shortestAngleDelta(fix.heading, segBearing)) > 125;
+    const movingBackward = hit.along < this.lastAlong - 20 && fix.speed > 1.5;
+    this.offCount = hit.distance > tolerance || wrongDirection || movingBackward ? this.offCount + 1 : 0;
     const offRoute = this.offCount >= 3;
-    const onRoute = hit.distance <= tolerance;
+    const onRoute = hit.distance <= tolerance && !wrongDirection;
     if (onRoute) this.lastAlong = Math.max(this.lastAlong, hit.along);
     // Time spent off the route would otherwise drag the measured speed down and inflate the estimate after a reroute.
     if (offRoute) this.samples = [];

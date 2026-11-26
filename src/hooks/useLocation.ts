@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation, type Position } from '@capacitor/geolocation';
 import { bearing, distance } from '../domain/geometry';
-import { canNavigateFrom, compassHeading, locationIssue, validLocation, type LocationIssue } from '../domain/location';
+import { canNavigateFrom, compassHeading, locationIssue, shortestAngleDelta, validLocation, type LocationIssue } from '../domain/location';
 import type { Fix } from '../domain/types';
 
 let orientationPermissionRequested = false;
@@ -68,17 +68,23 @@ export function useLocation() {
       if (course === null && previous && next.accuracy <= 25 && previous.accuracy <= 25 && next.timestamp > previous.timestamp && next.timestamp - previous.timestamp < 12000 && distance(previous, next) >= Math.max(4, (previous.accuracy + next.accuracy) / 2)) course = bearing(previous, next);
       if (course !== null) lastCourse.current = { value: (course % 360 + 360) % 360, timestamp: next.timestamp };
 
-      const hasRecentCourse = !!lastCourse.current && next.timestamp - lastCourse.current.timestamp < 12000;
+      const hasRecentCourse = !!lastCourse.current && next.timestamp - lastCourse.current.timestamp < 8000;
       const hasRecentCompass = !!compass.current && now - compass.current.timestamp < 15000;
 
-      if (next.speed > 2.5 && hasRecentCourse) {
-        next.heading = lastCourse.current!.value;
+      // Khi la bàn cho thấy người dùng vừa xoay ngược hẳn (> 95°) lúc đi chậm/vừa quay đầu, bỏ course cũ để không bị giật ngược.
+      if (hasRecentCourse && hasRecentCompass && next.speed <= 5.0 && Math.abs(shortestAngleDelta(lastCourse.current!.value, compass.current!.value)) > 95) {
+        lastCourse.current = null;
+        anchor.current = next;
+      }
+
+      if (next.speed > 3.5 && lastCourse.current && (!hasRecentCompass || next.speed > 5.0 || Math.abs(shortestAngleDelta(lastCourse.current.value, compass.current!.value)) <= 95)) {
+        next.heading = lastCourse.current.value;
         next.headingAvailable = next.accuracy <= 25;
       } else if (hasRecentCompass) {
         next.heading = compass.current!.value;
         next.headingAvailable = true;
-      } else if (hasRecentCourse) {
-        next.heading = lastCourse.current!.value;
+      } else if (lastCourse.current) {
+        next.heading = lastCourse.current.value;
         next.headingAvailable = next.accuracy <= 25;
       } else {
         next.heading = 0;
@@ -121,11 +127,16 @@ export function useLocation() {
       if (heading === null) return;
       compass.current = { value: heading, timestamp: Date.now() };
       const cur = latest.current;
-      if (!cur || cur.speed > 2.5 || Date.now() - cur.timestamp >= 15000) return;
+      if (!cur || cur.speed > 5.0 || Date.now() - cur.timestamp >= 15000) return;
+      // Khi quay ngược hướng hẳn so với course cũ, xóa course cũ và reset anchor để tránh giật khi bắt đầu di chuyển lại.
+      if (lastCourse.current && Math.abs(shortestAngleDelta(lastCourse.current.value, heading)) > 95) {
+        lastCourse.current = null;
+        anchor.current = cur;
+      }
       // Sensor events arrive far faster than the UI needs; unthrottled state updates re-render the map at sensor rate.
       const now = performance.now();
       if (now - lastOrientationUpdate.current < 100) return;
-      if (cur.headingAvailable && Math.abs(((heading - cur.heading + 540) % 360) - 180) < 1) return;
+      if (cur.headingAvailable && Math.abs(shortestAngleDelta(cur.heading, heading)) < 1) return;
       lastOrientationUpdate.current = now;
       const updated = { ...cur, heading, headingAvailable: true };
       latest.current = updated;

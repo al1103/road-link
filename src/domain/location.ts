@@ -16,12 +16,19 @@ export function locationZoom(accuracy:number):number {
   return accuracy<=25?17:accuracy<=100?16:accuracy<=1000?14:accuracy<=5000?12:9;
 }
 
+export function shortestAngleDelta(from:number,to:number):number {
+  return ((((to-from)%360)+540)%360)-180;
+}
+
 export function compassHeading(event:{webkitCompassHeading?:unknown;alpha?:unknown;absolute?:unknown}):number|null {
   const {webkitCompassHeading,alpha,absolute}=event;
-  if(typeof webkitCompassHeading==='number'&&Number.isFinite(webkitCompassHeading)&&webkitCompassHeading>=0&&webkitCompassHeading<=360)return webkitCompassHeading;
+  if(typeof webkitCompassHeading==='number'&&Number.isFinite(webkitCompassHeading)&&webkitCompassHeading>=0&&webkitCompassHeading<=360)return webkitCompassHeading%360;
   // Relative alpha (absolute !== true) has no fixed north, so it would point the arrow in the wrong direction.
   if(absolute!==true)return null;
-  if(typeof alpha==='number'&&Number.isFinite(alpha))return (360-alpha+360)%360;
+  if(typeof alpha==='number'&&Number.isFinite(alpha)){
+    const screenAngle=typeof window!=='undefined'&&typeof window.screen?.orientation?.angle==='number'?window.screen.orientation.angle:0;
+    return ((360-alpha+screenAngle)%360+360)%360;
+  }
   return null;
 }
 

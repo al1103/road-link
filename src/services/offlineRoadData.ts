@@ -1,6 +1,7 @@
-import { cumulative,pointAt } from '../domain/geometry';
+import { cumulative, distance, pointAt, projectOnRoute } from '../domain/geometry';
 import { buildRoadQuery,parseRoadData,type RoadData,type RoadFeature,type SpeedSection } from '../domain/roadData';
-import type { Route } from '../domain/types';
+import type { Coordinate, Route } from '../domain/types';
+import type { UserRoadEdit } from '../domain/userRoadEdits';
 export const PACK_BASE='/data/vn-osm-20261120/';
 type Tile={path:string;bytes:number;sha256:string;elements:number};
 export type RoadPackManifest={schema:1;country:'VN';version:string;sourceUrl:string;license:string;attribution:string;coverageNotice:string;wayCount:number;nodeCount:number;tiles:Record<string,Tile>};
@@ -26,7 +27,7 @@ export async function loadRoadManifest():Promise<RoadPackManifest>{
   })().catch(e=>{manifestPromise=null;throw e;});
   return manifestPromise;
 }
-async function loadTile(key:string,tile:Tile):Promise<unknown[]>{
+export async function loadTile(key:string,tile:Tile):Promise<unknown[]>{
   const cached=tileCache.get(key);if(cached)return cached;
   const existing=inFlight.get(key);if(existing)return existing;
   const task=(async()=>{
@@ -92,4 +93,78 @@ export async function fetchOfflineRouteData(route:Route,signal:AbortSignal,onPro
   }
   if(!snapshot)throw new Error('Chưa đọc được dữ liệu toàn tuyến.');
   return snapshot;
+}
+
+function isTurnManeuver(m: string): boolean {
+  return m === 'left' || m === 'right' || m === 'slight-left' || m === 'slight-right' || m === 'uturn';
+}
+
+function isTurnRestrictionTag(tags: Record<string, string>): 'turn' | 'entry' | null {
+  const ts = (tags.traffic_sign ?? '').toUpperCase();
+  const rest = (tags.restriction ?? '').toLowerCase();
+  if (/P\.?12[34]/.test(ts) || /no_left_turn|no_right_turn|no_u_turn|only_straight_on/.test(rest)) return 'turn';
+  if (/P\.?10[23]|VN:102|WRONG WAY/.test(ts) || ts === 'NO_ENTRY') return 'entry';
+  return null;
+}
+
+/** Ưu tiên xếp các tuyến đường không đi qua điểm cấm rẽ/cấm quay đầu (P.123/P.124) hoặc cấm đi vào (P.102) lên đầu. */
+export async function rankRoutesByRestrictions(routes: Route[], userEdits: UserRoadEdit[] = [], signal?: AbortSignal): Promise<Route[]> {
+  if (routes.length <= 1) return routes;
+  try {
+    const manifest = await loadRoadManifest();
+    if (signal?.aborted) return routes;
+
+    const tileKeys = new Set<string>();
+    for (const r of routes) {
+      for (const p of r.coordinates) {
+        const key = `${Math.floor(p.lat * 10)}_${Math.floor(p.lng * 10)}`;
+        if (manifest.tiles[key]) tileKeys.add(key);
+      }
+    }
+    if (tileKeys.size > 16) return routes;
+
+    const chunks = await Promise.all([...tileKeys].map(k => loadTile(k, manifest.tiles[k]).catch(() => [])));
+    if (signal?.aborted) return routes;
+
+    const turnRestrictions: Coordinate[] = [];
+    const noEntries: Coordinate[] = [];
+
+    for (const chunk of chunks) {
+      for (const item of chunk) {
+        const el = item as { type?: string; lat?: number; lon?: number; tags?: Record<string, string> };
+        if (el?.type !== 'node' || typeof el.lat !== 'number' || typeof el.lon !== 'number' || !el.tags) continue;
+        const kind = isTurnRestrictionTag(el.tags);
+        if (kind === 'turn') turnRestrictions.push({ lat: el.lat, lng: el.lon });
+        else if (kind === 'entry') noEntries.push({ lat: el.lat, lng: el.lon });
+      }
+    }
+
+    for (const edit of userEdits) {
+      if (edit.kind !== 'addition') continue;
+      if (edit.featureKind === 'no-entry') noEntries.push({ lat: edit.lat, lng: edit.lng });
+      else if (edit.featureKind === 'prohibition') turnRestrictions.push({ lat: edit.lat, lng: edit.lng });
+    }
+
+    if (!turnRestrictions.length && !noEntries.length) return routes;
+
+    const scored = routes.map((r, idx) => {
+      let penalties = 0;
+      for (const step of r.steps) {
+        if (!isTurnManeuver(step.maneuver)) continue;
+        if (turnRestrictions.some(p => distance(step.at, p) <= 28)) penalties += 10;
+      }
+      if (noEntries.length) {
+        const lengths = cumulative(r.coordinates);
+        for (const ne of noEntries) {
+          if (projectOnRoute(ne, r.coordinates, lengths).distance <= 12) penalties += 10;
+        }
+      }
+      return { route: r, penalties, idx };
+    });
+
+    scored.sort((a, b) => a.penalties - b.penalties || a.idx - b.idx);
+    return scored.map(s => s.route);
+  } catch {
+    return routes;
+  }
 }

@@ -1,6 +1,5 @@
 {
   "type": "FeatureCollection",
-  "name": "Hanoi Verified Traffic Signs QCVN 41:2019",
   "features": [
     {
       "type": "Feature",
@@ -13,12 +12,12 @@
       },
       "properties": {
         "id": "sv_hanoi_926",
-        "name": "\u0110\u1ea1i l\u1ed9 Th\u0103ng Long (Nh\u00e1nh r\u1ebd Khu\u1ea5t Duy Ti\u1ebfn / Ph\u1ea1m H\u00f9ng)",
+        "name": "Đại lộ Thăng Long (Nhánh rẽ Khuất Duy Tiến / Phạm Hùng)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.64,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 gi\u1edbi h\u1ea1n t\u1ed1c \u0111\u1ed9 60km/h (\u0110\u00e3 x\u00e1c minh \u0111\u1ed9 t\u01b0\u01a1ng ph\u1ea3n pixel v\u00e0 l\u1ec1 \u0111\u01b0\u1eddng)"
+        "verified_note": "Biển P.127 giới hạn tốc độ 60km/h (Đã xác minh độ tương phản pixel và lề đường)"
       }
     },
     {
@@ -32,12 +31,12 @@
       },
       "properties": {
         "id": "sv_hanoi_989",
-        "name": "C\u1ea7u Th\u0103ng Long (H\u01b0\u1edbng v\u00e0o n\u1ed9i th\u00e0nh)",
+        "name": "Cầu Thăng Long (Hướng vào nội thành)",
         "kind": "maxspeed",
         "maxspeed": "80",
         "confidence": 0.52,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 80km/h g\u1eafn tr\u00ean gi\u00e0n th\u00e9p long m\u00f4n tr\u00ean cao"
+        "verified_note": "Biển P.127 tốc độ 80km/h gắn trên giàn thép long môn trên cao"
       }
     },
     {
@@ -51,12 +50,12 @@
       },
       "properties": {
         "id": "sv_hanoi_hoankiem_1",
-        "name": "Ph\u1ed1 \u0110inh Ti\u00ean Ho\u00e0ng / H\u00e0ng Khay (H\u1ed3 Ho\u00e0n Ki\u1ebfm)",
+        "name": "Phố Đinh Tiên Hoàng / Hàng Khay (Hồ Hoàn Kiếm)",
         "kind": "maxspeed",
         "maxspeed": "50",
         "confidence": 0.81,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n t\u1ed1c \u0111\u1ed9 50km/h trong \u0111\u00f4 th\u1ecb"
+        "verified_note": "Biển tốc độ 50km/h trong đô thị"
       }
     },
     {
@@ -70,12 +69,12 @@
       },
       "properties": {
         "id": "sv_hanoi_tranphu_43",
-        "name": "\u0110\u01b0\u1eddng Tr\u1ea7n Ph\u00fa, H\u00e0 \u0110\u00f4ng (G\u1ea7n H\u1ecdc vi\u1ec7n An ninh / B\u01b0u ch\u00ednh)",
+        "name": "Đường Trần Phú, Hà Đông (Gần Học viện An ninh / Bưu chính)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.6,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h \u0111\u01b0\u1eddng \u0111\u00f4i d\u1ea3i ph\u00e2n c\u00e1ch gi\u1eefa"
+        "verified_note": "Biển P.127 tốc độ 60km/h đường đôi dải phân cách giữa"
       }
     },
     {
@@ -89,12 +88,12 @@
       },
       "properties": {
         "id": "sv_hanoi_tranphu_44",
-        "name": "\u0110\u01b0\u1eddng Tr\u1ea7n Ph\u00fa, H\u00e0 \u0110\u00f4ng (\u0110o\u1ea1n Ph\u00f9ng H\u01b0ng)",
+        "name": "Đường Trần Phú, Hà Đông (Đoạn Phùng Hưng)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.59,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h"
+        "verified_note": "Biển P.127 tốc độ 60km/h"
       }
     },
     {
@@ -108,12 +107,12 @@
       },
       "properties": {
         "id": "sv_hanoi_tohuu_25",
-        "name": "\u0110\u01b0\u1eddng T\u1ed1 H\u1eefu (L\u00ea V\u0103n L\u01b0\u01a1ng k\u00e9o d\u00e0i)",
+        "name": "Đường Tố Hữu (Lê Văn Lương kéo dài)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.66,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h tr\u1ee5c BRT T\u1ed1 H\u1eefu"
+        "verified_note": "Biển P.127 tốc độ 60km/h trục BRT Tố Hữu"
       }
     },
     {
@@ -127,12 +126,12 @@
       },
       "properties": {
         "id": "sv_hanoi_tohuu_39",
-        "name": "\u0110\u01b0\u1eddng T\u1ed1 H\u1eefu (G\u1ea7n n\u00fat giao Trung V\u0103n)",
+        "name": "Đường Tố Hữu (Gần nút giao Trung Văn)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.61,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h"
+        "verified_note": "Biển P.127 tốc độ 60km/h"
       }
     },
     {
@@ -146,12 +145,12 @@
       },
       "properties": {
         "id": "sv_hanoi_quangtrung_23",
-        "name": "\u0110\u01b0\u1eddng Quang Trung, H\u00e0 \u0110\u00f4ng",
+        "name": "Đường Quang Trung, Hà Đông",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.63,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h tuy\u1ebfn metro C\u00e1t Linh - H\u00e0 \u0110\u00f4ng"
+        "verified_note": "Biển P.127 tốc độ 60km/h tuyến metro Cát Linh - Hà Đông"
       }
     },
     {
@@ -165,12 +164,12 @@
       },
       "properties": {
         "id": "sv_hanoi_quangtrung_31",
-        "name": "\u0110\u01b0\u1eddng Quang Trung, Ba La, H\u00e0 \u0110\u00f4ng",
+        "name": "Đường Quang Trung, Ba La, Hà Đông",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.57,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h"
+        "verified_note": "Biển P.127 tốc độ 60km/h"
       }
     },
     {
@@ -184,12 +183,12 @@
       },
       "properties": {
         "id": "sv_hanoi_quangtrung_47",
-        "name": "\u0110\u01b0\u1eddng Quang Trung (\u0110o\u1ea1n C\u1ea7u Tr\u1eafng)",
+        "name": "Đường Quang Trung (Đoạn Cầu Trắng)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.61,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h"
+        "verified_note": "Biển P.127 tốc độ 60km/h"
       }
     },
     {
@@ -203,12 +202,12 @@
       },
       "properties": {
         "id": "sv_hanoi_luongthevinh_50",
-        "name": "\u0110\u01b0\u1eddng L\u01b0\u01a1ng Th\u1ebf Vinh (Thanh Xu\u00e2n)",
+        "name": "Đường Lương Thế Vinh (Thanh Xuân)",
         "kind": "maxspeed",
         "maxspeed": "50",
         "confidence": 0.61,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 gi\u1edbi h\u1ea1n t\u1ed1c \u0111\u1ed9 50km/h"
+        "verified_note": "Biển P.127 giới hạn tốc độ 50km/h"
       }
     },
     {
@@ -222,12 +221,12 @@
       },
       "properties": {
         "id": "sv_hanoi_luongthevinh_51",
-        "name": "\u0110\u01b0\u1eddng L\u01b0\u01a1ng Th\u1ebf Vinh (G\u1ea7n KTX M\u1ec5 Tr\u00ec)",
+        "name": "Đường Lương Thế Vinh (Gần KTX Mễ Trì)",
         "kind": "maxspeed",
         "maxspeed": "50",
         "confidence": 0.61,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 50km/h"
+        "verified_note": "Biển P.127 tốc độ 50km/h"
       }
     },
     {
@@ -241,12 +240,12 @@
       },
       "properties": {
         "id": "sv_hanoi_nguyenxien_5",
-        "name": "\u0110\u01b0\u1eddng Nguy\u1ec5n Xi\u1ec3n (\u0110o\u1ea1n d\u01b0\u1edbi ch\u00e2n c\u1ea7u c\u1ea1n V\u00e0nh \u0111ai 3)",
+        "name": "Đường Nguyễn Xiển (Đoạn dưới chân cầu cạn Vành đai 3)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.62,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h \u0111\u01b0\u1eddng d\u01b0\u1edbi th\u1ea5p"
+        "verified_note": "Biển P.127 tốc độ 60km/h đường dưới thấp"
       }
     },
     {
@@ -260,12 +259,12 @@
       },
       "properties": {
         "id": "sv_hanoi_tamtrinh_10",
-        "name": "\u0110\u01b0\u1eddng Tam Trinh (Ho\u00e0ng Mai)",
+        "name": "Đường Tam Trinh (Hoàng Mai)",
         "kind": "maxspeed",
         "maxspeed": "50",
         "confidence": 0.63,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 50km/h"
+        "verified_note": "Biển P.127 tốc độ 50km/h"
       }
     },
     {
@@ -279,12 +278,12 @@
       },
       "properties": {
         "id": "sv_hanoi_caucoc_16",
-        "name": "Ph\u1ed1 C\u1ea7u C\u1ed1c (T\u00e2y M\u1ed7, Nam T\u1eeb Li\u00eam)",
+        "name": "Phố Cầu Cốc (Tây Mỗ, Nam Từ Liêm)",
         "kind": "maxspeed",
         "maxspeed": "50",
         "confidence": 0.62,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 50km/h khu v\u1ef1c d\u00e2n c\u01b0"
+        "verified_note": "Biển P.127 tốc độ 50km/h khu vực dân cư"
       }
     },
     {
@@ -298,12 +297,12 @@
       },
       "properties": {
         "id": "sv_hanoi_trungthu_27",
-        "name": "\u0110\u01b0\u1eddng Trung Th\u01b0 (Nam T\u1eeb Li\u00eam)",
+        "name": "Đường Trung Thư (Nam Từ Liêm)",
         "kind": "maxspeed",
         "maxspeed": "50",
         "confidence": 0.58,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n t\u1ed1c \u0111\u1ed9 50km/h"
+        "verified_note": "Biển tốc độ 50km/h"
       }
     },
     {
@@ -317,12 +316,12 @@
       },
       "properties": {
         "id": "sv_hanoi_greenbay_33",
-        "name": "\u0110\u01b0\u1eddng M\u1ed9c Lan 5 (Vinhomes Green Bay)",
+        "name": "Đường Mộc Lan 5 (Vinhomes Green Bay)",
         "kind": "maxspeed",
         "maxspeed": "30",
         "confidence": 0.81,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 h\u1ea1n ch\u1ebf t\u1ed1c \u0111\u1ed9 30km/h trong khu \u0111\u00f4 th\u1ecb sinh th\u00e1i"
+        "verified_note": "Biển P.127 hạn chế tốc độ 30km/h trong khu đô thị sinh thái"
       }
     },
     {
@@ -336,12 +335,12 @@
       },
       "properties": {
         "id": "sv_hanoi_greenbay_56",
-        "name": "\u0110\u01b0\u1eddng Th\u1ea1ch Th\u1ea3o (Vinhomes Green Bay)",
+        "name": "Đường Thạch Thảo (Vinhomes Green Bay)",
         "kind": "maxspeed",
         "maxspeed": "30",
         "confidence": 0.81,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 30km/h"
+        "verified_note": "Biển P.127 tốc độ 30km/h"
       }
     },
     {
@@ -355,12 +354,12 @@
       },
       "properties": {
         "id": "sv_hanoi_greenbay_57",
-        "name": "\u0110\u01b0\u1eddng Ho\u00e0ng Lan (Vinhomes Green Bay)",
+        "name": "Đường Hoàng Lan (Vinhomes Green Bay)",
         "kind": "maxspeed",
         "maxspeed": "30",
         "confidence": 0.82,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 30km/h"
+        "verified_note": "Biển P.127 tốc độ 30km/h"
       }
     },
     {
@@ -374,12 +373,12 @@
       },
       "properties": {
         "id": "sv_hanoi_chucson_29",
-        "name": "Qu\u1ed1c l\u1ed9 6 (\u0110o\u1ea1n qua Ch\u00fac S\u01a1n, Ch\u01b0\u01a1ng M\u1ef9)",
+        "name": "Quốc lộ 6 (Đoạn qua Chúc Sơn, Chương Mỹ)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.56,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h ngo\u00e0i \u0111\u00f4 th\u1ecb"
+        "verified_note": "Biển P.127 tốc độ 60km/h ngoài đô thị"
       }
     },
     {
@@ -393,12 +392,12 @@
       },
       "properties": {
         "id": "sv_hanoi_chucson_34",
-        "name": "Qu\u1ed1c l\u1ed9 6 (\u0110o\u1ea1n Ch\u00fac S\u01a1n)",
+        "name": "Quốc lộ 6 (Đoạn Chúc Sơn)",
         "kind": "maxspeed",
         "maxspeed": "60",
         "confidence": 0.65,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.127 t\u1ed1c \u0111\u1ed9 60km/h"
+        "verified_note": "Biển P.127 tốc độ 60km/h"
       }
     },
     {
@@ -412,12 +411,12 @@
       },
       "properties": {
         "id": "sv_hanoi_donganh_60",
-        "name": "\u0110\u01b0\u1eddng gom V\u00f5 V\u0103n Ki\u1ec7t / KCN Th\u0103ng Long (\u0110\u00f4ng Anh)",
+        "name": "Đường gom Võ Văn Kiệt / KCN Thăng Long (Đông Anh)",
         "kind": "stop",
         "maxspeed": null,
         "confidence": 0.57,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n d\u1eebng xe ki\u1ec3m so\u00e1t / STOP giao c\u1eaft \u0111\u01b0\u1eddng gom"
+        "verified_note": "Biển dừng xe kiểm soát / STOP giao cắt đường gom"
       }
     },
     {
@@ -431,12 +430,12 @@
       },
       "properties": {
         "id": "sv_hanoi_phucdien_p130",
-        "name": "\u0110\u01b0\u1eddng Ph\u00fac Di\u1ec5n, B\u1eafc T\u1eeb Li\u00eam",
+        "name": "Đường Phúc Diễn, Bắc Từ Liêm",
         "kind": "no_stopping_or_parking",
         "traffic_sign": "city_limit",
         "confidence": 0.58,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Bi\u1ec3n P.130/P.131 C\u1ea5m D\u1eebng/\u0110\u1ed7 Xe (Vi\u1ec1n \u0111\u1ecf, n\u1ec1n xanh d\u01b0\u01a1ng \u0111\u1eb7c tr\u01b0ng QCVN 41:2019)"
+        "verified_note": "Biển P.130/P.131 Cấm Dừng/Đỗ Xe (Viền đỏ, nền xanh dương đặc trưng QCVN 41:2019)"
       }
     },
     {
@@ -450,12 +449,12 @@
       },
       "properties": {
         "id": "sv_cam_phucdien_1",
-        "name": "\u0110\u01b0\u1eddng Ph\u00fac Di\u1ec5n (B\u1eafc T\u1eeb Li\u00eam)",
+        "name": "Đường Phúc Diễn (Bắc Từ Liêm)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.75,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean g\u1eafn tr\u00ean c\u1ea7n v\u01b0\u01a1n gi\u00e1 long m\u00f4n"
+        "verified_note": "Camera phạt nguội bên trên gắn trên cần vươn giá long môn"
       }
     },
     {
@@ -469,12 +468,12 @@
       },
       "properties": {
         "id": "sv_cam_cauthanglong",
-        "name": "C\u1ea7u Th\u0103ng Long (H\u01b0\u1edbng v\u00e0o n\u1ed9i th\u00e0nh)",
+        "name": "Cầu Thăng Long (Hướng vào nội thành)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.85,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i t\u1ed1c \u0111\u1ed9 g\u1eafn tr\u00ean gi\u00e0n th\u00e9p long m\u00f4n C\u1ea7u Th\u0103ng Long"
+        "verified_note": "Camera phạt nguội tốc độ gắn trên giàn thép long môn Cầu Thăng Long"
       }
     },
     {
@@ -488,12 +487,12 @@
       },
       "properties": {
         "id": "sv_cam_thanglong_ave",
-        "name": "\u0110\u1ea1i l\u1ed9 Th\u0103ng Long (N\u00fat giao Khu\u1ea5t Duy Ti\u1ebfn / Ph\u1ea1m H\u00f9ng)",
+        "name": "Đại lộ Thăng Long (Nút giao Khuất Duy Tiến / Phạm Hùng)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.82,
         "source": "streetview_yolo_qcvn41_verified",
-        "verified_note": "Camera gi\u00e1m s\u00e1t ph\u1ea1t ngu\u1ed9i l\u00e0n \u0111\u01b0\u1eddng & t\u1ed1c \u0111\u1ed9"
+        "verified_note": "Camera giám sát phạt nguội làn đường & tốc độ"
       }
     },
     {
@@ -507,12 +506,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_1",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Gi\u1ea3ng V\u00f5 \u2013 C\u00e1t Linh",
+        "name": "Camera Phạt Nguội: Giảng Võ – Cát Linh",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -526,12 +525,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_2",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Gi\u1ea3ng V\u00f5 \u2013 L\u00e1ng H\u1ea1",
+        "name": "Camera Phạt Nguội: Giảng Võ – Láng Hạ",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -545,12 +544,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_3",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: \u0110i\u1ec7n Bi\u00ean Ph\u1ee7 \u2013 Tr\u1ea7n Ph\u00fa",
+        "name": "Camera Phạt Nguội: Điện Biên Phủ – Trần Phú",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -564,12 +563,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_4",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Phan \u0110\u00ecnh Ph\u00f9ng \u2013 H\u00f9ng V\u01b0\u01a1ng",
+        "name": "Camera Phạt Nguội: Phan Đình Phùng – Hùng Vương",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -583,12 +582,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_5",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ea1m V\u0103n \u0110\u1ed3ng \u2013 Ho\u00e0ng Qu\u1ed1c Vi\u1ec7t",
+        "name": "Camera Phạt Nguội: Phạm Văn Đồng – Hoàng Quốc Việt",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_lane"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_lane"
       }
     },
     {
@@ -602,12 +601,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_6",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ea1m V\u0103n \u0110\u1ed3ng \u2013 C\u1ed5 Nhu\u1ebf",
+        "name": "Camera Phạt Nguội: Phạm Văn Đồng – Cổ Nhuế",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_lane"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_lane"
       }
     },
     {
@@ -621,12 +620,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_7",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ea1m V\u0103n \u0110\u1ed3ng \u2013 Xu\u00e2n \u0110\u1ec9nh",
+        "name": "Camera Phạt Nguội: Phạm Văn Đồng – Xuân Đỉnh",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_lane"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_lane"
       }
     },
     {
@@ -640,12 +639,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_8",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: \u00d4 Ch\u1ee3 D\u1eeba (X\u00e3 \u0110\u00e0n - Kh\u00e2m Thi\u00ean - T\u00f4n \u0110\u1ee9c Th\u1eafng)",
+        "name": "Camera Phạt Nguội: Ô Chợ Dừa (Xã Đàn - Khâm Thiên - Tôn Đức Thắng)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -659,12 +658,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_9",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: \u0110\u1ea1i C\u1ed3 Vi\u1ec7t \u2013 Gi\u1ea3i Ph\u00f3ng",
+        "name": "Camera Phạt Nguội: Đại Cồ Việt – Giải Phóng",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -678,12 +677,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_10",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: \u0110\u01b0\u1eddng Gi\u1ea3i Ph\u00f3ng (\u0110o\u1ea1n BV B\u1ea1ch Mai)",
+        "name": "Camera Phạt Nguội: Đường Giải Phóng (Đoạn BV Bạch Mai)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - bus_lane_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - bus_lane_and_speed"
       }
     },
     {
@@ -697,12 +696,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_11",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: H\u00e0ng Gi\u1ea5y \u2013 H\u00e0ng \u0110\u1eadu",
+        "name": "Camera Phạt Nguội: Hàng Giấy – Hàng Đậu",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals"
       }
     },
     {
@@ -716,12 +715,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_12",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Qu\u00e1n Th\u00e1nh \u2013 Thanh Ni\u00ean",
+        "name": "Camera Phạt Nguội: Quán Thánh – Thanh Niên",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -735,12 +734,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_13",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Xu\u00e2n Th\u1ee7y \u2013 Nguy\u1ec5n Phong S\u1eafc",
+        "name": "Camera Phạt Nguội: Xuân Thủy – Nguyễn Phong Sắc",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -754,12 +753,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_14",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: L\u00ea V\u0103n L\u01b0\u01a1ng \u2013 Khu\u1ea5t Duy Ti\u1ebfn",
+        "name": "Camera Phạt Nguội: Lê Văn Lương – Khuất Duy Tiến",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -773,12 +772,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_15",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Khu\u1ea5t Duy Ti\u1ebfn \u2013 Tr\u1ea7n Duy H\u01b0ng",
+        "name": "Camera Phạt Nguội: Khuất Duy Tiến – Trần Duy Hưng",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_signals"
       }
     },
     {
@@ -792,12 +791,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_16",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: X\u00e3 \u0110\u00e0n \u2013 Ph\u1ea1m Ng\u1ecdc Th\u1ea1ch",
+        "name": "Camera Phạt Nguội: Xã Đàn – Phạm Ngọc Thạch",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -811,12 +810,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_17",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: \u00c2u C\u01a1 \u2013 L\u1ea1c Long Qu\u00e2n",
+        "name": "Camera Phạt Nguội: Âu Cơ – Lạc Long Quân",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -830,12 +829,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_18",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ea1m V\u0103n \u0110\u1ed3ng \u2013 B\u1ed9 C\u00f4ng An",
+        "name": "Camera Phạt Nguội: Phạm Văn Đồng – Bộ Công An",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_lane"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_lane"
       }
     },
     {
@@ -849,12 +848,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_19",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: L\u00e1ng H\u1ea1 \u2013 Th\u00e1i H\u00e0",
+        "name": "Camera Phạt Nguội: Láng Hạ – Thái Hà",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -868,12 +867,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_20",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: L\u00e1ng H\u1ea1 \u2013 \u0110\u01b0\u1eddng L\u00e1ng",
+        "name": "Camera Phạt Nguội: Láng Hạ – Đường Láng",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -887,12 +886,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_21",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ho\u00e0ng C\u1ea7u \u2013 La Th\u00e0nh",
+        "name": "Camera Phạt Nguội: Hoàng Cầu – La Thành",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals"
       }
     },
     {
@@ -906,12 +905,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_22",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ea1m H\u00f9ng \u2013 M\u1ec5 Tr\u00ec",
+        "name": "Camera Phạt Nguội: Phạm Hùng – Mễ Trì",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -925,12 +924,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_23",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Kim M\u00e3 \u2013 N\u00fai Tr\u00fac",
+        "name": "Camera Phạt Nguội: Kim Mã – Núi Trúc",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -944,12 +943,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_24",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ed1 Hu\u1ebf \u2013 H\u00e0ng B\u00e0i",
+        "name": "Camera Phạt Nguội: Phố Huế – Hàng Bài",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - one_way_and_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - one_way_and_signals"
       }
     },
     {
@@ -963,12 +962,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_25",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ed1 Hu\u1ebf \u2013 Tr\u1ea7n Kh\u00e1t Ch\u00e2n",
+        "name": "Camera Phạt Nguội: Phố Huế – Trần Khát Chân",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -982,12 +981,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_26",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Phan \u0110\u00ecnh Ph\u00f9ng \u2013 H\u00e0ng C\u00f3t",
+        "name": "Camera Phạt Nguội: Phan Đình Phùng – Hàng Cót",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals"
       }
     },
     {
@@ -1001,12 +1000,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_27",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Thanh Ni\u00ean \u2013 Y\u00ean Ph\u1ee5",
+        "name": "Camera Phạt Nguội: Thanh Niên – Yên Phụ",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_signals"
       }
     },
     {
@@ -1020,12 +1019,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_28",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Gi\u1ea3i Ph\u00f3ng \u2013 Kim \u0110\u1ed3ng",
+        "name": "Camera Phạt Nguội: Giải Phóng – Kim Đồng",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -1039,12 +1038,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_29",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Nguy\u1ec5n Tr\u00e3i \u2013 Khu\u1ea5t Duy Ti\u1ebfn \u2013 Nguy\u1ec5n Xi\u1ec3n",
+        "name": "Camera Phạt Nguội: Nguyễn Trãi – Khuất Duy Tiến – Nguyễn Xiển",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_signals"
       }
     },
     {
@@ -1058,12 +1057,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_30",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Nguy\u1ec5n Th\u00e1i H\u1ecdc \u2013 T\u00f4n \u0110\u1ee9c Th\u1eafng",
+        "name": "Camera Phạt Nguội: Nguyễn Thái Học – Tôn Đức Thắng",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -1077,12 +1076,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_31",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Tuy\u1ebfn \u0111\u01b0\u1eddng T\u00e2y S\u01a1n (\u0110o\u1ea1n G\u00f2 \u0110\u1ed1ng \u0110a / Ch\u00f9a B\u1ed9c)",
+        "name": "Camera Phạt Nguội: Tuyến đường Tây Sơn (Đoạn Gò Đống Đa / Chùa Bộc)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_lane"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_lane"
       }
     },
     {
@@ -1096,12 +1095,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_32",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Tuy\u1ebfn \u0111\u01b0\u1eddng B\u00e0 Tri\u1ec7u (\u0110o\u1ea1n Vincom B\u00e0 Tri\u1ec7u)",
+        "name": "Camera Phạt Nguội: Tuyến đường Bà Triệu (Đoạn Vincom Bà Triệu)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - one_way_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - one_way_and_speed"
       }
     },
     {
@@ -1115,12 +1114,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_33",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Tuy\u1ebfn \u0111\u01b0\u1eddng Tr\u00e0ng Ti\u1ec1n (\u0110o\u1ea1n Nh\u00e0 h\u00e1t L\u1edbn)",
+        "name": "Camera Phạt Nguội: Tuyến đường Tràng Tiền (Đoạn Nhà hát Lớn)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_signals"
       }
     },
     {
@@ -1134,12 +1133,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_34",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Tuy\u1ebfn \u0111\u01b0\u1eddng \u0110inh Ti\u00ean Ho\u00e0ng (B\u1edd H\u1ed3 Ho\u00e0n Ki\u1ebfm)",
+        "name": "Camera Phạt Nguội: Tuyến đường Đinh Tiên Hoàng (Bờ Hồ Hoàn Kiếm)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - pedestrian_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - pedestrian_and_speed"
       }
     },
     {
@@ -1153,12 +1152,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_35",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Tuy\u1ebfn \u0111\u01b0\u1eddng Hai B\u00e0 Tr\u01b0ng (\u0110o\u1ea1n Tr\u00e0ng Thi)",
+        "name": "Camera Phạt Nguội: Tuyến đường Hai Bà Trưng (Đoạn Tràng Thi)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_signals"
       }
     },
     {
@@ -1172,12 +1171,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_36",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Tuy\u1ebfn \u0111\u01b0\u1eddng C\u1ea7u Gi\u1ea5y (\u0110o\u1ea1n \u0110H Giao Th\u00f4ng V\u1eadn T\u1ea3i)",
+        "name": "Camera Phạt Nguội: Tuyến đường Cầu Giấy (Đoạn ĐH Giao Thông Vận Tải)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_lane"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_lane"
       }
     },
     {
@@ -1191,12 +1190,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_37",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Th\u0103ng Long \u2013 N\u1ed9i B\u00e0i (\u0110o\u1ea1n Nam H\u1ed3ng / M\u00ea Linh)",
+        "name": "Camera Phạt Nguội: Thăng Long – Nội Bài (Đoạn Nam Hồng / Mê Linh)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - highway_speed_enforcement"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - highway_speed_enforcement"
       }
     },
     {
@@ -1210,12 +1209,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_38",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Nh\u1eadt T\u00e2n \u2013 N\u1ed9i B\u00e0i m\u1edbi (\u0110\u01b0\u1eddng V\u00f5 Nguy\u00ean Gi\u00e1p)",
+        "name": "Camera Phạt Nguội: Nhật Tân – Nội Bài mới (Đường Võ Nguyên Giáp)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - highway_speed_enforcement"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - highway_speed_enforcement"
       }
     },
     {
@@ -1229,12 +1228,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_39",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: L\u00fd Th\u01b0\u1eddng Ki\u1ec7t \u2013 H\u00e0ng B\u00e0i",
+        "name": "Camera Phạt Nguội: Lý Thường Kiệt – Hàng Bài",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -1248,12 +1247,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_40",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Tr\u00e0ng Thi \u2013 C\u1eeda Nam",
+        "name": "Camera Phạt Nguội: Tràng Thi – Cửa Nam",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals"
       }
     },
     {
@@ -1267,12 +1266,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_41",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: L\u00ea Du\u1ea9n \u2013 Nguy\u1ec5n Th\u00e1i H\u1ecdc",
+        "name": "Camera Phạt Nguội: Lê Duẩn – Nguyễn Thái Học",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -1286,12 +1285,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_42",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Nguy\u1ec5n Th\u00e1i H\u1ecdc \u2013 Tr\u1ecbnh Ho\u00e0i \u0110\u1ee9c",
+        "name": "Camera Phạt Nguội: Nguyễn Thái Học – Trịnh Hoài Đức",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals"
       }
     },
     {
@@ -1305,12 +1304,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_43",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: V\u00f5 Ch\u00ed C\u00f4ng \u2013 Nguy\u1ec5n Ho\u00e0ng T\u00f4n",
+        "name": "Camera Phạt Nguội: Võ Chí Công – Nguyễn Hoàng Tôn",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - speed_and_lane"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - speed_and_lane"
       }
     },
     {
@@ -1324,12 +1323,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_44",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: V\u00f5 Ch\u00ed C\u00f4ng \u2013 Xu\u00e2n La",
+        "name": "Camera Phạt Nguội: Võ Chí Công – Xuân La",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -1343,12 +1342,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_45",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Km 263, Cao t\u1ed1c Ph\u00e1p V\u00e2n \u2013 Cao B\u1ed3 \u2013 Mai S\u01a1n",
+        "name": "Camera Phạt Nguội: Km 263, Cao tốc Pháp Vân – Cao Bồ – Mai Sơn",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - expressway_speed_enforcement"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - expressway_speed_enforcement"
       }
     },
     {
@@ -1362,12 +1361,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_46",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: \u0110\u01b0\u1eddng Tr\u1ea7n H\u01b0ng \u0110\u1ea1o (C\u1ed5ng B\u1ec7nh vi\u1ec7n 108)",
+        "name": "Camera Phạt Nguội: Đường Trần Hưng Đạo (Cổng Bệnh viện 108)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - stopping_parking_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - stopping_parking_and_speed"
       }
     },
     {
@@ -1381,12 +1380,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_47",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Cao t\u1ed1c Ph\u00e1p V\u00e2n \u2013 C\u1ea7u Gi\u1ebd (N\u00fat giao \u0110\u1ed7 X\u00e1)",
+        "name": "Camera Phạt Nguội: Cao tốc Pháp Vân – Cầu Giẽ (Nút giao Đỗ Xá)",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - expressway_speed_enforcement"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - expressway_speed_enforcement"
       }
     },
     {
@@ -1400,12 +1399,12 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_48",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ph\u1ea1m V\u0103n B\u1ea1ch \u2013 Ho\u00e0ng Qu\u00e1n Chi",
+        "name": "Camera Phạt Nguội: Phạm Văn Bạch – Hoàng Quán Chi",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - traffic_signals_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - traffic_signals_and_speed"
       }
     },
     {
@@ -1419,12 +1418,2647 @@
       },
       "properties": {
         "id": "csgt_hanoi_cam_49",
-        "name": "Camera Ph\u1ea1t Ngu\u1ed9i: Ng\u00f5 9 Ph\u1ea1m V\u0103n B\u1ea1ch",
+        "name": "Camera Phạt Nguội: Ngõ 9 Phạm Văn Bạch",
         "kind": "speed-camera",
         "traffic_sign": "speed_camera",
         "confidence": 0.98,
         "source": "hanoi_csgt_official_enforcement",
-        "verified_note": "Camera ph\u1ea1t ngu\u1ed9i b\u00ean tr\u00ean (CSGT H\u00e0 N\u1ed9i) - parking_and_speed"
+        "verified_note": "Camera phạt nguội bên trên (CSGT Hà Nội) - parking_and_speed"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.92257046326591,
+          10.269159565631307
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.42,
+        "bearing": 119.7,
+        "source_image": "sv_10.269186_105.922523_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2691863,105.9225229,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.95977233689754,
+          10.247147898739748
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.4,
+        "bearing": 331.3,
+        "source_image": "sv_10.247101_105.959799_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2471006,105.9597986,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.95247027427286,
+          10.254584096918721
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 85.1,
+        "source_image": "sv_10.254580_105.952416_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2545795,105.9524157,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.93486490841026,
+          10.226142559115862
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.36,
+        "bearing": 118.8,
+        "source_image": "sv_10.226168_105.934817_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2261685,105.9348169,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.90833622527558,
+          10.273201283069067
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 344.7,
+        "source_image": "sv_10.273149_105.908351_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2731493,105.9083507,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.93025363084111,
+          10.245155586769119
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.426,
+        "bearing": 348.3,
+        "source_image": "sv_10.245103_105.930265_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2451028,105.9302647,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.93025360276278,
+          10.24515558105993
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.69,
+        "bearing": 348.3,
+        "source_image": "sv_10.245103_105.930265_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2451028,105.9302647,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.96096297702253,
+          10.24965697054326
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.662,
+        "bearing": 1.9,
+        "source_image": "sv_10.249603_105.960961_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2496031,105.9609612,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.96096295053366,
+          10.24965697138307
+        ]
+      },
+      "properties": {
+        "type": "no_stopping_or_parking",
+        "confidence": 0.397,
+        "bearing": 1.8,
+        "source_image": "sv_10.249603_105.960961_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2496031,105.9609612,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.96096302011392,
+          10.249656969150108
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.71,
+        "bearing": 1.9,
+        "source_image": "sv_10.249603_105.960961_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2496031,105.9609612,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.95495028925473,
+          10.252156492258154
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 340.1,
+        "source_image": "sv_10.252106_105.954969_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2521058,105.9549689,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.95973738907766,
+          10.250033158955123
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.53,
+        "bearing": 329.1,
+        "source_image": "sv_10.249987_105.959766_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2499869,105.9597655,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.95973762981477,
+          10.250033299794529
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.61,
+        "bearing": 329.4,
+        "source_image": "sv_10.249987_105.959766_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2499869,105.9597655,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.3249365865345,
+          10.27613604161758
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.6,
+        "bearing": 16.6,
+        "source_image": "sv_10.276084_106.324921_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.2760844,106.3249209,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.47988409514926,
+          10.382233988249286
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.51,
+        "bearing": 108.4,
+        "source_image": "sv_10.382251_104.479832_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.382251,104.4798321,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.45502195331989,
+          10.359058585237467
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.52,
+        "bearing": 19.6,
+        "source_image": "sv_10.359008_105.455004_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3590078,105.4550036,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.4403871773286,
+          10.381262243208617
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.47,
+        "bearing": 14.2,
+        "source_image": "sv_10.381210_105.440374_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.38121,105.4403737,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.48346807927051,
+          10.331582922281374
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.47,
+        "bearing": 34.3,
+        "source_image": "sv_10.331538_105.483437_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3315384,105.4834372,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.50450572804384,
+          10.304421240032916
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.48,
+        "bearing": 111.6,
+        "source_image": "sv_10.304441_105.504455_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3044411,105.5044548,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.48334788973479,
+          10.331321899900466
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 125.0,
+        "source_image": "sv_10.331353_105.483303_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3313528,105.483303,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43114522560214,
+          10.3889046594282
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.35,
+        "bearing": 110.8,
+        "source_image": "sv_10.388924_105.431094_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3889238,105.431094,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43113809686596,
+          10.388891803236275
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.38,
+        "bearing": 126.4,
+        "source_image": "sv_10.388924_105.431094_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3889238,105.431094,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.4308342164218,
+          10.3892087366909
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.35,
+        "bearing": 32.3,
+        "source_image": "sv_10.389163_105.430805_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3891632,105.4308049,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43083552986779,
+          10.38920789244362
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 34.0,
+        "source_image": "sv_10.389163_105.430805_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3891632,105.4308049,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43083718153582,
+          10.389206753242012
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.5,
+        "bearing": 36.1,
+        "source_image": "sv_10.389163_105.430805_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3891632,105.4308049,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43085606570538,
+          10.38918249505516
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.53,
+        "bearing": 69.0,
+        "source_image": "sv_10.389163_105.430805_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3891632,105.4308049,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43085562206055,
+          10.389183596842184
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.53,
+        "bearing": 67.8,
+        "source_image": "sv_10.389163_105.430805_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3891632,105.4308049,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43085387143361,
+          10.389139015679659
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.58,
+        "bearing": 116.7,
+        "source_image": "sv_10.389163_105.430805_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3891632,105.4308049,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.47700774164083,
+          10.335567202325853
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.42,
+        "bearing": 20.4,
+        "source_image": "sv_10.335517_105.476989_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3355167,105.4769886,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.47835766664686,
+          10.33458334990034
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 125.6,
+        "source_image": "sv_10.334615_105.478313_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3346147,105.4783131,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43895345462603,
+          10.382814020786125
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.57,
+        "bearing": 69.0,
+        "source_image": "sv_10.382795_105.438902_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3827947,105.4389023,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.43935388309936,
+          10.382519467783649
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.37,
+        "bearing": 340.7,
+        "source_image": "sv_10.382469_105.439372_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3824686,105.439372,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.64547958548458,
+          10.391478114099817
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.43,
+        "bearing": 110.6,
+        "source_image": "sv_10.391497_105.645428_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3914971,105.6454283,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.64538907852638,
+          10.390930185883212
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.47,
+        "bearing": 106.7,
+        "source_image": "sv_10.390946_105.645337_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3909457,105.6453366,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.36124929326309,
+          10.352962773532493
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.203,
+        "bearing": 341.4,
+        "source_image": "sv_10.352912_106.361267_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3529117,106.3612668,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.36124926763485,
+          10.35296276502455
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.69,
+        "bearing": 341.3,
+        "source_image": "sv_10.352912_106.361267_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3529117,106.3612668,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.36150064778154,
+          10.362102985954774
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 23.6,
+        "source_image": "sv_10.362054_106.361479_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3620536,106.3614787,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.30518968669347,
+          10.392081216064389
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.42,
+        "bearing": 26.3,
+        "source_image": "sv_10.392033_106.305165_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3920329,106.3051654,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.36124929326309,
+          10.352962773532493
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.203,
+        "bearing": 341.4,
+        "source_image": "sv_10.352912_106.361267_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3529117,106.3612668,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.36124926763485,
+          10.35296276502455
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.69,
+        "bearing": 341.3,
+        "source_image": "sv_10.352912_106.361267_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3529117,106.3612668,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.3645219764663,
+          10.352763747872693
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.803,
+        "bearing": 110.9,
+        "source_image": "sv_10.352783_106.364471_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.352783,106.3644708,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.36504086222003,
+          10.352802345429694
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.44,
+        "bearing": 330.8,
+        "source_image": "sv_10.352755_106.365068_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3527553,106.3650676,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.36511844318468,
+          10.352735211516773
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.727,
+        "bearing": 111.9,
+        "source_image": "sv_10.352755_106.365068_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3527553,106.3650676,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07398067495424,
+          10.345838547584405
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.37,
+        "bearing": 25.3,
+        "source_image": "sv_10.345790_107.073957_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3457898,107.0739573,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07400480520546,
+          10.345816653928214
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.35,
+        "bearing": 60.1,
+        "source_image": "sv_10.345790_107.073957_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3457898,107.0739573,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.0740066681693,
+          10.345859501344512
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.37,
+        "bearing": 119.3,
+        "source_image": "sv_10.345886_107.073959_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3458859,107.0739589,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07429553462475,
+          10.348404453324887
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.49,
+        "bearing": 34.2,
+        "source_image": "sv_10.348360_107.074265_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3483599,107.0742647,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07431545775324,
+          10.348380194758178
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 67.9,
+        "source_image": "sv_10.348360_107.074265_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3483599,107.0742647,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07431943342063,
+          10.348357448004796
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.73,
+        "bearing": 92.6,
+        "source_image": "sv_10.348360_107.074265_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3483599,107.0742647,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07653011132261,
+          10.346036573124902
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.51,
+        "bearing": 10.6,
+        "source_image": "sv_10.345984_107.076520_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3459836,107.07652,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07651949572866,
+          10.346037496634136
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.45,
+        "bearing": 359.5,
+        "source_image": "sv_10.345984_107.076520_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3459836,107.07652,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07657099647481,
+          10.346003306140632
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 68.6,
+        "source_image": "sv_10.345984_107.076520_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3459836,107.07652,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07554648466306,
+          10.348267501534393
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 12.1,
+        "source_image": "sv_10.348215_107.075535_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3482148,107.075535,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.075428606829,
+          10.348501085552353
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.5,
+        "bearing": 337.5,
+        "source_image": "sv_10.348451_107.075450_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3484513,107.0754496,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07541736795416,
+          10.34849488569085
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.6,
+        "bearing": 324.0,
+        "source_image": "sv_10.348451_107.075450_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3484513,107.0754496,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08671923630402,
+          10.353305452493903
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.5,
+        "bearing": 94.3,
+        "source_image": "sv_10.353309_107.086665_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3533095,107.0866646,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08691101970193,
+          10.353651289015165
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.6,
+        "bearing": 33.2,
+        "source_image": "sv_10.353606_107.086881_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3536062,107.086881,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08690846829114,
+          10.353652836435382
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.6,
+        "bearing": 30.1,
+        "source_image": "sv_10.353606_107.086881_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3536062,107.086881,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.0869306140691,
+          10.353629070208061
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.6,
+        "bearing": 64.9,
+        "source_image": "sv_10.353606_107.086881_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3536062,107.086881,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07696954863484,
+          10.342455957401151
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 122.2,
+        "source_image": "sv_10.342485_107.076923_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3424847,107.0769232,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07777813759675,
+          10.341738187846117
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.407,
+        "bearing": 348.9,
+        "source_image": "sv_10.341685_107.077789_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07781330872339,
+          10.34173345620656
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 26.7,
+        "source_image": "sv_10.341685_107.077789_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07777801119825,
+          10.341738163264294
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 348.8,
+        "source_image": "sv_10.341685_107.077789_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07783695338237,
+          10.341710829215465
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 61.7,
+        "source_image": "sv_10.341685_107.077789_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07783700635876,
+          10.341710732072418
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 61.8,
+        "source_image": "sv_10.341685_107.077789_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08734407446879,
+          10.364234581471004
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 125.9,
+        "source_image": "sv_10.364266_107.087300_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3642662,107.0872997,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09578390347203,
+          10.354789076149777
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 335.1,
+        "source_image": "sv_10.354740_107.095807_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3547402,107.095807,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09796175154275,
+          10.359487392159396
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.57,
+        "bearing": 123.2,
+        "source_image": "sv_10.359517_107.097916_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3595169,107.0979159,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09545917103203,
+          10.354670724943578
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 32.2,
+        "source_image": "sv_10.354625_107.095430_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3546251,107.09543,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.0954470539474,
+          10.354676321598175
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.35,
+        "bearing": 18.1,
+        "source_image": "sv_10.354625_107.095430_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3546251,107.09543,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09548350858776,
+          10.354613505896772
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.4,
+        "bearing": 102.4,
+        "source_image": "sv_10.354625_107.095430_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3546251,107.09543,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15673220782095,
+          10.410370117106412
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.565,
+        "bearing": 122.9,
+        "source_image": "sv_10.410399_107.156686_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4103994,107.1566862,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.11406192467066,
+          10.376074419115263
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.49,
+        "bearing": 29.9,
+        "source_image": "sv_10.376028_107.114035_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3760277,107.1140346,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09806627376987,
+          10.36902454123967
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.39,
+        "bearing": 25.0,
+        "source_image": "sv_10.368976_107.098043_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3689757,107.0980431,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09809786965471,
+          10.368974101751547
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.48,
+        "bearing": 91.7,
+        "source_image": "sv_10.368976_107.098043_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3689757,107.0980431,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09809701861322,
+          10.368966105415119
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.34,
+        "bearing": 100.3,
+        "source_image": "sv_10.368976_107.098043_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3689757,107.0980431,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08297746375464,
+          10.339783915961286
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.42,
+        "bearing": 123.5,
+        "source_image": "sv_10.339814_107.082932_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3398137,107.0829318,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.06576370371957,
+          10.382601218803073
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.45,
+        "bearing": 12.0,
+        "source_image": "sv_10.382549_107.065752_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3825485,107.0657523,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09715644191031,
+          10.364938885830016
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 339.2,
+        "source_image": "sv_10.364888_107.097176_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3648885,107.0971759,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15673220782095,
+          10.410370117106412
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.565,
+        "bearing": 122.9,
+        "source_image": "sv_10.410399_107.156686_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4103994,107.1566862,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.09502072890858,
+          10.387000732517828
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.34,
+        "bearing": 105.8,
+        "source_image": "sv_10.387015_107.094968_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3870154,107.094968,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08637176785615,
+          10.33637094707016
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.52,
+        "bearing": 101.1,
+        "source_image": "sv_10.336381_107.086318_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3363813,107.086318,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08657779620026,
+          10.335875500562379
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.49,
+        "bearing": 11.0,
+        "source_image": "sv_10.335823_107.086567_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3358226,107.0865673,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07777813759675,
+          10.341738187846117
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.407,
+        "bearing": 348.9,
+        "source_image": "sv_10.341685_107.077789_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07781330872339,
+          10.34173345620656
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 26.7,
+        "source_image": "sv_10.341685_107.077789_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07777801119825,
+          10.341738163264294
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 348.8,
+        "source_image": "sv_10.341685_107.077789_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07783695338237,
+          10.341710829215465
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 61.7,
+        "source_image": "sv_10.341685_107.077789_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.07783700635876,
+          10.341710732072418
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 61.8,
+        "source_image": "sv_10.341685_107.077789_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3416853,107.0777887,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08477243800348,
+          10.339062592530485
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.34,
+        "bearing": 85.8,
+        "source_image": "sv_10.339059_107.084718_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3390586,107.0847178,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.08477243800348,
+          10.339062592530485
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.34,
+        "bearing": 85.8,
+        "source_image": "sv_10.339059_107.084718_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3390586,107.0847178,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15356354748576,
+          10.399144095498023
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.67,
+        "bearing": 346.4,
+        "source_image": "sv_10.399092_107.153576_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3990917,107.1535764,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15342428771879,
+          10.399028318742609
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 27.2,
+        "source_image": "sv_10.398980_107.153399_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3989804,107.1533992,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14963644435137,
+          10.397006563185155
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.37,
+        "bearing": 338.0,
+        "source_image": "sv_10.396957_107.149657_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3969566,107.149657,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14980993005453,
+          10.397177949320584
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.54,
+        "bearing": 33.1,
+        "source_image": "sv_10.397133_107.149780_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3971328,107.14978,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14975994435576,
+          10.396939863185157
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.37,
+        "bearing": 338.0,
+        "source_image": "sv_10.396890_107.149781_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3968899,107.1497805,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14966447903493,
+          10.396533408426256
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.42,
+        "bearing": 323.5,
+        "source_image": "sv_10.396490_107.149697_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3964901,107.1496971,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.1499641362307,
+          10.396677989125298
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 26.1,
+        "source_image": "sv_10.396630_107.149940_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3966296,107.14994,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14996744781962,
+          10.396676250245863
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.61,
+        "bearing": 30.1,
+        "source_image": "sv_10.396630_107.149940_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3966296,107.14994,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14996971844737,
+          10.39667488431685
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.63,
+        "bearing": 32.8,
+        "source_image": "sv_10.396630_107.149940_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3966296,107.14994,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14998958516405,
+          10.39665254504891
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.59,
+        "bearing": 64.8,
+        "source_image": "sv_10.396630_107.149940_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3966296,107.14994,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.13101536300486,
+          10.393751245507428
+        ]
+      },
+      "properties": {
+        "type": "no_stopping_or_parking",
+        "confidence": 0.314,
+        "bearing": 69.3,
+        "source_image": "sv_10.393732_107.130964_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3937322,107.1309641,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.12961766218352,
+          10.392859422453133
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.47,
+        "bearing": 100.0,
+        "source_image": "sv_10.392869_107.129564_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3928688,107.1295637,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.1354558958682,
+          10.3879437793058
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.39,
+        "bearing": 28.9,
+        "source_image": "sv_10.387897_107.135429_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3878966,107.1354294,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.13539736815582,
+          10.387940331146007
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 324.2,
+        "source_image": "sv_10.387897_107.135429_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3878966,107.1354294,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.1354785831165,
+          10.387920364696313
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.42,
+        "bearing": 63.8,
+        "source_image": "sv_10.387897_107.135429_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3878966,107.1354294,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.13356825742189,
+          10.386584669783462
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.56,
+        "bearing": 25.7,
+        "source_image": "sv_10.386536_107.133544_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3865361,107.1335445,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.13359219181322,
+          10.386562642692216
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.67,
+        "bearing": 60.5,
+        "source_image": "sv_10.386536_107.133544_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3865361,107.1335445,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.22713002310348,
+          10.410570029784322
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.62,
+        "bearing": 115.1,
+        "source_image": "sv_10.410593_107.227080_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4105929,107.2270804,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.23477810853689,
+          10.396548694018222
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.56,
+        "bearing": 112.8,
+        "source_image": "sv_10.396570_107.234728_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3965696,107.2347276,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.25063241750784,
+          10.382679025288963
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.37,
+        "bearing": 348.5,
+        "source_image": "sv_10.382626_107.250643_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3826262,107.2506433,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.25062664442991,
+          10.382677548762214
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.43,
+        "bearing": 342.3,
+        "source_image": "sv_10.382626_107.250643_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.3826262,107.2506433,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63904074697953,
+          10.468124234746044
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.523,
+        "bearing": 26.0,
+        "source_image": "sv_10.468076_105.639017_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4680758,105.6390167,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63906459668847,
+          10.468102005526129
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.175,
+        "bearing": 60.9,
+        "source_image": "sv_10.468076_105.639017_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4680758,105.6390167,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63749287904984,
+          10.455709018638037
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.58,
+        "bearing": 4.7,
+        "source_image": "sv_10.455655_105.637488_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4556553,105.6374884,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63362552430226,
+          10.464731880189698
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.38,
+        "bearing": 335.3,
+        "source_image": "sv_10.464683_105.633648_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4646829,105.6336484,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.6365467449807,
+          10.461178641818446
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.36,
+        "bearing": 116.7,
+        "source_image": "sv_10.461203_105.636498_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4612029,105.6364978,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.6449164072641,
+          10.461075651283403
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 335.8,
+        "source_image": "sv_10.461026_105.644939_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4610265,105.6449389,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63288254683525,
+          10.462851005933103
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.45,
+        "bearing": 331.1,
+        "source_image": "sv_10.462804_105.632909_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4628038,105.632909,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63293092919238,
+          10.462853196987771
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.58,
+        "bearing": 23.6,
+        "source_image": "sv_10.462804_105.632909_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4628038,105.632909,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63295544109012,
+          10.462832425927141
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.66,
+        "bearing": 57.9,
+        "source_image": "sv_10.462804_105.632909_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4628038,105.632909,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.62812826199459,
+          10.462937395610513
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 339.2,
+        "source_image": "sv_10.462887_105.628148_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.462887,105.6281477,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.6322029026328,
+          10.438130369976188
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.57,
+        "bearing": 126.1,
+        "source_image": "sv_10.438162_105.632159_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4381621,105.6321586,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63410426646952,
+          10.45494867920575
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.51,
+        "bearing": 111.0,
+        "source_image": "sv_10.454968_105.634053_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.454968,105.6340531,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.6357767531388,
+          10.452396785755221
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.274,
+        "bearing": 332.2,
+        "source_image": "sv_10.452349_105.635802_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4523491,105.6358023,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63584632252478,
+          10.45238120754438
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 53.4,
+        "source_image": "sv_10.452349_105.635802_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4523491,105.6358023,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63410426646952,
+          10.45494867920575
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.51,
+        "bearing": 111.0,
+        "source_image": "sv_10.454968_105.634053_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.454968,105.6340531,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.6324569275306,
+          10.454021267033768
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.38,
+        "bearing": 68.0,
+        "source_image": "sv_10.454001_105.632406_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4540011,105.6324061,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.62970983836372,
+          10.456181841473049
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.58,
+        "bearing": 68.1,
+        "source_image": "sv_10.456162_105.629659_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4561617,105.629659,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.6430208328013,
+          10.45913336999984
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.46,
+        "bearing": 104.2,
+        "source_image": "sv_10.459147_105.642968_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4591466,105.6429677,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.63970243269902,
+          10.465383563530343
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.36,
+        "bearing": 100.8,
+        "source_image": "sv_10.465394_105.639649_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4653937,105.6396486,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.06053520886479,
+          10.410044163264294
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.51,
+        "bearing": 348.8,
+        "source_image": "sv_10.409991_106.060546_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4099913,106.0605459,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.06077156970527,
+          10.410113434822955
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.51,
+        "bearing": 62.0,
+        "source_image": "sv_10.410088_106.060723_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4100881,106.0607232,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.31172606253764,
+          10.441074721886885
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.4,
+        "bearing": 25.8,
+        "source_image": "sv_10.441026_106.311702_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4410262,106.3117022,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.64463087851529,
+          10.461998697371087
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.53,
+        "bearing": 17.2,
+        "source_image": "sv_10.461947_106.644615_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4619472,106.6446147,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.97056016364999,
+          10.409795469759509
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.56,
+        "bearing": 30.4,
+        "source_image": "sv_10.409749_106.970532_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.409749,106.9705324,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.17404491929994,
+          10.487814855972804
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.651,
+        "bearing": 70.7,
+        "source_image": "sv_10.487797_107.173993_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.487797,107.1739932,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14438958519061,
+          10.499862483515308
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.6,
+        "bearing": 3.8,
+        "source_image": "sv_10.499809_107.144386_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4998087,107.144386,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.12230352578855,
+          10.499801705835361
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 349.0,
+        "source_image": "sv_10.499749_107.122314_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4997488,107.122314,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15847362649527,
+          10.422795109143802
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.39,
+        "bearing": 78.1,
+        "source_image": "sv_10.422784_107.158420_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.422784,107.15842,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15682999727885,
+          10.412260499478156
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.924,
+        "bearing": 36.4,
+        "source_image": "sv_10.412217_107.156797_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4122171,107.1567975,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15684910252787,
+          10.412235245193308
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.767,
+        "bearing": 70.3,
+        "source_image": "sv_10.412217_107.156797_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4122171,107.1567975,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.1568491167261,
+          10.412235206086795
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.69,
+        "bearing": 70.4,
+        "source_image": "sv_10.412217_107.156797_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4122171,107.1567975,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.10054872905097,
+          10.499946251202076
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.56,
+        "bearing": 77.1,
+        "source_image": "sv_10.499934_107.100495_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4999342,107.1004953,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.17300784262332,
+          10.488618492550124
+        ]
+      },
+      "properties": {
+        "type": "stop",
+        "confidence": 0.212,
+        "bearing": 27.5,
+        "source_image": "sv_10.488571_107.172983_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4885707,107.1729825,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.17774900653747,
+          10.424412710738602
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.41,
+        "bearing": 323.1,
+        "source_image": "sv_10.424370_107.177782_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4243696,107.1777819,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.18796160054515,
+          10.41971438348943
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.49,
+        "bearing": 350.7,
+        "source_image": "sv_10.419661_107.187971_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4196612,107.1879705,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.18802250138675,
+          10.419678211742335
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.4,
+        "bearing": 71.6,
+        "source_image": "sv_10.419661_107.187971_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4196612,107.1879705,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14898671905826,
+          10.405693281699307
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.42,
+        "bearing": 114.1,
+        "source_image": "sv_10.405715_107.148937_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4057153,107.1489367,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.15558204800794,
+          10.410163360647944
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 53.0,
+        "source_image": "sv_10.410131_107.155538_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4101309,107.1555383,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14412962693288,
+          10.499607919401178
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.47,
+        "bearing": 103.4,
+        "source_image": "sv_10.499620_107.144076_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4996204,107.1440763,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.14412461762147,
+          10.499645856368112
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.48,
+        "bearing": 61.8,
+        "source_image": "sv_10.499620_107.144076_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4996204,107.1440763,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.290504279145,
+          10.437149022571083
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.49,
+        "bearing": 108.8,
+        "source_image": "sv_10.437166_107.290452_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.4371664,107.2904524,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.41273991360144,
+          10.596855043662266
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.45,
+        "bearing": 33.3,
+        "source_image": "sv_10.596810_106.412710_h0.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.59681,106.4127098,3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.41276037382615,
+          10.596830829742123
+        ]
+      },
+      "properties": {
+        "type": "speed_limit_or_prohibition_sign",
+        "confidence": 0.44,
+        "bearing": 67.3,
+        "source_image": "sv_10.596810_106.412710_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.59681,106.4127098,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.42115647545393,
+          10.604921742994565
+        ]
+      },
+      "properties": {
+        "type": "prohibition_sign",
+        "confidence": 0.55,
+        "bearing": 80.4,
+        "source_image": "sv_10.604913_106.421102_h90.jpg",
+        "google_maps_url": "https://www.google.com/maps/@10.6049128,106.4211024,3a,75y,90h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192"
       }
     }
   ]

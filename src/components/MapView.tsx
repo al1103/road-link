@@ -8,8 +8,7 @@ import type { RoadData, RoadFeature } from '../domain/roadData';
 import type { UserRoadEdit } from '../domain/userRoadEdits';
 import { getPhoto } from '../services/photoStore';
 import { roadSymbol } from '../domain/roadSymbols';
-import { compassHeading, locationZoom } from '../domain/location';
-import { requestOrientationPermission } from '../hooks/useLocation';
+import { locationZoom, shortestAngleDelta } from '../domain/location';
 
 setWorkerUrl(workerUrl);
 setWorkerCount(1);
@@ -51,11 +50,13 @@ export default function MapView({ route, alternatives, destination, stops, onSel
   // Motion interpolation: GPS arrives about once a second, so the marker and camera are driven per frame between two fixes.
   const anim = useRef<{ from: Coordinate; to: Coordinate; start: number; duration: number } | null>(null), rendered = useRef<Coordinate | null>(null);
   const raf = useRef<number | null>(null), lastFrame = useRef(0), lastFixAt = useRef(0), followActive = useRef(false), lastObserve = useRef(0), lastSpeed = useRef<string | null>(null);
-  const smoothedBearing = useRef<number | null>(null), paddingCache = useRef<{ at: number; value: PaddingValue } | null>(null), appliedPadding = useRef<PaddingValue | null>(null);
+  const smoothedBearing = useRef<number | null>(null), bearingDir = useRef<number>(1), paddingCache = useRef<{ at: number; value: PaddingValue } | null>(null), appliedPadding = useRef<PaddingValue | null>(null);
   const live = useRef({ follow, navigating, mode3D }); live.current = { follow, navigating, mode3D };
   const rotateArrow = () => {
     if (!map.current || course.current === null) return;
-    const next = course.current - map.current.getBearing(), delta = ((next - displayHeading.current + 540) % 360) - 180; displayHeading.current += delta;
+    const next = (course.current - map.current.getBearing() + 360) % 360;
+    const delta = shortestAngleDelta(displayHeading.current, next);
+    displayHeading.current += delta;
     positionMarker.current?.getElement().style.setProperty('--heading', `${displayHeading.current}deg`);
   };
   const moveTo = (point: Coordinate) => { rendered.current = point; positionMarker.current?.setLngLat([point.lng, point.lat]); };
@@ -94,12 +95,19 @@ export default function MapView({ route, alternatives, destination, stops, onSel
     }
     return new Marker({ element: el }).setLngLat([feature.lng, feature.lat]).setPopup(new Popup({ offset: 18, maxWidth: '280px' }).setDOMContent(content)).addTo(instance);
   };
-  // Constant angular speed toward the target heading; a fixed turn rate avoids the wobble caused by raw course noise.
+  // Constant angular speed toward the target heading; hysteresis near 180 deg prevents left/right flip-flop when reversing.
   const stepBearing = (target: number, dt: number) => {
     const current = smoothedBearing.current;
     if (current === null) { smoothedBearing.current = target; return target; }
-    const delta = ((target - current + 540) % 360) - 180;
-    const next = (current + Math.sign(delta) * Math.min(Math.abs(delta), 140 * dt) + 360) % 360;
+    let delta = shortestAngleDelta(current, target);
+    if (Math.abs(delta) < 0.5) return current;
+    if (Math.abs(delta) > 150) {
+      delta = bearingDir.current * Math.abs(delta);
+    } else if (Math.abs(delta) > 8) {
+      bearingDir.current = delta >= 0 ? 1 : -1;
+    }
+    const maxStep = Math.abs(delta) > 90 ? 240 * dt : 160 * dt;
+    const next = (current + Math.sign(delta) * Math.min(Math.abs(delta), maxStep) + 360) % 360;
     smoothedBearing.current = next; return next;
   };
   const tick = (time: number) => {
@@ -114,13 +122,16 @@ export default function MapView({ route, alternatives, destination, stops, onSel
     // Linear between fixes keeps a constant apparent speed; easing here would re-introduce the accelerate/brake sawtooth.
     const point: Coordinate = { lat: frame.from.lat + (frame.to.lat - frame.from.lat) * t, lng: frame.from.lng + (frame.to.lng - frame.from.lng) * t };
     moveTo(point);
+    let rotating = false;
     if (following) {
       const heading = course.current;
       const bearing = heading !== null && Number.isFinite(heading) ? stepBearing(heading, dt) : smoothedBearing.current;
-      instance.jumpTo({ center: [point.lng, point.lat], ...(live.current.mode3D && bearing !== null ? { bearing } : {}), ...(pad ? { padding: pad.value } : {}) });
+      rotating = heading !== null && Number.isFinite(heading) && bearing !== null && Math.abs(shortestAngleDelta(bearing, heading)) > 0.6;
+      // Cả 2D và 3D đều xoay bản đồ theo hướng di chuyển / điện thoại khi dẫn đường; 2D giữ pitch=0, 3D giữ pitch=55.
+      instance.jumpTo({ center: [point.lng, point.lat], ...(bearing !== null ? { bearing } : {}), ...(pad ? { padding: pad.value } : {}) });
       rotateArrow();
     }
-    if (t < 1 || pad?.moving) raf.current = requestAnimationFrame(tick);
+    if (t < 1 || pad?.moving || rotating) raf.current = requestAnimationFrame(tick);
     else { anim.current = null; lastFrame.current = 0; }
   };
   const runFollow = () => { if (raf.current === null && anim.current) { lastFrame.current = 0; raf.current = requestAnimationFrame(tick); } };
@@ -132,27 +143,7 @@ export default function MapView({ route, alternatives, destination, stops, onSel
     runFollow();
   };
 
-  useEffect(() => {
-    const requestPerm = async () => { void requestOrientationPermission(); };
-    window.addEventListener('click', requestPerm, { passive: true });
-    window.addEventListener('touchend', requestPerm, { passive: true });
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      const heading = compassHeading(event);
-      if (heading === null || !positionMarker.current) return;
-      if (positionRef.current && positionRef.current.speed > 2.5 && positionRef.current.headingAvailable) return;
-      course.current = heading;
-      positionMarker.current.getElement().classList.remove('direction-unknown');
-      rotateArrow();
-    };
-    window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-    window.addEventListener('deviceorientationabsolute', handleOrientation, { passive: true });
-    return () => {
-      window.removeEventListener('click', requestPerm);
-      window.removeEventListener('touchend', requestPerm);
-      window.removeEventListener('deviceorientation', handleOrientation);
-      window.removeEventListener('deviceorientationabsolute', handleOrientation);
-    };
-  }, []);
+  // Hướng la bàn và tốc độ được hợp nhất từ useLocation() qua prop `position.heading` để tránh 2 listener tranh chấp khi quay ngược 180°.
   useEffect(() => {
     if (!element.current) return;
     let instance: LibreMap;
@@ -208,9 +199,9 @@ export default function MapView({ route, alternatives, destination, stops, onSel
   useEffect(() => {
     const instance = map.current; if (!instance || !ready) return;
     instance.setLayoutProperty('roadlink-buildings-3d', 'visibility', mode3D ? 'visible' : 'none');
-    // While following, the frame loop owns the camera and would cancel an ease, so apply the pitch directly.
-    if (follow && navigating) instance.jumpTo({ pitch: mode3D ? 55 : 0, ...(!mode3D ? { bearing: 0 } : {}) });
-    else instance.easeTo({ pitch: mode3D ? 55 : 0, ...(!mode3D ? { bearing: 0 } : {}), duration: 500 });
+    // Khi đang dẫn đường, giữ nguyên góc xoay bản đồ theo hướng điện thoại khi chuyển đổi giữa 2D và 3D.
+    if (follow && navigating) instance.jumpTo({ pitch: mode3D ? 55 : 0 });
+    else instance.easeTo({ pitch: mode3D ? 55 : 0, duration: 500 });
   }, [mode3D, ready, follow, navigating]);
   useEffect(() => { if (map.current && northReset) map.current.easeTo({ bearing: 0, duration: 350 }); }, [northReset]);
   useEffect(() => {
@@ -243,7 +234,7 @@ export default function MapView({ route, alternatives, destination, stops, onSel
         new Marker({ element: pin('destination-marker', '<span></span>'), anchor: 'bottom' }).setLngLat([to.lng, to.lat]).addTo(instance)
       ];
       const bounds = new LngLatBounds(); for (const point of route.coordinates) bounds.extend([point.lng, point.lat]);
-      instance.fitBounds(bounds, { padding: padding(instance), maxZoom: 16, pitch: callbacks.current.mode3D ? 55 : 0, bearing: callbacks.current.mode3D ? instance.getBearing() : 0, duration: 0 });
+      instance.fitBounds(bounds, { padding: padding(instance), maxZoom: 16, pitch: callbacks.current.mode3D ? 55 : 0, bearing: instance.getBearing(), duration: 0 });
     }
     updateSource(instance, 'roadlink-routes', data);
   }, [route, alternatives, stops, ready]);
@@ -319,15 +310,17 @@ export default function MapView({ route, alternatives, destination, stops, onSel
         const pad = livePadding(instance);
         rendered.current = { lat: position.lat, lng: position.lng };
         positionMarker.current.setLngLat([position.lng, position.lat]);
-        smoothedBearing.current = instance.getBearing();
+        const initialBearing = course.current !== null && Number.isFinite(course.current) ? course.current : instance.getBearing();
+        smoothedBearing.current = initialBearing;
         anim.current = null; lastFixAt.current = position.timestamp;
-        instance.jumpTo({ center: [position.lng, position.lat], zoom: Math.min(17, locationZoom(position.accuracy)), padding: pad });
+        instance.jumpTo({ center: [position.lng, position.lat], bearing: initialBearing, zoom: Math.min(17, locationZoom(position.accuracy)), padding: pad });
+        rotateArrow();
       } else {
         const moved = !rendered.current || rendered.current.lat !== position.lat || rendered.current.lng !== position.lng;
         // A newer fix retargets the running leg from wherever the marker is drawn right now, so no update is dropped.
         const retarget = !anim.current || anim.current.to.lat !== position.lat || anim.current.to.lng !== position.lng;
-        // Compass updates repeat the same coordinates; keep the 3D bearing smoothing alive without moving the marker.
-        const drift = !anim.current && callbacks.current.mode3D && course.current !== null && smoothedBearing.current !== null && Math.abs(((course.current - smoothedBearing.current + 540) % 360) - 180) > 1;
+        // Compass updates repeat the same coordinates; keep bearing smoothing alive in both 2D and 3D.
+        const drift = !anim.current && course.current !== null && smoothedBearing.current !== null && Math.abs(shortestAngleDelta(smoothedBearing.current, course.current)) > 1;
         if (retarget && moved) {
           const gap = lastFixAt.current ? position.timestamp - lastFixAt.current : 1000;
           anim.current = { from: rendered.current ?? { lat: position.lat, lng: position.lng }, to: { lat: position.lat, lng: position.lng }, start: performance.now(), duration: Math.min(2000, Math.max(250, gap)) };
